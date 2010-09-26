@@ -1,0 +1,56 @@
+
+This Tokyo cheat sheet doesn't give the raw BLAS calls.
+In the place of s or d in the function name I've put ?,
+and TYPE as the corresponding return type float or double.
+The types of the parameters are clear from their names:
+
+float/double: alpha, beta
+int: M, N
+numpy.ndarray vector: x, y, z
+numpy.ndarray matrix: A, B, C
+tokyo.CBLAS_TRANSPOSE: TransA, TransB
+
+# BLAS LEVEL 1 (vector operations)
+
+void ?swap( x, y )        # vector swap: x <-> y
+void ?scal( alpha, x )    # scalar vector multiply: x *= alpha
+void ?copy( x, y )        # vector copy: y <- x
+void ?axpy( alpha, x, y ) # vector addition: y += alpha*x
+TYPE ?dot( x, y )         # vector dot product: x.T y
+TYPE ?nrm2( x )           # Euclidean norm:  ||x||_2
+TYPE ?asum( x )           # sum of absolute values: ||x||_1
+int  i?amax( x )          # index of maximum absolute value element
+
+# BLAS LEVEL 2 (matrix-vector operations)
+
+# y = alpha * A x + beta * y  OR  y = alpha * A.T x + beta * y
+void    ?gemv6( TransA, alpha, A, x, beta, y )
+void    ?gemv5( alpha, A, x, beta, y ) # y = alpha * A x + beta * y
+void    ?gemv3( A, x, y )              # y = alpha * A x
+ndarray ?gemv( A, x )                  # return = alpha * A x
+
+# rank-1 opertion (aka outer product) 
+void    ?ger4( alpha, x, y, A )  # A += alpha * x y.T
+void    ?ger3( x, y, A )         # A += x y.T  
+ndarray ?ger( x, y )             # return = x y.T 
+
+# BLAS LEVEL 3 (matrix-matrix operations)
+
+# C = alpha * A B + beta * C with various A and B transpose options
+void    ?gemm7( TransA, TransB, alpha, A, B, beta, C)
+void    ?gemm5( alpha, A, B, beta, C)  # C = alpha * A B + beta * C
+void    ?gemm3( A, B, C)               # C += A B
+ndarray ?gemm( A, B )                  # return = A B
+
+# Utility functions I have put together that aren't in BLAS or LAPACK.
+
+ndarray ?mnewempty( M, N )     # create a new empty matrix
+ndarray ?vnewempty( M )        # create a new empty vector
+ndarray ?mnewzero( M, N )      # create a new zero matrix
+ndarray ?vnewzero( M )         # create a new zero vector
+void    ?msetzero( A )         # set a matrix to all zeros
+void    ?vsetzero( x )         # set a vector of to all zeros
+void    ?maxpy( alpha, X, Y )  # matrix: Y += alpha * X
+
+
+
