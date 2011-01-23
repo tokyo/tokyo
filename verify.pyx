@@ -18,7 +18,7 @@ print "---------------------------------------------------"
 print
 
 print
-print "VERIFY CORRECTNESS BLAS 1"
+print "VERIFY CORRECTNESS BLAS Level 1"
 print
 sswap_verify()
 sscal_verify()
@@ -39,10 +39,11 @@ ddot_verify()
 dnrm2_verify()
 dasum_verify()
 idamax_verify()
+drotg_verify()
 
 
 print
-print "VERIFY CORRECTNESS BLAS 2"
+print "VERIFY CORRECTNESS BLAS Level 2"
 print
 
 sgemv_verify(); print
@@ -218,6 +219,32 @@ cdef srotg_verify():
     else:
         print 'srotg: All ok'
 
+
+cdef drotg_verify():
+    da1 = np.array([0.3, 0.4, -0.3, -0.4, -0.3, 0.0, 0.0, 1.0], np.float64)
+    db1 = np.array([0.4, 0.3, 0.4, 0.3, -0.4, 0.0, 1.0, 0.0], np.float64)
+    dc1 = np.array([0.6, 0.8, -0.6, 0.8, 0.6, 1.0, 0.0, 1.0], np.float64)
+    ds1 = np.array([0.8, 0.6, 0.8, -0.6, 0.8, 0.0, 1.0, 0.0], np.float64)
+    datrue = np.array([0.5, 0.5, 0.5, -0.5, -0.5, 0.0, 1.0, 1.0], np.float64)
+    dbtrue = np.array([1.0/0.6, 0.6, -1.0/0.6, -0.6, 1.0/0.6, 0.0, 1.0, 0.0],
+             np.float64)
+    a = np.empty(8, np.float64)
+    b = np.empty(8, np.float64)
+    c = np.empty(8, np.float64)
+    s = np.empty(8, np.float64)
+    for k in range(len(da1)):
+        (a[k],b[k],c[k],s[k]) = tokyo.drotg(da1[k], db1[k])
+
+    a_ok = check_negligible(a, datrue, datrue, 9.765625e-4)
+    b_ok = check_negligible(b, dbtrue, dbtrue, 9.765625e-4)
+    c_ok = check_negligible(c, dc1, dc1, 9.765625e-4)
+    s_ok = check_negligible(s, ds1, ds1, 9.765625e-4)
+    if not (a_ok and b_ok and c_ok and s_ok):
+        print 'drotg: '
+        print 'Got ', (a,b,c,s)
+        print 'Expected ', (datrue, dbtrue, dc1, ds1)
+    else:
+        print 'drotg: All ok'
 
 
 ###########################################
