@@ -229,30 +229,34 @@ def drotg(double a, double b):
     return drotg_(a, b)
 
 
-## Generate a modified Givens plane rotation.
-#cdef void srotmg_(float d1, float d2, float x, float y, float *param):
-#    return lib_srotmg(d1, d2, x, y, param)
-#
-#cdef srotmg(float d1, float d2, float x, float y, float *param):
-#    if param.ndim != 1: raise ValueError("param is not a vector")
-#    if param.shape[0] < 5:
-#        raise ValueError("param must have length at least 5")
-#    if param.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("param is not of type float")
-#    return lib_srotmg(d1, d2, x, y, param)
-#
-#cdef void drotmg_(double d1, double d2, double x, double float y, double *param):
-#    return lib_drotmg(d1, d2, x, y, param)
-#
-#cdef drotmg(double d1, double d2, double x, double float y, double *param):
-#    if param.ndim != 1: raise ValueError("param is not a vector")
-#    if param.shape[0] < 5:
-#        raise ValueError("param must have length at least 5")
-#    if param.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("param is not of type double")
-#    return lib_drotmg(d1, d2, x, y, param)
-#
-#
+# Generate a modified Givens plane rotation.
+def srotmg_(float *d1, float *d2, float *x, float y, float *param):
+    return lib_srotmg(d1, d2, x, y, param)
+
+def srotmg(float d1, float d2, float x, float y, np.ndarray param):
+    if param.ndim != 1: raise ValueError("param is not a vector")
+    if param.shape[0] < 5:
+        raise ValueError("param must have length at least 5")
+    if param.descr.type_num != PyArray_FLOAT:
+        raise ValueError("param is not of type float")
+    cdef float d1_ = d1, d2_ = d2, x_ = x
+    srotmg_(d1, d2, x, y, <float *>param.data)
+    return (d1_, d2_, x_, param)
+
+def drotmg_(double d1, double d2, double x, double y, double *param):
+    cdef double d1_ = d1, d2_ = d2, x_ = x
+    lib_drotmg(&d1_, &d2_, &x_, y, param)
+    return (d1_, d2_, x_, <double *>param.data)
+
+def drotmg(double d1, double d2, double x, double y, np.ndarray param):
+    if param.ndim != 1: raise ValueError("param is not a vector")
+    if param.shape[0] < 5:
+        raise ValueError("param must have length at least 5")
+    if param.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("param is not of type double")
+    return drotmg_(d1, d2, x, y, <double *>param.data)
+
+
 ## Apply a Givens plane rotation.
 #cdef srot_(int N, float  *x, int dx,
 #                        float  *y, int dy,
