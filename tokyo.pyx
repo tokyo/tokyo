@@ -1,5 +1,3 @@
-
-
 import numpy as np
 cimport numpy as np
 
@@ -8,198 +6,328 @@ import cython
 import_array()
 
 ##########################################################################
-#
 # BLAS LEVEL 1
-#
 ##########################################################################
 
-#
+# Each subroutine comes in two variants:
+# [sd]name and [sd]name_
+# The variant with the trailing underscore skips type and dimension checks.
+
 # vector swap: x <-> y
-#
-cdef void sswap_(int M, float *x, int incX, float *y, int incY):
-    lib_sswap( M, x, incX, y, incY )
+cdef void sswap_(int M, float *x, int dx, float *y, int dy):
+    lib_sswap(M, x, dx, y, dy)
 
-cdef void sswap( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void sswap(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
 
-    lib_sswap( x.shape[0], <float*>x.data, 1, <float*>y.data, 1 )
+    lib_sswap(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
 
-cdef void dswap_(int M, double *x, int incX, double *y, int incY):
-    lib_dswap( M, x, incX, y, incY )
+cdef void dswap_(int M, double *x, int dx, double *y, int dy):
+    lib_dswap(M, x, dx, y, dy)
 
-cdef void dswap( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void dswap(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
-    lib_dswap( x.shape[0], <double*>x.data, 1, <double*>y.data, 1 )
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    lib_dswap(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
-#
 # scalar vector multiply: x *= alpha
-#
-cdef void sscal_(int N, float alpha, float *x, int incX ):
-    lib_sscal( N, alpha, x, incX )
+cdef void sscal_(int N, float alpha, float *x, int dx):
+    lib_sscal(N, alpha, x, dx)
 
-cdef void sscal( float alpha, np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    lib_sscal( x.shape[0], alpha, <float*>x.data, 1 )
+cdef void sscal(float alpha, np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    lib_sscal(x.shape[0], alpha, <float*>x.data, 1)
 
-    
-cdef void dscal_(int N, double alpha, double *x, int incX ):
-    lib_dscal( N, alpha, x, incX )
 
-cdef void dscal( double alpha, np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    lib_dscal( x.shape[0], alpha, <double*>x.data, 1 )
-    
+cdef void dscal_(int N, double alpha, double *x, int dx):
+    lib_dscal(N, alpha, x, dx)
 
-#
+cdef void dscal(double alpha, np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    lib_dscal(x.shape[0], alpha, <double*>x.data, 1)
+
+
 # vector copy: y <- x
-#
-cdef void scopy_(int N, float *x, int incX, float *y, int incY):
-    lib_scopy( N, x, incX, y, incY )
+cdef void scopy_(int N, float *x, int dx, float *y, int dy):
+    lib_scopy(N, x, dx, y, dy)
 
-cdef void scopy( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void scopy(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
-    lib_scopy( x.shape[0], <float*>x.data, 1, <float*>y.data, 1 )
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
+    lib_scopy(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
 
-cdef void dcopy_(int N, double *x, int incX, double *y, int incY):
-    lib_dcopy( N, x, incX, y, incY )
+cdef void dcopy_(int N, double *x, int dx, double *y, int dy):
+    lib_dcopy(N, x, dx, y, dy)
 
-cdef void dcopy( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void dcopy(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
-    lib_dcopy( x.shape[0], <double*>x.data, 1, <double*>y.data, 1 )
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    lib_dcopy(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
 
-#
 # vector addition: y += alpha*x
-#
-cdef void saxpy_(int N, float alpha, float *x, int incX, float *y, int incY ):
-    lib_saxpy( N, alpha, x, incX, y, incY )
+cdef void saxpy_(int N, float alpha, float *x, int dx, float *y, int dy):
+    lib_saxpy(N, alpha, x, dx, y, dy)
 
-cdef void saxpy( float alpha, np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void saxpy(float alpha, np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
-    lib_saxpy( x.shape[0], alpha, <float*>x.data, 1, <float*>y.data, 1 )
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
+    lib_saxpy(x.shape[0], alpha, <float*>x.data, 1, <float*>y.data, 1)
 
 
-cdef void daxpy_(int N, double alpha, double *x, int incX, double *y, int incY ):
-    lib_daxpy( N, alpha, x, incX, y, incY )
+cdef void daxpy_(int N, double alpha, double *x, int dx, double *y, int dy):
+    lib_daxpy(N, alpha, x, dx, y, dy)
 
-cdef void daxpy( double alpha, np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef void daxpy(double alpha, np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
-    lib_daxpy( x.shape[0], alpha, <double*>x.data, 1, <double*>y.data, 1 )
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    lib_daxpy(x.shape[0], alpha, <double*>x.data, 1, <double*>y.data, 1)
 
 
-#
-# vector dot product: x.T y
-#
-cdef float sdot_(int N, float *x, int incX, float *y, int incY ):
-    lib_sdot( N, x, incX, y, incY ) 
+# vector dot product: x'y
+cdef float sdot_(int N, float *x, int dx, float *y, int dy):
+    lib_sdot(N, x, dx, y, dy)
 
-cdef float sdot( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef float sdot(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
-    return lib_sdot( x.shape[0], <float*>x.data, 1, <float*>y.data, 1 )
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
+    return lib_sdot(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
 
-cdef double ddot_(int N, double *x, int incX, double *y, int incY ):
-    lib_ddot( N, x, incX, y, incY ) 
+cdef double ddot_(int N, double *x, int dx, double *y, int dy):
+    lib_ddot(N, x, dx, y, dy)
 
-cdef double ddot( np.ndarray x, np.ndarray y ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+cdef double ddot(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
-    return lib_ddot( x.shape[0], <double*>x.data, 1, <double*>y.data, 1 )
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    return lib_ddot(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
 
-#
 # Euclidean norm:  ||x||_2
-#
-cdef float snrm2_(int N, float *x, int incX): return lib_snrm2( N, x, incX )
+cdef float snrm2_(int N, float *x, int dx):
+    return lib_snrm2(N, x, dx)
 
-cdef float snrm2( np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    return lib_snrm2( x.shape[0], <float*>x.data, 1 )
+cdef float snrm2(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    return lib_snrm2(x.shape[0], <float*>x.data, 1)
 
 
-cdef double dnrm2_(int N, double *x, int incX): return lib_dnrm2( N, x, incX )
+cdef double dnrm2_(int N, double *x, int dx):
+    return lib_dnrm2(N, x, dx)
 
-cdef double dnrm2( np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    return lib_dnrm2( x.shape[0], <double*>x.data, 1 )
+cdef double dnrm2(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    return lib_dnrm2(x.shape[0], <double*>x.data, 1)
 
-#
 # sum of absolute values: ||x||_1
-#
-cdef float sasum_(int N, float *x, int incX): return lib_sasum(N, x, incX)
+cdef float sasum_(int N, float *x, int dx):
+    return lib_sasum(N, x, dx)
 
-cdef float sasum( np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    return lib_sasum( x.shape[0], <float*>x.data, 1 )
+cdef float sasum(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    return lib_sasum(x.shape[0], <float*>x.data, 1)
 
 
-cdef double dasum_(int N, double *x, int incX): return lib_dasum(N, x, incX)
+cdef double dasum_(int N, double *x, int dx):
+    return lib_dasum(N, x, dx)
 
-cdef double dasum( np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    return lib_dasum( x.shape[0], <double*>x.data, 1 )
+cdef double dasum(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    return lib_dasum(x.shape[0], <double*>x.data, 1)
 
-#
 # index of maximum absolute value element
+cdef int isamax_(int N, float *x, int dx):
+    return lib_isamax(N, x, dx)
+
+cdef int isamax(np.ndarray x):
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    return lib_isamax(x.shape[0], <float*>x.data, 1)
+
+
+cdef int idamax_(int N, double *x, int dx):
+    return lib_idamax(N, x, dx)
+
+cdef int idamax(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    return lib_idamax(x.shape[0], <double*>x.data, 1)
+
+
+# Generate a Givens plane rotation: (a,b,c,s) <- rot(a,b).
+def srotg_(float a, float b):
+    cdef float aa = a, bb = b, c = 0.0, s = 0.0
+    lib_srotg(&aa, &bb, &c, &s)
+    return (aa, bb, c, s)
+
+def srotg(float a, float b):
+    return srotg_(a, b)
+
+
+def drotg_(double a, double b):
+    cdef double aa = a, bb = b, c = 0.0, s = 0.0
+    lib_drotg(&aa, &bb, &c, &s)
+    return (aa, bb, c, s)
+
+def drotg(double a, double b):
+    return drotg_(a, b)
+
+
+## Generate a modified Givens plane rotation.
+#cdef void srotmg_(float d1, float d2, float x, float y, float *param):
+#    return lib_srotmg(d1, d2, x, y, param)
 #
-cdef int isamax_(int N, float *x, int incX): return lib_isamax( N, x, incX )
-
-cdef int isamax( np.ndarray x ):
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    return lib_isamax( x.shape[0], <float*>x.data, 1 )
-
-
-cdef int idamax_(int N, double *x, int incX): return lib_idamax( N, x, incX )
-
-cdef int idamax( np.ndarray x ):
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    return lib_idamax( x.shape[0], <double*>x.data, 1 )
+#cdef srotmg(float d1, float d2, float x, float y, float *param):
+#    if param.ndim != 1: raise ValueError("param is not a vector")
+#    if param.shape[0] < 5:
+#        raise ValueError("param must have length at least 5")
+#    if param.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("param is not of type float")
+#    return lib_srotmg(d1, d2, x, y, param)
+#
+#cdef void drotmg_(double d1, double d2, double x, double float y, double *param):
+#    return lib_drotmg(d1, d2, x, y, param)
+#
+#cdef drotmg(double d1, double d2, double x, double float y, double *param):
+#    if param.ndim != 1: raise ValueError("param is not a vector")
+#    if param.shape[0] < 5:
+#        raise ValueError("param must have length at least 5")
+#    if param.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("param is not of type double")
+#    return lib_drotmg(d1, d2, x, y, param)
+#
+#
+## Apply a Givens plane rotation.
+#cdef srot_(int N, float  *x, int dx,
+#                        float  *y, int dy,
+#                        float c, float s):
+#    return lib_srot(N, x, dx, y, dy, c, s)
+#
+#cdef srot(np.ndarray x, np.ndarray y, float c, float s):
+#    if x.ndim != 1: raise ValueError("x is not a vector")
+#    if y.ndim != 1: raise ValueError("y is not a vector")
+#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+#    if x.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("x is not of type float")
+#    if y.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("y is not of type float")
+#    return lib_srot(x.shape[0], <float *>x.data, 1, <float *>y.data, 1, c, s)
+#
+#cdef drot_(int N, double  *x, int dx,
+#                        double  *y, int dy,
+#                        double c, double s):
+#    return lib_drot(N, x, dx, y, dy, c, s)
+#
+#cdef drot(np.ndarray x, np.ndarray y, double c, double s):
+#    if x.ndim != 1: raise ValueError("x is not a vector")
+#    if y.ndim != 1: raise ValueError("y is not a vector")
+#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+#    if x.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("x is not of type double")
+#    if y.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("y is not of type double")
+#    return lib_drot(x.shape[0], <double *>x.data, 1, <double *>y.data, 1, c, s)
+#
+#
+## Apply a modified Givens plane rotation.
+#cdef srotm_(int N, float  *x, int dx,
+#                         float  *y, int dy, float *param):
+#    return lib_srotm(N, x, dx, y, dy, c, s)
+#
+#cdef srotm(np.ndarray x, np.ndarray y, np.ndarray param):
+#    if x.ndim != 1: raise ValueError("x is not a vector")
+#    if y.ndim != 1: raise ValueError("y is not a vector")
+#    if param.ndim != 1: raise ValueError("param is not a vector")
+#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+#    if param.shape[0] < 5:
+#        raise ValueError("param must have length at least 5")
+#    if param.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("param is not of type float")
+#    if x.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("x is not of type float")
+#    if y.descr.type_num != PyArray_FLOAT:
+#        raise ValueError("y is not of type float")
+#    return lib_srotm(x.shape[0], <float *>x.data, 1, <float *>y.data, 1,
+#                    <float *>param.data)
+#
+#cdef drotm_(int N, double  *x, int dx,
+#                         double  *y, int dy, float *param):
+#    return lib_drotm(N, x, dx, y, dy, c, s)
+#
+#cdef drotm(np.ndarray x, np.ndarray y, double c, double s):
+#    if x.ndim != 1: raise ValueError("x is not a vector")
+#    if y.ndim != 1: raise ValueError("y is not a vector")
+#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+#    if param.shape[0] < 5:
+#        raise ValueError("param must have length at least 5")
+#    if param.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("param is not of type double")
+#    if x.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("x is not of type double")
+#    if y.descr.type_num != PyArray_DOUBLE:
+#        raise ValueError("y is not of type double")
+#    return lib_drotm(x.shape[0], <double *>x.data, 1, <double *>y.data, 1,
+#                    <double *>param.data)
 
 
 ##########################################################################
-#
 # BLAS LEVEL 2
-#
 ##########################################################################
 
 #
@@ -209,102 +337,102 @@ cdef int idamax( np.ndarray x ):
 # single precison
 
 cdef void sgemv_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, int M, int N,
-                    float alpha, float *A, int lda, float *x, int incX,
-                    float beta, float *y, int incY):
-    lib_sgemv( Order, TransA, M, N, alpha, A, lda, x, incX, beta, y, incY )
+                    float alpha, float *A, int lda, float *x, int dx,
+                    float beta, float *y, int dy):
+    lib_sgemv(Order, TransA, M, N, alpha, A, lda, x, dx, beta, y, dy)
 
 
-cdef void sgemv6( CBLAS_TRANSPOSE TransA, float alpha, np.ndarray A,
+cdef void sgemv6(CBLAS_TRANSPOSE TransA, float alpha, np.ndarray A,
                       np.ndarray x, float beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
     if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
     if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
     if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
 
-    lib_sgemv( CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <float*>A.data,
-               A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1 )
+    lib_sgemv(CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <float*>A.data,
+               A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1)
 
 
-cdef void sgemv5( float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y):
+cdef void sgemv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
     if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
     if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
     if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
 
-    lib_sgemv( CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
-            <float*>A.data, A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1 )
+    lib_sgemv(CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
+            <float*>A.data, A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1)
 
 
-cdef void sgemv3( np.ndarray A, np.ndarray x, np.ndarray y):
-    sgemv5( 1.0, A, x, 0.0, y )
+cdef void sgemv3(np.ndarray A, np.ndarray x, np.ndarray y):
+    sgemv5(1.0, A, x, 0.0, y)
 
 
-cdef np.ndarray sgemv( np.ndarray A, np.ndarray x ):
-    cdef np.ndarray y = svnewempty( A.shape[0] )
-    sgemv5( 1.0, A, x, 0.0, y )
+cdef np.ndarray sgemv(np.ndarray A, np.ndarray x):
+    cdef np.ndarray y = svnewempty(A.shape[0])
+    sgemv5(1.0, A, x, 0.0, y)
     return y
 
 # double precision
 
 cdef void dgemv_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, int M, int N,
-                    double alpha, double *A, int lda, double *x, int incX,
-                    double beta, double *y, int incY):
-    lib_dgemv( Order, TransA, M, N, alpha, A, lda, x, incX, beta, y, incY )
+                    double alpha, double *A, int lda, double *x, int dx,
+                    double beta, double *y, int dy):
+    lib_dgemv(Order, TransA, M, N, alpha, A, lda, x, dx, beta, y, dy)
 
 
-cdef void dgemv6( CBLAS_TRANSPOSE TransA, double alpha, np.ndarray A,
+cdef void dgemv6(CBLAS_TRANSPOSE TransA, double alpha, np.ndarray A,
                       np.ndarray x, double beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
     if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
     if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
     if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
 
-    lib_dgemv( CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <double*>A.data,
-               A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1 )
+    lib_dgemv(CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <double*>A.data,
+               A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1)
 
 
-cdef void dgemv5( double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarray y):
+cdef void dgemv5(double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
     if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
     if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
     if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
 
-    lib_dgemv( CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
-            <double*>A.data, A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1 )
+    lib_dgemv(CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
+            <double*>A.data, A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1)
 
 
-cdef void dgemv3( np.ndarray A, np.ndarray x, np.ndarray y):
-    dgemv5( 1.0, A, x, 0.0, y )
+cdef void dgemv3(np.ndarray A, np.ndarray x, np.ndarray y):
+    dgemv5(1.0, A, x, 0.0, y)
 
 
-cdef np.ndarray dgemv( np.ndarray A, np.ndarray x ):
-    cdef np.ndarray y = dvnewempty( A.shape[0] )
-    dgemv5( 1.0, A, x, 0.0, y )
+cdef np.ndarray dgemv(np.ndarray A, np.ndarray x):
+    cdef np.ndarray y = dvnewempty(A.shape[0])
+    dgemv5(1.0, A, x, 0.0, y)
     return y
 
 
 #
-# vector outer-product: A = alpha * outer_product( x, y.T )
+# vector outer-product: A = alpha * outer_product(x, y.T)
 #
 
 # Note: when calling this make sure you're working with a buffer otherwise
@@ -313,67 +441,67 @@ cdef np.ndarray dgemv( np.ndarray A, np.ndarray x ):
 
 # single precision
 
-cdef void sger_(CBLAS_ORDER Order, int M, int N, float alpha, float *x, int incX,
-                float *y, int incY, float *A, int lda):
+cdef void sger_(CBLAS_ORDER Order, int M, int N, float alpha, float *x, int dx,
+                float *y, int dy, float *A, int lda):
 
-    lib_sger( Order, M, N, alpha, x, incX, y, incY, A, lda )
+    lib_sger(Order, M, N, alpha, x, dx, y, dy, A, lda)
 
 
-cdef void sger4( float alpha, np.ndarray x, np.ndarray y, np.ndarray A):
+cdef void sger4(float alpha, np.ndarray x, np.ndarray y, np.ndarray A):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
     if y.shape[0] != A.shape[1]: raise ValueError("y rows != A columns")
     if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
     if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
     if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
 
-    lib_sger( CblasRowMajor, x.shape[0], y.shape[0], alpha,
-              <float*>x.data, 1, <float*>y.data, 1, <float*>A.data, A.shape[1] )
+    lib_sger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
+              <float*>x.data, 1, <float*>y.data, 1, <float*>A.data, A.shape[1])
 
 
-cdef void sger3( np.ndarray x, np.ndarray y, np.ndarray A):
-    sger4( 1.0, x, y, A )
+cdef void sger3(np.ndarray x, np.ndarray y, np.ndarray A):
+    sger4(1.0, x, y, A)
 
 
-cdef np.ndarray sger( np.ndarray x, np.ndarray y ):
-    cdef np.ndarray A = smnewzero( x.shape[0], y.shape[0] )
-    sger4( 1.0, x, y, A )
+cdef np.ndarray sger(np.ndarray x, np.ndarray y):
+    cdef np.ndarray A = smnewzero(x.shape[0], y.shape[0])
+    sger4(1.0, x, y, A)
     return A
 
 
 # double precision
 
-cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha, double *x, int incX,
-                double *y, int incY, double *A, int lda):
+cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha, double *x, int dx,
+                double *y, int dy, double *A, int lda):
 
-    lib_dger( Order, M, N, alpha, x, incX, y, incY, A, lda )
+    lib_dger(Order, M, N, alpha, x, dx, y, dy, A, lda)
 
 
-cdef void dger4( double alpha, np.ndarray x, np.ndarray y, np.ndarray A):
+cdef void dger4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if x.ndim != 1: raise ValueError("x is not a vector") 
-    if y.ndim != 1: raise ValueError("y is not a vector") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
     if y.shape[0] != A.shape[1]: raise ValueError("y rows != A columns")
     if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
     if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
     if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
 
-    lib_dger( CblasRowMajor, x.shape[0], y.shape[0], alpha,
-              <double*>x.data, 1, <double*>y.data, 1, <double*>A.data, A.shape[1] )
+    lib_dger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
+              <double*>x.data, 1, <double*>y.data, 1, <double*>A.data, A.shape[1])
 
 
-cdef void dger3( np.ndarray x, np.ndarray y, np.ndarray A):
-    dger4( 1.0, x, y, A )
+cdef void dger3(np.ndarray x, np.ndarray y, np.ndarray A):
+    dger4(1.0, x, y, A)
 
 
-cdef np.ndarray dger( np.ndarray x, np.ndarray y ):
-    cdef np.ndarray A = dmnewzero( x.shape[0], y.shape[0] )
-    dger4( 1.0, x, y, A )
+cdef np.ndarray dger(np.ndarray x, np.ndarray y):
+    cdef np.ndarray A = dmnewzero(x.shape[0], y.shape[0])
+    dger4(1.0, x, y, A)
     return A
 
 
@@ -395,16 +523,16 @@ cdef np.ndarray dger( np.ndarray x, np.ndarray y ):
 cdef void sgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
                  int M, int N, int K, float alpha, float *A, int lda, float *B,
                  int ldb, float beta, float *C, int ldc):
-    
-    lib_sgemm( Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc )
+
+    lib_sgemm(Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
 
 
-cdef void sgemm7( CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                  float alpha, np.ndarray A, np.ndarray B, float beta, np.ndarray C ):
+cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
+                  float alpha, np.ndarray A, np.ndarray B, float beta, np.ndarray C):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if B.ndim != 2: raise ValueError("B is not a matrix") 
-    if C.ndim != 2: raise ValueError("C is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
@@ -412,17 +540,17 @@ cdef void sgemm7( CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if B.descr.type_num != PyArray_FLOAT: raise ValueError("B is not of type float")
     if C.descr.type_num != PyArray_FLOAT: raise ValueError("C is not of type float")
 
-    lib_sgemm( CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
+    lib_sgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
                alpha, <float*>A.data, A.shape[1], <float*>B.data, B.shape[1],
-               beta, <float*>C.data, C.shape[1] )
+               beta, <float*>C.data, C.shape[1])
 
 
-cdef void sgemm5( float alpha, np.ndarray A, np.ndarray B,
-                      float beta, np.ndarray C ):
+cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B,
+                      float beta, np.ndarray C):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if B.ndim != 2: raise ValueError("B is not a matrix") 
-    if C.ndim != 2: raise ValueError("C is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
@@ -430,17 +558,17 @@ cdef void sgemm5( float alpha, np.ndarray A, np.ndarray B,
     if B.descr.type_num != PyArray_FLOAT: raise ValueError("B is not of type float")
     if C.descr.type_num != PyArray_FLOAT: raise ValueError("C is not of type float")
 
-    lib_sgemm( CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
+    lib_sgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
                B.shape[0], alpha, <float*>A.data, A.shape[1], <float*>B.data,
-               B.shape[1], beta, <float*>C.data, C.shape[1] )
+               B.shape[1], beta, <float*>C.data, C.shape[1])
 
 
-cdef void sgemm3( np.ndarray A, np.ndarray B, np.ndarray C ): sgemm5( 1.0, A, B, 0.0, C )
+cdef void sgemm3(np.ndarray A, np.ndarray B, np.ndarray C): sgemm5(1.0, A, B, 0.0, C)
 
 
-cdef np.ndarray sgemm( np.ndarray A, np.ndarray B ):
-    cdef np.ndarray C = smnewempty( A.shape[0], B.shape[1] )
-    sgemm5( 1.0, A, B, 0.0, C )
+cdef np.ndarray sgemm(np.ndarray A, np.ndarray B):
+    cdef np.ndarray C = smnewempty(A.shape[0], B.shape[1])
+    sgemm5(1.0, A, B, 0.0, C)
     return C
 
 
@@ -454,16 +582,16 @@ cdef np.ndarray sgemm( np.ndarray A, np.ndarray B ):
 cdef void dgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
                  int M, int N, int K, double alpha, double *A, int lda, double *B,
                  int ldb, double beta, double *C, int ldc):
-    
-    lib_dgemm( Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc )
+
+    lib_dgemm(Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
 
 
-cdef void dgemm7( CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                  double alpha, np.ndarray A, np.ndarray B, double beta, np.ndarray C ):
+cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
+                  double alpha, np.ndarray A, np.ndarray B, double beta, np.ndarray C):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if B.ndim != 2: raise ValueError("B is not a matrix") 
-    if C.ndim != 2: raise ValueError("C is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
@@ -471,17 +599,17 @@ cdef void dgemm7( CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if B.descr.type_num != PyArray_DOUBLE: raise ValueError("B is not of type double")
     if C.descr.type_num != PyArray_DOUBLE: raise ValueError("C is not of type double")
 
-    lib_dgemm( CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
+    lib_dgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
                alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
-               beta, <double*>C.data, C.shape[1] )
+               beta, <double*>C.data, C.shape[1])
 
 
-cdef void dgemm5( double alpha, np.ndarray A, np.ndarray B,
-                      double beta, np.ndarray C ):
+cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B,
+                      double beta, np.ndarray C):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
-    if B.ndim != 2: raise ValueError("B is not a matrix") 
-    if C.ndim != 2: raise ValueError("C is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
@@ -489,18 +617,18 @@ cdef void dgemm5( double alpha, np.ndarray A, np.ndarray B,
     if B.descr.type_num != PyArray_DOUBLE: raise ValueError("B is not of type double")
     if C.descr.type_num != PyArray_DOUBLE: raise ValueError("C is not of type double")
 
-    lib_dgemm( CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
+    lib_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
                B.shape[0], alpha, <double*>A.data, A.shape[1], <double*>B.data,
-               B.shape[1], beta, <double*>C.data, C.shape[1] )
+               B.shape[1], beta, <double*>C.data, C.shape[1])
 
 
-cdef void dgemm3( np.ndarray A, np.ndarray B, np.ndarray C ):
-    dgemm5( 1.0, A, B, 0.0, C )
+cdef void dgemm3(np.ndarray A, np.ndarray B, np.ndarray C):
+    dgemm5(1.0, A, B, 0.0, C)
 
 
-cdef np.ndarray dgemm( np.ndarray A, np.ndarray B ):
-    cdef np.ndarray C = dmnewempty( A.shape[0], B.shape[1] )
-    dgemm5( 1.0, A, B, 0.0, C )
+cdef np.ndarray dgemm(np.ndarray A, np.ndarray B):
+    cdef np.ndarray C = dmnewempty(A.shape[0], B.shape[1])
+    dgemm5(1.0, A, B, 0.0, C)
     return C
 
 
@@ -511,71 +639,71 @@ cdef np.ndarray dgemm( np.ndarray A, np.ndarray B ):
 #########################################################################
 
 # Create a new empty single precision matrix
-cdef np.ndarray smnewempty( int M, int N ):
+cdef np.ndarray smnewempty(int M, int N):
     cdef np.npy_intp length[2]
     length[0] = M; length[1] = N
-    Py_INCREF( np.NPY_FLOAT ) # This is apparently necessary
-    return PyArray_EMPTY( 2, length, np.NPY_FLOAT, 0 )
+    Py_INCREF(np.NPY_FLOAT) # This is apparently necessary
+    return PyArray_EMPTY(2, length, np.NPY_FLOAT, 0)
 
 
 # Create a new empty double precision matrix
-cdef np.ndarray dmnewempty( int M, int N ):
+cdef np.ndarray dmnewempty(int M, int N):
     cdef np.npy_intp length[2]
     length[0] = M; length[1] = N
-    Py_INCREF( np.NPY_DOUBLE ) # This is apparently necessary
-    return PyArray_EMPTY( 2, length, np.NPY_DOUBLE, 0 )
+    Py_INCREF(np.NPY_DOUBLE) # This is apparently necessary
+    return PyArray_EMPTY(2, length, np.NPY_DOUBLE, 0)
 
 # Create a new empty single precision vector
-cdef np.ndarray svnewempty( int M ):
+cdef np.ndarray svnewempty(int M):
     cdef np.npy_intp length[1]
     length[0] = M
-    Py_INCREF( np.NPY_FLOAT ) # This is apparently necessary
-    return PyArray_EMPTY( 1, length, np.NPY_FLOAT, 0 )
+    Py_INCREF(np.NPY_FLOAT) # This is apparently necessary
+    return PyArray_EMPTY(1, length, np.NPY_FLOAT, 0)
 
 
 # Create a new empty double precision vector
-cdef np.ndarray dvnewempty( int M ):
+cdef np.ndarray dvnewempty(int M):
     cdef np.npy_intp length[1]
     length[0] = M
-    Py_INCREF( np.NPY_DOUBLE ) # This is apparently necessary
-    return PyArray_EMPTY( 1, length, np.NPY_DOUBLE, 0 )
+    Py_INCREF(np.NPY_DOUBLE) # This is apparently necessary
+    return PyArray_EMPTY(1, length, np.NPY_DOUBLE, 0)
 
 # Create a new zeroed single precision matrix
-cdef np.ndarray smnewzero( int M, int N ):
+cdef np.ndarray smnewzero(int M, int N):
     cdef np.npy_intp length[2]
     length[0] = M; length[1] = N
-    Py_INCREF( np.NPY_FLOAT ) # This is apparently necessary
-    return PyArray_ZEROS( 2, length, np.NPY_FLOAT, 0 )
+    Py_INCREF(np.NPY_FLOAT) # This is apparently necessary
+    return PyArray_ZEROS(2, length, np.NPY_FLOAT, 0)
 
 
 # Create a new zeroed double precision matrix
-cdef np.ndarray dmnewzero( int M, int N ):
+cdef np.ndarray dmnewzero(int M, int N):
     cdef np.npy_intp length[2]
     length[0] = M; length[1] = N
-    Py_INCREF( np.NPY_DOUBLE ) # This is apparently necessary
-    return PyArray_ZEROS( 2, length, np.NPY_DOUBLE, 0 )
+    Py_INCREF(np.NPY_DOUBLE) # This is apparently necessary
+    return PyArray_ZEROS(2, length, np.NPY_DOUBLE, 0)
 
 
 # Create a new zeroed single precision vector
-cdef np.ndarray svnewzero( int M ):
+cdef np.ndarray svnewzero(int M):
     cdef np.npy_intp length[1]
     length[0] = M
-    Py_INCREF( np.NPY_FLOAT ) # This is apparently necessary
-    return PyArray_ZEROS( 1, length, np.NPY_FLOAT, 0 )
+    Py_INCREF(np.NPY_FLOAT) # This is apparently necessary
+    return PyArray_ZEROS(1, length, np.NPY_FLOAT, 0)
 
 
 # Create a new zeroed double precision vector
-cdef np.ndarray dvnewzero( int M ):
+cdef np.ndarray dvnewzero(int M):
     cdef np.npy_intp length[1]
     length[0] = M
-    Py_INCREF( np.NPY_DOUBLE ) # This is apparently necessary
-    return PyArray_ZEROS( 1, length, np.NPY_DOUBLE, 0 )
+    Py_INCREF(np.NPY_DOUBLE) # This is apparently necessary
+    return PyArray_ZEROS(1, length, np.NPY_DOUBLE, 0)
 
 
 # Set a matrix to all zeros: must be floats in contiguous memory.
-cdef void smsetzero( np.ndarray A ):
+cdef void smsetzero(np.ndarray A):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
     if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
 
     cdef float *ptr = <float*>A.data
@@ -585,9 +713,9 @@ cdef void smsetzero( np.ndarray A ):
         ptr += 1
 
 # Set a matrix to all zeros: must be doubles in contiguous memory.
-cdef void dmsetzero( np.ndarray A ):
+cdef void dmsetzero(np.ndarray A):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix") 
+    if A.ndim != 2: raise ValueError("A is not a matrix")
     if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
 
     cdef double *ptr = <double*>A.data
@@ -598,9 +726,9 @@ cdef void dmsetzero( np.ndarray A ):
 
 
 # Set a vector to all zeros: ust be floats in contiguous memory.
-cdef void svsetzero( np.ndarray x ):
+cdef void svsetzero(np.ndarray x):
 
-    if x.ndim != 1: raise ValueError("A is not a vector") 
+    if x.ndim != 1: raise ValueError("A is not a vector")
     if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
 
     cdef float *ptr = <float*>x.data
@@ -610,9 +738,9 @@ cdef void svsetzero( np.ndarray x ):
         ptr += 1
 
 # Set a vector to all zeros: ust be doubles in contiguous memory.
-cdef void dvsetzero( np.ndarray x ):
+cdef void dvsetzero(np.ndarray x):
 
-    if x.ndim != 1: raise ValueError("A is not a vector") 
+    if x.ndim != 1: raise ValueError("A is not a vector")
     if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
 
     cdef double *ptr = <double*>x.data
@@ -625,10 +753,10 @@ cdef void dvsetzero( np.ndarray x ):
 # Just pretend the matrices are vectors and call the BLAS daxpy routine
 # Y += a * X
 # single precision
-cdef void smaxpy( float alpha, np.ndarray X, np.ndarray Y ):
+cdef void smaxpy(float alpha, np.ndarray X, np.ndarray Y):
 
-    if X.ndim != 2: raise ValueError("A is not a matrix") 
-    if Y.ndim != 2: raise ValueError("A is not a matrix") 
+    if X.ndim != 2: raise ValueError("A is not a matrix")
+    if Y.ndim != 2: raise ValueError("A is not a matrix")
     if X.shape[0] != Y.shape[0]: raise ValueError("X rows != Y rows")
     if X.shape[1] != Y.shape[1]: raise ValueError("X columns != Y columns")
     if X.descr.type_num != PyArray_FLOAT: raise ValueError("X is not of type float")
@@ -636,16 +764,16 @@ cdef void smaxpy( float alpha, np.ndarray X, np.ndarray Y ):
 
     cdef unsigned int N = X.shape[0]*X.shape[1]
 
-    lib_saxpy( N, alpha, <float*>X.data, 1, <float*>Y.data, 1 )
+    lib_saxpy(N, alpha, <float*>X.data, 1, <float*>Y.data, 1)
 
 
 # Just pretend the matrices are vectors and call the BLAS daxpy routine
 # Y += a * X
 # double precision
-cdef void dmaxpy( double alpha, np.ndarray X, np.ndarray Y ):
+cdef void dmaxpy(double alpha, np.ndarray X, np.ndarray Y):
 
-    if X.ndim != 2: raise ValueError("A is not a matrix") 
-    if Y.ndim != 2: raise ValueError("A is not a matrix") 
+    if X.ndim != 2: raise ValueError("A is not a matrix")
+    if Y.ndim != 2: raise ValueError("A is not a matrix")
     if X.shape[0] != Y.shape[0]: raise ValueError("X rows != Y rows")
     if X.shape[1] != Y.shape[1]: raise ValueError("X columns != Y columns")
     if X.descr.type_num != PyArray_DOUBLE: raise ValueError("X is not of type double")
@@ -653,6 +781,6 @@ cdef void dmaxpy( double alpha, np.ndarray X, np.ndarray Y ):
 
     cdef unsigned int N = X.shape[0]*X.shape[1]
 
-    lib_daxpy( N, alpha, <double*>X.data, 1, <double*>Y.data, 1 )
+    lib_daxpy(N, alpha, <double*>X.data, 1, <double*>Y.data, 1)
 
 
