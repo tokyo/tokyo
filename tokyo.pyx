@@ -257,77 +257,76 @@ cdef drotmg(double d1, double d2, double x, double y, np.ndarray param):
     return (d1, d2, x, param)
 
 
-## Apply a Givens plane rotation.
-#cdef srot_(int N, float  *x, int dx,
-#                        float  *y, int dy,
-#                        float c, float s):
-#    return lib_srot(N, x, dx, y, dy, c, s)
-#
-#cdef srot(np.ndarray x, np.ndarray y, float c, float s):
-#    if x.ndim != 1: raise ValueError("x is not a vector")
-#    if y.ndim != 1: raise ValueError("y is not a vector")
-#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-#    if x.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("x is not of type float")
-#    if y.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("y is not of type float")
-#    return lib_srot(x.shape[0], <float *>x.data, 1, <float *>y.data, 1, c, s)
-#
-#cdef drot_(int N, double  *x, int dx,
-#                        double  *y, int dy,
-#                        double c, double s):
-#    return lib_drot(N, x, dx, y, dy, c, s)
-#
-#cdef drot(np.ndarray x, np.ndarray y, double c, double s):
-#    if x.ndim != 1: raise ValueError("x is not a vector")
-#    if y.ndim != 1: raise ValueError("y is not a vector")
-#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-#    if x.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("x is not of type double")
-#    if y.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("y is not of type double")
-#    return lib_drot(x.shape[0], <double *>x.data, 1, <double *>y.data, 1, c, s)
-#
-#
-## Apply a modified Givens plane rotation.
-#cdef srotm_(int N, float  *x, int dx,
-#                         float  *y, int dy, float *param):
-#    return lib_srotm(N, x, dx, y, dy, c, s)
-#
-#cdef srotm(np.ndarray x, np.ndarray y, np.ndarray param):
-#    if x.ndim != 1: raise ValueError("x is not a vector")
-#    if y.ndim != 1: raise ValueError("y is not a vector")
-#    if param.ndim != 1: raise ValueError("param is not a vector")
-#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-#    if param.shape[0] < 5:
-#        raise ValueError("param must have length at least 5")
-#    if param.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("param is not of type float")
-#    if x.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("x is not of type float")
-#    if y.descr.type_num != PyArray_FLOAT:
-#        raise ValueError("y is not of type float")
-#    return lib_srotm(x.shape[0], <float *>x.data, 1, <float *>y.data, 1,
-#                    <float *>param.data)
-#
-#cdef drotm_(int N, double  *x, int dx,
-#                         double  *y, int dy, float *param):
-#    return lib_drotm(N, x, dx, y, dy, c, s)
-#
-#cdef drotm(np.ndarray x, np.ndarray y, double c, double s):
-#    if x.ndim != 1: raise ValueError("x is not a vector")
-#    if y.ndim != 1: raise ValueError("y is not a vector")
-#    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-#    if param.shape[0] < 5:
-#        raise ValueError("param must have length at least 5")
-#    if param.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("param is not of type double")
-#    if x.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("x is not of type double")
-#    if y.descr.type_num != PyArray_DOUBLE:
-#        raise ValueError("y is not of type double")
-#    return lib_drotm(x.shape[0], <double *>x.data, 1, <double *>y.data, 1,
-#                    <double *>param.data)
+# Apply a Givens plane rotation.
+cdef srot_(int N, float *x, int dx, float *y, int dy, float c, float s):
+    lib_srot(N, x, dx, y, dy, c, s)
+
+cdef srot(np.ndarray x, np.ndarray y, float c, float s):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
+    srot_(x.shape[0], <float *>x.data, 1, <float *>y.data, 1, c, s)
+    return
+
+
+cdef drot_(int N, double *x, int dx, double *y, int dy, double c, double s):
+    lib_drot(N, x, dx, y, dy, c, s)
+
+cdef drot(np.ndarray x, np.ndarray y, double c, double s):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    drot_(x.shape[0], <double *>x.data, 1, <double *>y.data, 1, c, s)
+    return
+
+
+# Apply a modified Givens plane rotation.
+cdef srotm_(int N, float *x, int dx, float *y, int dy, float *param):
+    lib_srotm(N, x, dx, y, dy, param)
+
+cdef srotm(np.ndarray x, np.ndarray y, np.ndarray param):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if param.ndim != 1: raise ValueError("param is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if param.shape[0] < 5:
+        raise ValueError("param must have length at least 5")
+    if param.descr.type_num != PyArray_FLOAT:
+        raise ValueError("param is not of type float")
+    if x.descr.type_num != PyArray_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != PyArray_FLOAT:
+        raise ValueError("y is not of type float")
+    srotm_(x.shape[0], <float *>x.data, 1,
+                       <float *>y.data, 1, <float *>param.data)
+    return
+
+cdef drotm_(int N, double *x, int dx, double *y, int dy, double *param):
+    lib_drotm(N, x, dx, y, dy, param)
+
+cdef drotm(np.ndarray x, np.ndarray y, np.ndarray param):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if param.shape[0] < 5:
+        raise ValueError("param must have length at least 5")
+    if param.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("param is not of type double")
+    if x.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != PyArray_DOUBLE:
+        raise ValueError("y is not of type double")
+    drotm_(x.shape[0], <double *>x.data, 1,
+                       <double *>y.data, 1, <double *>param.data)
+    return
 
 
 ##########################################################################

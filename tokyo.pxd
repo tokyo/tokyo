@@ -90,7 +90,7 @@ cdef extern from "cblas.h":
                                           double c, double s)
 
     # Apply a modified plane rotation.
-    void   lib_drotm  "cblas_srotm"(int N, float *x, int dx,
+    void   lib_srotm  "cblas_srotm"(int N, float *x, int dx,
                                            float *y, int dy,
                                            float *P)
     void   lib_drotm  "cblas_drotm"(int N, double *x, int dx,
