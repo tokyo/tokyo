@@ -10,10 +10,13 @@ include_dirs = ['/usr/include',
                 np.get_include()]
 library_dirs = ['/usr/lib']
 
+# On OSX, this points to the Accelerate framework's ATLAS library.
+libraries = ['blas']
+#libraries=['lapack', 'lapack_atlas', 'blas', 'atlas'],
+
 ext_modules=[
     Extension("tokyo", ["tokyo.pyx"],
-#              libraries=['lapack', 'lapack_atlas', 'blas', 'atlas'],
-              libraries=['blas', 'atlas'],
+              libraries=libraries,
               library_dirs=library_dirs, include_dirs=include_dirs),
     Extension("verify",       ["verify.pyx"],       include_dirs=include_dirs),
     Extension("single_speed", ["single_speed.pyx"], include_dirs=include_dirs),
