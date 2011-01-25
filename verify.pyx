@@ -188,9 +188,12 @@ cdef idamax_verify():
     print "idamax: ", ( 1 == tokyo.idamax(x))
 
 cpdef check_negligible(scomp, strue, ssize, sfac):
+    """
+    Return `True` if difference between `scomp` and `strue` is
+    negligible elementwise.
+    """
     sd = scomp - strue
     abssize = np.abs(ssize)
-    # Return True if difference between scomp and strue is negligible.
     return not np.any((abssize + np.abs(sfac*sd)) - abssize)
 
 cdef srotg_verify():
