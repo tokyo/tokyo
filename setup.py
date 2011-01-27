@@ -5,7 +5,9 @@ import os
 
 import numpy as np
 
-include_dirs = ['/usr/include', np.get_include()]
+include_dirs = ['/usr/include',
+                '/System/Library/Frameworks/vecLib.framework/Versions/A/Headers',
+                np.get_include()]
 library_dirs = ['/usr/lib']
 
 ext_modules=[
