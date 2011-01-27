@@ -8,15 +8,15 @@ import numpy as np
 include_dirs = ['/usr/include', np.get_include()]
 library_dirs = ['/usr/lib']
 
-ext_modules=[ 
-    Extension("tokyo", ["tokyo.pyx"], 
+ext_modules=[
+    Extension("tokyo", ["tokyo.pyx"],
 #              libraries=['lapack', 'lapack_atlas', 'blas', 'atlas'],
               libraries=['blas', 'atlas'],
               library_dirs=library_dirs, include_dirs=include_dirs),
     Extension("verify",       ["verify.pyx"],       include_dirs=include_dirs),
     Extension("single_speed", ["single_speed.pyx"], include_dirs=include_dirs),
     Extension("double_speed", ["double_speed.pyx"], include_dirs=include_dirs),
-    Extension("demo_outer",   ["demo_outer.pyx"],   include_dirs=include_dirs)              
+    Extension("demo_outer",   ["demo_outer.pyx"],   include_dirs=include_dirs)
 ]
 
 setup(

@@ -11,7 +11,7 @@ tokyo.verbose = True
 
 speed_base = 200000 # increase to get slower but more precise speed test results
 test_sizes = [4, 15, 30]
-    
+
 print
 print "Tokyo BLAS wrapper verification against scipy/numpy"
 print "---------------------------------------------------"
@@ -62,13 +62,13 @@ dgemm_verify(); print
 print
 print "VERIFY CORRECTNESS EXTRAS"
 print
-smsetzero_verify(); 
-svsetzero_verify(); 
-smaxpy_verify(); 
+smsetzero_verify();
+svsetzero_verify();
+smaxpy_verify();
 print
-dmsetzero_verify(); 
-dvsetzero_verify(); 
-dmaxpy_verify(); 
+dmsetzero_verify();
+dvsetzero_verify();
+dmaxpy_verify();
 
 ##################################################################################
 
@@ -101,7 +101,7 @@ def dswap_verify():
     temp2 = y.copy()
     tokyo.dswap(x,y)
     print "dswap:  ", (approx_eq( temp1, y ) and approx_eq( temp2, x ))
-    
+
 # scalar vector multiply: x *= alpha
 
 def sscal_verify():
@@ -277,7 +277,7 @@ def sger_verify():
     x = np.array( np.random.random( (4) ),   dtype=np.float32 )
     y = np.array( np.random.random( (5) ),   dtype=np.float32 )
     A = np.array( np.random.random( (4,5) ), dtype=np.float32 )
-    
+
     result = np.outer( x, y )
     print "sger:   ", approx_eq( result, tokyo.sger( x, y ))
 
@@ -297,7 +297,7 @@ def dger_verify():
     x = np.array( np.random.random( (4) ),   dtype=np.float64 )
     y = np.array( np.random.random( (5) ),   dtype=np.float64 )
     A = np.array( np.random.random( (4,5) ), dtype=np.float64 )
-    
+
     result = np.outer( x, y )
     print "dger:   ", approx_eq( result, tokyo.dger( x, y ))
 
@@ -335,7 +335,7 @@ def sgemm_verify():
     Z = np.array( np.random.random( (3,5) ), dtype=np.float32 )
     tokyo.sgemm3( X, Y, Z )
     print "sgemm3: ", approx_eq( np.dot( X, Y ), Z )
-    
+
     Z = np.array( np.random.random( (3,5) ), dtype=np.float32 )
     result = 2.3*np.dot( X, Y ) + 1.2*Z
     tokyo.sgemm5( 2.3, X, Y, 1.2, Z )
@@ -346,7 +346,7 @@ def sgemm_verify():
     tokyo.sgemm7( tokyo.CblasNoTrans, tokyo.CblasNoTrans, 2.3, X, Y, 1.2, Z )
     print "sgemm7: ", approx_eq( result, Z )
 
-    
+
 # matrix times matrix: C = alpha * A   B   + beta * C
 #                  or  C = alpha * A.T B   + beta * C
 #                  or  C = alpha * A   B.T + beta * C
@@ -364,7 +364,7 @@ def dgemm_verify():
     Z = np.array( np.random.random( (3,5) ), dtype=np.float64 )
     tokyo.dgemm3( X, Y, Z )
     print "dgemm3: ", approx_eq( np.dot( X, Y ), Z )
-    
+
     Z = np.array( np.random.random( (3,5) ), dtype=np.float64 )
     result = 2.3*np.dot( X, Y ) + 1.2*Z
     tokyo.dgemm5( 2.3, X, Y, 1.2, Z )
@@ -375,7 +375,7 @@ def dgemm_verify():
     tokyo.dgemm7( tokyo.CblasNoTrans, tokyo.CblasNoTrans, 2.3, X, Y, 1.2, Z )
     print "dgemm7: ", approx_eq( result, Z )
 
-    
+
 
 ####################################################################
 #

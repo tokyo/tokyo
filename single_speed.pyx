@@ -11,7 +11,7 @@ tokyo.verbose = True
 
 speed_base = 200000 # increase to get slower but more precise speed test results
 test_sizes = [4, 15, 30]
-    
+
 print
 print "Tokyo BLAS wrapper single precision speed test"
 print "----------------------------------------------"
@@ -31,7 +31,7 @@ print "SPEED TEST BLAS 1"
 print
 
 for size in test_sizes:
-    
+
     print "Single precision: Vector size = " + str(size)
     print
     sswap_speed(size)
@@ -50,7 +50,7 @@ print "SPEED TEST BLAS 2"
 print
 
 for size in test_sizes:
-    
+
     print "Single Precision: Vector size = " + str(size) + \
         "  Matrix size = " + str(size) + "x" + str(size)
     print
@@ -63,7 +63,7 @@ print "SPEED TEST BLAS 3"
 print
 
 for size in test_sizes:
-    
+
     print "Single precision: Vector size = " + str(size) + \
         "  Matrix size = " + str(size) + "x" + str(size)
     print
@@ -74,10 +74,10 @@ print
 print "SPEED TEST EXTRAS"
 print
 
-for size in test_sizes:  
-    
+for size in test_sizes:
+
     print "Single precision: Vector size = " + str(size) + \
-        "  Matrix size = " + str(size) + "x" + str(size) 
+        "  Matrix size = " + str(size) + "x" + str(size)
     print
     smsetzero_speed(size)
     svsetzero_speed(size)
@@ -226,7 +226,7 @@ def isamax_speed(int size):
 def sgemv_speed( int size ):
 
     cdef int i, loops
-    
+
     loops = speed_base*10/(<int>(size**1.2))
 
     A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
@@ -268,7 +268,7 @@ def sgemv_speed( int size ):
         tokyo.sgemv5( 1.2, A, x, 2.1, y )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
-    
+
     print "sgemv6:      ",
     start = time.clock()
     for i in range(loops):
@@ -284,14 +284,14 @@ def sgemv_speed( int size ):
                       2.1, <float*>y_.data, 1 )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
-    
-    
+
+
 # single precision vector outer-product: A = alpha * outer_product( x, y.T )
 
 def sger_speed( int size ):
 
     cdef int i, loops
-    
+
     loops = speed_base*10/(<int>(size**1.2))
 
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
