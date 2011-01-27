@@ -96,7 +96,7 @@ for size in test_sizes:
 
 # vector swap: x <-> y
 
-def dswap_speed(int size):
+cdef dswap_speed(int size):
     cdef int i, loops
     loops = speed_base*1000/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -112,7 +112,7 @@ def dswap_speed(int size):
 
 # scalar vector multiply: x *= alpha
 
-def dscal_speed(int size):
+cdef dscal_speed(int size):
     cdef int i, loops
     loops = speed_base*2500/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -127,7 +127,7 @@ def dscal_speed(int size):
 
 # vector copy: y <- x
 
-def dcopy_speed(int size):
+cdef dcopy_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -143,7 +143,7 @@ def dcopy_speed(int size):
 
 # vector addition: y += alpha * x
 
-def daxpy_speed( int size ):
+cdef daxpy_speed( int size ):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -159,7 +159,7 @@ def daxpy_speed( int size ):
 
 # vector dot product: x.T y
 
-def ddot_speed(int size):
+cdef ddot_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -175,7 +175,7 @@ def ddot_speed(int size):
 
 # Euclidean norm:  ||x||_2
 
-def dnrm2_speed(int size):
+cdef dnrm2_speed(int size):
     cdef int i, loops
     loops = speed_base*700/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -190,7 +190,7 @@ def dnrm2_speed(int size):
 
 # sum of absolute values: ||x||_1
 
-def dasum_speed(int size):
+cdef dasum_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -205,7 +205,7 @@ def dasum_speed(int size):
 
 # index of maximum absolute value element
 
-def idamax_speed(int size):
+cdef idamax_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -230,7 +230,7 @@ def idamax_speed(int size):
 # double precision matrix times vector: y = alpha * A   x + beta * y
 #                                   or  y = alpha * A.T x + beta * y
 
-def dgemv_speed( int size ):
+cdef dgemv_speed( int size ):
 
     cdef int i, loops
 
@@ -296,7 +296,7 @@ def dgemv_speed( int size ):
 
 # double precision vector outer-product: A = alpha * outer_product( x, y.T )
 
-def dger_speed( int size ):
+cdef dger_speed( int size ):
 
     cdef int i, loops
 
@@ -366,7 +366,7 @@ def dger_speed( int size ):
 #
 # double precision
 
-def dgemm_speed( int size ):
+cdef dgemm_speed( int size ):
 
     cdef int i, loops
 
@@ -432,7 +432,7 @@ def dgemm_speed( int size ):
 
 # set a matrix of double to all zeros
 
-def dmsetzero_speed(int size):
+cdef dmsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/(size*size)
     A = np.array( np.random.random( (size,size) ), dtype=np.float64 )
@@ -447,7 +447,7 @@ def dmsetzero_speed(int size):
 
 # set a vector of doubles to all zeros
 
-def dvsetzero_speed(int size):
+cdef dvsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/size
     x = np.array( np.random.random( (size) ), dtype=np.float64 )
@@ -462,7 +462,7 @@ def dvsetzero_speed(int size):
 
 # double precision matrix += scalar * matrix
 
-def dmaxpy_speed( int size ):
+cdef dmaxpy_speed( int size ):
     cdef int i, loops
     loops = speed_base*10000/(size*size)
     X = np.array( np.random.random( (size,size) ), dtype=np.float64 )

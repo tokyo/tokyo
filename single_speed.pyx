@@ -97,7 +97,7 @@ for size in test_sizes:
 
 # vector swap: x <-> y
 
-def sswap_speed(int size):
+cdef sswap_speed(int size):
     cdef int i, loops
     loops = speed_base*1000/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -112,7 +112,7 @@ def sswap_speed(int size):
 
 # scalar vector multiply: x *= alpha
 
-def sscal_speed(int size):
+cdef sscal_speed(int size):
     cdef int i, loops
     loops = speed_base*2500/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -126,7 +126,7 @@ def sscal_speed(int size):
 
 # vector copy: y <- x
 
-def scopy_speed(int size):
+cdef scopy_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -141,7 +141,7 @@ def scopy_speed(int size):
 
 # vector addition: y += alpha * x
 
-def saxpy_speed( int size ):
+cdef saxpy_speed( int size ):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -156,7 +156,7 @@ def saxpy_speed( int size ):
 
 # vector dot product: x.T y
 
-def sdot_speed(int size):
+cdef sdot_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -171,7 +171,7 @@ def sdot_speed(int size):
 
 # Euclidean norm:  ||x||_2
 
-def snrm2_speed(int size):
+cdef snrm2_speed(int size):
     cdef int i, loops
     loops = speed_base*700/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -185,7 +185,7 @@ def snrm2_speed(int size):
 
 # sum of absolute values: ||x||_1
 
-def sasum_speed(int size):
+cdef sasum_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -199,7 +199,7 @@ def sasum_speed(int size):
 
 # index of maximum absolute value element
 
-def isamax_speed(int size):
+cdef isamax_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -223,7 +223,7 @@ def isamax_speed(int size):
 # single precision matrix times vector: y = alpha * A   x + beta * y
 #                                   or  y = alpha * A.T x + beta * y
 
-def sgemv_speed( int size ):
+cdef sgemv_speed( int size ):
 
     cdef int i, loops
 
@@ -288,7 +288,7 @@ def sgemv_speed( int size ):
 
 # single precision vector outer-product: A = alpha * outer_product( x, y.T )
 
-def sger_speed( int size ):
+cdef sger_speed( int size ):
 
     cdef int i, loops
 
@@ -358,7 +358,7 @@ def sger_speed( int size ):
 #
 # single precision
 
-def sgemm_speed( int size ):
+cdef sgemm_speed( int size ):
 
     cdef int i, loops
 
@@ -423,7 +423,7 @@ def sgemm_speed( int size ):
 
 # set a matrix of floats to all zeros
 
-def smsetzero_speed(int size):
+cdef smsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/(size*size)
     A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
@@ -438,7 +438,7 @@ def smsetzero_speed(int size):
 
 # set a vector of floats to all zeros
 
-def svsetzero_speed(int size):
+cdef svsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/size
     x = np.array( np.random.random( (size) ), dtype=np.float32 )
@@ -453,7 +453,7 @@ def svsetzero_speed(int size):
 
 # single precision matrix += scalar * matrix
 
-def smaxpy_speed( int size ):
+cdef smaxpy_speed( int size ):
     cdef int i, loops
     loops = speed_base*10000/(size*size)
     X = np.array( np.random.random( (size,size) ), dtype=np.float32 )

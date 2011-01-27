@@ -75,7 +75,7 @@ dmaxpy_verify();
 
 # A function for checking that different matrices from different
 # computations are some sense "equal" in the verification tests.
-def approx_eq( X, Y ): return abs(np.sum(X - Y)) < 1e-5
+cpdef approx_eq( X, Y ): return abs(np.sum(X - Y)) < 1e-5
 
 
 #####################################
@@ -86,15 +86,15 @@ def approx_eq( X, Y ): return abs(np.sum(X - Y)) < 1e-5
 
 # vector swap: x <-> y
 
-def sswap_verify():
+cdef sswap_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float32 )
     y = np.array( np.random.random( (4) ), dtype=np.float32 )
     temp1 = x.copy()
     temp2 = y.copy()
     tokyo.sswap(x,y)
     print "sswap:  ", (approx_eq( temp1, y ) and approx_eq( temp2, x ))
-    
-def dswap_verify():
+
+cdef dswap_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float64 )
     y = np.array( np.random.random( (4) ), dtype=np.float64 )
     temp1 = x.copy()
@@ -104,13 +104,13 @@ def dswap_verify():
 
 # scalar vector multiply: x *= alpha
 
-def sscal_verify():
+cdef sscal_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float32 )
     temp = 1.2 * x
     tokyo.sscal( 1.2, x)
     print "sscal:  ", approx_eq( temp, x )
 
-def dscal_verify():
+cdef dscal_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float64 )
     temp = 1.2 * x
     tokyo.dscal( 1.2, x)
@@ -118,13 +118,13 @@ def dscal_verify():
 
 # vector copy: y <- x
 
-def scopy_verify():
+cdef scopy_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float32 )
     y = np.array( np.random.random( (4) ), dtype=np.float32 )
     tokyo.scopy(x,y)
     print "scopy:  ", approx_eq( x, y )
 
-def dcopy_verify():
+cdef dcopy_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float64 )
     y = np.array( np.random.random( (4) ), dtype=np.float64 )
     tokyo.dcopy(x,y)
@@ -132,14 +132,14 @@ def dcopy_verify():
 
 # vector addition: y += alpha * x
 
-def saxpy_verify():
+cdef saxpy_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float32 )
     y = np.array( np.random.random( (5) ),   dtype=np.float32 )
     temp = 1.2 * x + y
     tokyo.saxpy( 1.2, x, y )
     print "saxpy:  ", approx_eq( temp, y )
 
-def daxpy_verify():
+cdef daxpy_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float64 )
     y = np.array( np.random.random( (5) ),   dtype=np.float64 )
     temp = 1.2 * x + y
@@ -148,43 +148,43 @@ def daxpy_verify():
 
 # vector dot product: x.T y
 
-def sdot_verify():
+cdef sdot_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float32 )
     y = np.array( np.random.random( (5) ),   dtype=np.float32 )
     print "sdot:   ", approx_eq( np.dot(x,y), tokyo.sdot(x,y) )
 
-def ddot_verify():
+cdef ddot_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float64 )
     y = np.array( np.random.random( (5) ),   dtype=np.float64 )
     print "ddot:   ", approx_eq( np.dot(x,y), tokyo.ddot(x,y) )
 
 # Euclidean norm:  ||x||_2
 
-def snrm2_verify():
+cdef snrm2_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float32 )
     print "snrm2:  ", approx_eq( np.sqrt(np.sum(np.dot(x,x))), tokyo.snrm2(x) )
 
-def dnrm2_verify():
+cdef dnrm2_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float64 )
     print "dnrm2:  ", approx_eq( np.sqrt(np.sum(np.dot(x,x))), tokyo.dnrm2(x) )
 
 # sum of absolute values: ||x||_1
 
-def sasum_verify():
+cdef sasum_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float32 )
     print "sasum:  ", approx_eq( np.sum(np.abs(x)), tokyo.sasum(x) )
 
-def dasum_verify():
+cdef dasum_verify():
     x = np.array( np.random.random( (5) ),   dtype=np.float64 )
     print "dasum:  ", approx_eq( np.sum(np.abs(x)), tokyo.dasum(x) )
 
 # index of maximum absolute value element
 
-def isamax_verify():
+cdef isamax_verify():
     x = np.array( [0.06, -0.1, -0.05, -0.001, 0.07],   dtype=np.float32 )
     print "isamax: ", (  1 == tokyo.isamax(x) )
 
-def idamax_verify():
+cdef idamax_verify():
     x = np.array( [0.06, -0.1, -0.05, -0.001, 0.07],   dtype=np.float64 )
     print "idamax: ", (  1 == tokyo.idamax(x) )
 
@@ -200,7 +200,7 @@ def idamax_verify():
 # single precision matrix times vector: y = alpha * A   x + beta * y
 #                                   or  y = alpha * A.T x + beta * y
 
-def sgemv_verify():
+cdef sgemv_verify():
 
     A = np.array( np.random.random( (4,5) ), dtype=np.float32 )
     x = np.array( np.random.random( (5) ),   dtype=np.float32 )
@@ -237,7 +237,7 @@ def sgemv_verify():
 #                                   or  y = alpha * A.T x + beta * y
 
 
-def dgemv_verify():
+cdef dgemv_verify():
 
     A = np.array( np.random.random( (4,5) ), dtype=np.float64 )
     x = np.array( np.random.random( (5) ),   dtype=np.float64 )
@@ -272,7 +272,7 @@ def dgemv_verify():
 
 # single precision vector outer-product: A = alpha * outer_product( x, y.T )
 
-def sger_verify():
+cdef sger_verify():
 
     x = np.array( np.random.random( (4) ),   dtype=np.float32 )
     y = np.array( np.random.random( (5) ),   dtype=np.float32 )
@@ -292,7 +292,7 @@ def sger_verify():
 
 # double precision vector outer-product: A = alpha * outer_product( x, y.T )
 
-def dger_verify():
+cdef dger_verify():
 
     x = np.array( np.random.random( (4) ),   dtype=np.float64 )
     y = np.array( np.random.random( (5) ),   dtype=np.float64 )
@@ -325,8 +325,8 @@ def dger_verify():
 #
 # single precision
 
-def sgemm_verify():
-    
+cdef sgemm_verify():
+
     X = np.array( np.random.random( (3,4) ), dtype=np.float32 )
     Y = np.array( np.random.random( (4,5) ), dtype=np.float32 )
 
@@ -354,8 +354,8 @@ def sgemm_verify():
 #
 # double precision
 
-def dgemm_verify():
-    
+cdef dgemm_verify():
+
     X = np.array( np.random.random( (3,4) ), dtype=np.float64 )
     Y = np.array( np.random.random( (4,5) ), dtype=np.float64 )
 
@@ -385,7 +385,7 @@ def dgemm_verify():
 
 # set a matrix of floats to all zeros
 
-def smsetzero_verify():
+cdef smsetzero_verify():
     A = np.array( np.random.random( (4,4) ), dtype=np.float32 )
     B = np.zeros( (4,4) )
     tokyo.smsetzero(A)
@@ -393,7 +393,7 @@ def smsetzero_verify():
 
 # set a matrix of floats to all zeros
 
-def dmsetzero_verify():
+cdef dmsetzero_verify():
     A = np.array( np.random.random( (4,4) ), dtype=np.float64 )
     B = np.zeros( (4,4) )
     tokyo.dmsetzero(A)
@@ -401,7 +401,7 @@ def dmsetzero_verify():
 
 # set a vector of doubles to all zeros
 
-def svsetzero_verify():
+cdef svsetzero_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float32 )
     y = np.zeros( (4) )
     tokyo.svsetzero(x)
@@ -409,7 +409,7 @@ def svsetzero_verify():
 
 # set a vector of doubles to all zeros
 
-def dvsetzero_verify():
+cdef dvsetzero_verify():
     x = np.array( np.random.random( (4) ), dtype=np.float64 )
     y = np.zeros( (4) )
     tokyo.dvsetzero(x)
@@ -417,7 +417,7 @@ def dvsetzero_verify():
 
 # double precision matrix += scalar * matrix
 
-def smaxpy_verify():
+cdef smaxpy_verify():
     X = np.array( np.random.random( (4,4) ), dtype=np.float32 )
     Y = np.array( np.random.random( (4,4) ), dtype=np.float32 )
     temp = 1.2 * X + Y
@@ -426,7 +426,7 @@ def smaxpy_verify():
 
 # double precision matrix += scalar * matrix
 
-def dmaxpy_verify():
+cdef dmaxpy_verify():
     X = np.array( np.random.random( (4,4) ), dtype=np.float64 )
     Y = np.array( np.random.random( (4,4) ), dtype=np.float64 )
     temp = 1.2 * X + Y
