@@ -209,21 +209,21 @@ cdef int idamax(np.ndarray x):
 
 
 # Generate a Givens plane rotation: (a,b,c,s) <- rot(a,b).
-cdef srotg_(float a, float b):
+cdef tuple srotg_(float a, float b):
     cdef float aa = a, bb = b, c = 0.0, s = 0.0
     lib_srotg(&aa, &bb, &c, &s)
     return (aa, bb, c, s)
 
-cdef srotg(float a, float b):
+cdef tuple srotg(float a, float b):
     return srotg_(a, b)
 
 
-cdef drotg_(double a, double b):
+cdef tuple drotg_(double a, double b):
     cdef double aa = a, bb = b, c = 0.0, s = 0.0
     lib_drotg(&aa, &bb, &c, &s)
     return (aa, bb, c, s)
 
-cdef drotg(double a, double b):
+cdef tuple drotg(double a, double b):
     return drotg_(a, b)
 
 
@@ -231,7 +231,7 @@ cdef drotg(double a, double b):
 cdef void srotmg_(float *d1, float *d2, float *x, float y, float *param):
     lib_srotmg(d1, d2, x, y, param)
 
-cdef srotmg(float d1, float d2, float x, float y, np.ndarray param):
+cdef tuple srotmg(float d1, float d2, float x, float y, np.ndarray param):
     if param.ndim != 1: raise ValueError("param is not a vector")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
@@ -244,7 +244,7 @@ cdef srotmg(float d1, float d2, float x, float y, np.ndarray param):
 cdef void drotmg_(double *d1, double *d2, double *x, double y, double *param):
     lib_drotmg(d1, d2, x, y, param)
 
-cdef drotmg(double d1, double d2, double x, double y, np.ndarray param):
+cdef tuple drotmg(double d1, double d2, double x, double y, np.ndarray param):
     if param.ndim != 1: raise ValueError("param is not a vector")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
@@ -259,7 +259,7 @@ cdef drotmg(double d1, double d2, double x, double y, np.ndarray param):
 cdef void srot_(int N, float *x, int dx, float *y, int dy, float c, float s):
     lib_srot(N, x, dx, y, dy, c, s)
 
-cdef srot(np.ndarray x, np.ndarray y, float c, float s, int dx=1, int dy=1):
+cdef void srot(np.ndarray x, np.ndarray y, float c, float s, int dx=1, int dy=1):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
@@ -274,7 +274,7 @@ cdef srot(np.ndarray x, np.ndarray y, float c, float s, int dx=1, int dy=1):
 cdef void drot_(int N, double *x, int dx, double *y, int dy, double c, double s):
     lib_drot(N, x, dx, y, dy, c, s)
 
-cdef drot(np.ndarray x, np.ndarray y, double c, double s):
+cdef void drot(np.ndarray x, np.ndarray y, double c, double s):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
