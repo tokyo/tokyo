@@ -1,3 +1,10 @@
 *~
+
+# generated files:
+*.c
+*.html
 *.o
 *.so
+
+# distutils
+/build
