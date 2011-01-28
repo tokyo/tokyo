@@ -134,6 +134,14 @@ cdef extern from "cblas.h":
                                  double beta, double *C, int ldc)
 
 
+cdef extern from "clapack.h":
+
+    int clapack_sgetri(CBLAS_ORDER Order, int N, float  *A, int lda, int *ipiv)
+    int clapack_dgetri(CBLAS_ORDER Order, int N, double *A, int lda, int *ipiv)
+    int clapack_sgetrf(CBLAS_ORDER Order, int M, int N, float  *A, int lda, int *ipiv)
+    int clapack_dgetrf(CBLAS_ORDER Order, int M, int N, double *A, int lda, int *ipiv)
+
+
 #####################################
 #
 # BLAS LEVEL 1 (vector operations)
@@ -326,6 +334,26 @@ cdef void dgemm3(np.ndarray A, np.ndarray B, np.ndarray C)
 # return = A B
 cdef np.ndarray dgemm(np.ndarray A, np.ndarray B)
 
+
+################################
+#
+# Popular functions from CLAPACK
+#
+################################
+
+# the inverse of a matrix using the LU factorization computed by dgetrf
+cdef int sgetri_(CBLAS_ORDER Order, int N, float  *A, int lda, int *ipiv)
+cdef int dgetri_(CBLAS_ORDER Order, int N, double *A, int lda, int *ipiv)
+
+cdef int sgetri(np.ndarray A, np.ndarray ipiv)
+cdef int dgetri(np.ndarray A, np.ndarray ipiv)
+
+# LU factorization of a general M-by-N matrix A using partial pivoting with row interchanges
+cdef int sgetrf_(CBLAS_ORDER Order, int M, int N, float  *A, int lda, int *ipiv)
+cdef int dgetrf_(CBLAS_ORDER Order, int M, int N, double *A, int lda, int *ipiv)
+
+cdef int sgetrf(np.ndarray A, np.ndarray ipiv)
+cdef int dgetrf(np.ndarray A, np.ndarray ipiv)
 
 
 ######################################################################

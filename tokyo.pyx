@@ -633,6 +633,75 @@ cdef np.ndarray dgemm(np.ndarray A, np.ndarray B):
     return C
 
 
+################################
+#
+# Popular functions from CLAPACK
+#
+################################
+
+# the inverse of a matrix using the LU factorization computed by dgetrf
+cdef int sgetri_(CBLAS_ORDER Order, int N, float  *A, int lda, int *ipiv):
+    return clapack_sgetri(Order, N, A, lda, ipiv)
+
+cdef int dgetri_(CBLAS_ORDER Order, int N, double *A, int lda, int *ipiv):
+    return clapack_dgetri(Order, N, A, lda, ipiv)
+
+cdef int sgetri(np.ndarray A, np.ndarray ipiv):
+    if A is None: raise TypeError("A is not numpy.ndarray")
+    if ipiv is None: raise TypeError("ipiv is not numpy.ndarray")
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if ipiv.ndim != 1: raise ValueError("ipiv is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A is not square")
+    if ipiv.shape[0] != A.shape[0]: raise ValueError("A.rows = ipiv.rows")
+    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
+    if ipiv.descr.type_num != np.NPY_INT32: raise ValueError("ipiv is not of type int")
+    return clapack_sgetri(CblasRowMajor, A.shape[0], <float*> A.data, A.shape[0],
+                          <int*> ipiv.data)
+
+cdef int dgetri(np.ndarray A, np.ndarray ipiv):
+    if A is None: raise TypeError("A is not numpy.ndarray")
+    if ipiv is None: raise TypeError("ipiv is not numpy.ndarray")
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if ipiv.ndim != 1: raise ValueError("ipiv is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A is not square")
+    if ipiv.shape[0] != A.shape[0]: raise ValueError("A.rows = ipiv.rows")
+    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
+    if ipiv.descr.type_num != np.NPY_INT32: raise ValueError("ipiv is not of type int")
+    return clapack_dgetri(CblasRowMajor, A.shape[0], <double*> A.data, A.shape[0],
+                          <int*> ipiv.data)
+
+# LU factorization of a general M-by-N matrix A using partial pivoting with row interchanges
+cdef int sgetrf_(CBLAS_ORDER Order, int M, int N, float *A, int lda, int *ipiv):
+    return clapack_sgetrf(Order, M, N, A, lda, ipiv)
+
+cdef int dgetrf_(CBLAS_ORDER Order, int M, int N, double *A, int lda, int *ipiv):
+    return clapack_dgetrf(Order, M, N, A, lda, ipiv)
+
+cdef int sgetrf(np.ndarray A, np.ndarray ipiv):
+    if A is None: raise TypeError("A is not numpy.ndarray")
+    if ipiv is None: raise TypeError("ipiv is not numpy.ndarray")
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if ipiv.ndim != 1: raise ValueError("ipiv is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A is not square")
+    if ipiv.shape[0] != A.shape[0]: raise ValueError("A.rows = ipiv.rows")
+    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
+    if ipiv.descr.type_num != np.NPY_INT32: raise ValueError("ipiv is not of type int")
+    return clapack_sgetrf(CblasRowMajor, A.shape[0], A.shape[0], <float*> A.data, A.shape[0],
+                          <int*> ipiv.data)
+
+cdef int dgetrf(np.ndarray A, np.ndarray ipiv):
+    if A is None: raise TypeError("A is not numpy.ndarray")
+    if ipiv is None: raise TypeError("ipiv is not numpy.ndarray")
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if ipiv.ndim != 1: raise ValueError("ipiv is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A is not square")
+    if ipiv.shape[0] != A.shape[0]: raise ValueError("A.rows = ipiv.rows")
+    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
+    if ipiv.descr.type_num != np.NPY_INT32: raise ValueError("ipiv is not of type int")
+    return clapack_dgetrf(CblasRowMajor, A.shape[0], A.shape[0], <double*> A.data, A.shape[0],
+                          <int*> ipiv.data)
+
+
 #########################################################################
 #
 # Utility functions I've added myself

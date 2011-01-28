@@ -1,7 +1,8 @@
 cimport tokyo
 import tokyo
-import numpy as np
 cimport numpy as np
+import numpy as np
+from numpy import linalg
 
 import time
 import sys
@@ -61,6 +62,13 @@ print
 sgemm_verify(); print
 
 dgemm_verify(); print
+
+print
+print "VERIFY CORRECTNESS CLAPACK"
+print
+
+sgetrif_verify();
+dgetrif_verify(); print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -511,6 +519,43 @@ cdef dgemm_verify():
     result = 2.3*np.dot(X, Y) + 1.2*Z
     tokyo.dgemm7(tokyo.CblasNoTrans, tokyo.CblasNoTrans, 2.3, X, Y, 1.2, Z)
     print "dgemm7: ", approx_eq(result, Z)
+
+
+
+################################
+#
+# Popular functions from CLAPACK
+#
+################################
+
+def inv(A):
+    p = np.zeros((A.shape[0],), dtype=np.int)
+    R = A.copy()
+
+    if R.dtype == np.float32:
+        if tokyo.sgetrf(R, p) != 0:
+            raise ValueError("A is singular or invalid argument passed (sgetrf)")
+        if tokyo.sgetri(R, p) != 0:
+            raise ValueError("A is singular or invalid argument passed (sgetri)")
+    elif R.dtype == np.float64:
+        if tokyo.dgetrf(R, p) != 0:
+            raise ValueError("A is singular or invalid argument passed (dgetrf)")
+        if tokyo.dgetri(R, p) != 0:
+            raise ValueError("A is singular or invalid argument passed (dgetri)")
+    else:
+        raise TypeError("A.dtype muse be one of numpy.float32 or numpy.float64")
+    return R
+
+def sgetrif_verify():
+    A = np.array(
+        [[ 1, -4,  3],
+         [ 2,  3, -4],
+         [-3,  4,  5]], dtype=np.float32)
+    print "sgetrf, sgetri: ", approx_eq(inv(A), linalg.inv(A))
+
+def dgetrif_verify():
+    A = np.array([[1,2],[3,4]], dtype=np.float64)
+    print "dgetrf, dgetri: ", approx_eq(inv(A), linalg.inv(A))
 
 
 

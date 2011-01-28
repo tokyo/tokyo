@@ -16,7 +16,7 @@ ext_params['extra_link_args'] = ["-Wl,-O1", "-Wl,--as-needed"]  # TODO: as-neede
     # ignored due to parameter order bug in distutils (when calling linker)
 
 tokyo_ext_params = ext_params.copy()
-tokyo_ext_params['libraries'] = ['blas']  # TODO: detect library name.
+tokyo_ext_params['libraries'] = ['blas', 'lapack']  # TODO: detect library name.
     # Candidates: blas, cblas, lapack, lapack_atlas, atlas
     # On OSX, blas points to the Accelerate framework's ATLAS library.
 tokyo_ext_params['library_dirs'] = ['/usr/lib']  # needed by OSX, perhaps
