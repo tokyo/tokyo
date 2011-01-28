@@ -11,7 +11,8 @@ import_array()
 
 # Each subroutine comes in two variants:
 # [sd]name and [sd]name_
-# The variant with the trailing underscore skips type and dimension checks.
+# The variant with the trailing underscore skips type and dimension checks,
+# calls the low-level C-routine directly and works with C types.
 
 # vector swap: x <-> y
 cdef void sswap_(int M, float *x, int dx, float *y, int dy):
@@ -211,26 +212,26 @@ cdef int idamax(np.ndarray x):
 
 
 # Generate a Givens plane rotation: (a,b,c,s) <- rot(a,b).
-def srotg_(float a, float b):
+cdef srotg_(float a, float b):
     cdef float aa = a, bb = b, c = 0.0, s = 0.0
     lib_srotg(&aa, &bb, &c, &s)
     return (aa, bb, c, s)
 
-def srotg(float a, float b):
+cdef srotg(float a, float b):
     return srotg_(a, b)
 
 
-def drotg_(double a, double b):
+cdef drotg_(double a, double b):
     cdef double aa = a, bb = b, c = 0.0, s = 0.0
     lib_drotg(&aa, &bb, &c, &s)
     return (aa, bb, c, s)
 
-def drotg(double a, double b):
+cdef drotg(double a, double b):
     return drotg_(a, b)
 
 
 # Generate a modified Givens plane rotation.
-cdef srotmg_(float *d1, float *d2, float *x, float y, float *param):
+cdef void srotmg_(float *d1, float *d2, float *x, float y, float *param):
     lib_srotmg(d1, d2, x, y, param)
 
 cdef srotmg(float d1, float d2, float x, float y, np.ndarray param):
@@ -243,7 +244,7 @@ cdef srotmg(float d1, float d2, float x, float y, np.ndarray param):
     srotmg_(&d1_, &d2_, &x_, y, <float *>param.data)
     return (d1_, d2_, x_, param)
 
-cdef drotmg_(double *d1, double *d2, double *x, double y, double *param):
+cdef void drotmg_(double *d1, double *d2, double *x, double y, double *param):
     lib_drotmg(d1, d2, x, y, param)
 
 cdef drotmg(double d1, double d2, double x, double y, np.ndarray param):
@@ -258,10 +259,10 @@ cdef drotmg(double d1, double d2, double x, double y, np.ndarray param):
 
 
 # Apply a Givens plane rotation.
-cdef srot_(int N, float *x, int dx, float *y, int dy, float c, float s):
+cdef void srot_(int N, float *x, int dx, float *y, int dy, float c, float s):
     lib_srot(N, x, dx, y, dy, c, s)
 
-cdef srot(np.ndarray x, np.ndarray y, float c, float s):
+cdef srot(np.ndarray x, np.ndarray y, float c, float s, int dx=1, int dy=1):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
@@ -269,11 +270,11 @@ cdef srot(np.ndarray x, np.ndarray y, float c, float s):
         raise ValueError("x is not of type float")
     if y.descr.type_num != PyArray_FLOAT:
         raise ValueError("y is not of type float")
-    srot_(x.shape[0], <float *>x.data, 1, <float *>y.data, 1, c, s)
+    srot_(x.shape[0], <float *>x.data, dx, <float *>y.data, dy, c, s)
     return
 
 
-cdef drot_(int N, double *x, int dx, double *y, int dy, double c, double s):
+cdef void drot_(int N, double *x, int dx, double *y, int dy, double c, double s):
     lib_drot(N, x, dx, y, dy, c, s)
 
 cdef drot(np.ndarray x, np.ndarray y, double c, double s):
@@ -289,10 +290,10 @@ cdef drot(np.ndarray x, np.ndarray y, double c, double s):
 
 
 # Apply a modified Givens plane rotation.
-cdef srotm_(int N, float *x, int dx, float *y, int dy, float *param):
+cdef void srotm_(int N, float *x, int dx, float *y, int dy, float *param):
     lib_srotm(N, x, dx, y, dy, param)
 
-cdef srotm(np.ndarray x, np.ndarray y, np.ndarray param):
+cdef void srotm(np.ndarray x, np.ndarray y, np.ndarray param):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if param.ndim != 1: raise ValueError("param is not a vector")
@@ -309,10 +310,10 @@ cdef srotm(np.ndarray x, np.ndarray y, np.ndarray param):
                        <float *>y.data, 1, <float *>param.data)
     return
 
-cdef drotm_(int N, double *x, int dx, double *y, int dy, double *param):
+cdef void drotm_(int N, double *x, int dx, double *y, int dy, double *param):
     lib_drotm(N, x, dx, y, dy, param)
 
-cdef drotm(np.ndarray x, np.ndarray y, np.ndarray param):
+cdef void drotm(np.ndarray x, np.ndarray y, np.ndarray param):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
