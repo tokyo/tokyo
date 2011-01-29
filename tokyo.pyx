@@ -19,9 +19,9 @@ cdef void sswap(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
 
     lib_sswap(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
@@ -34,9 +34,9 @@ cdef void dswap(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     lib_dswap(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
@@ -46,7 +46,7 @@ cdef void sscal_(int N, float alpha, float *x, int dx):
 
 cdef void sscal(float alpha, np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
     lib_sscal(x.shape[0], alpha, <float*>x.data, 1)
 
@@ -56,7 +56,7 @@ cdef void dscal_(int N, double alpha, double *x, int dx):
 
 cdef void dscal(double alpha, np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
     lib_dscal(x.shape[0], alpha, <double*>x.data, 1)
 
@@ -69,9 +69,9 @@ cdef void scopy(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
     lib_scopy(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
@@ -83,9 +83,9 @@ cdef void dcopy(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     lib_dcopy(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
@@ -98,9 +98,9 @@ cdef void saxpy(float alpha, np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
     lib_saxpy(x.shape[0], alpha, <float*>x.data, 1, <float*>y.data, 1)
 
@@ -112,9 +112,9 @@ cdef void daxpy(double alpha, np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     lib_daxpy(x.shape[0], alpha, <double*>x.data, 1, <double*>y.data, 1)
 
@@ -127,9 +127,9 @@ cdef float sdot(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
     return lib_sdot(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
@@ -141,9 +141,9 @@ cdef double ddot(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     return lib_ddot(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
@@ -154,7 +154,7 @@ cdef float snrm2_(int N, float *x, int dx):
 
 cdef float snrm2(np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
     return lib_snrm2(x.shape[0], <float*>x.data, 1)
 
@@ -164,7 +164,7 @@ cdef double dnrm2_(int N, double *x, int dx):
 
 cdef double dnrm2(np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
     return lib_dnrm2(x.shape[0], <double*>x.data, 1)
 
@@ -174,7 +174,7 @@ cdef float sasum_(int N, float *x, int dx):
 
 cdef float sasum(np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
     return lib_sasum(x.shape[0], <float*>x.data, 1)
 
@@ -184,7 +184,7 @@ cdef double dasum_(int N, double *x, int dx):
 
 cdef double dasum(np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
     return lib_dasum(x.shape[0], <double*>x.data, 1)
 
@@ -193,7 +193,7 @@ cdef int isamax_(int N, float *x, int dx):
     return lib_isamax(N, x, dx)
 
 cdef int isamax(np.ndarray x):
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
     return lib_isamax(x.shape[0], <float*>x.data, 1)
 
@@ -203,7 +203,7 @@ cdef int idamax_(int N, double *x, int dx):
 
 cdef int idamax(np.ndarray x):
     if x.ndim != 1: raise ValueError("x is not a vector")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
     return lib_idamax(x.shape[0], <double*>x.data, 1)
 
@@ -235,7 +235,7 @@ cdef tuple srotmg(float d1, float d2, float x, float y, np.ndarray param):
     if param.ndim != 1: raise ValueError("param is not a vector")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
-    if param.descr.type_num != PyArray_FLOAT:
+    if param.descr.type_num != NPY_FLOAT:
         raise ValueError("param is not of type float")
     cdef float d1_ = d1, d2_ = d2, x_ = x
     srotmg_(&d1_, &d2_, &x_, y, <float *>param.data)
@@ -248,7 +248,7 @@ cdef tuple drotmg(double d1, double d2, double x, double y, np.ndarray param):
     if param.ndim != 1: raise ValueError("param is not a vector")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
-    if param.descr.type_num != PyArray_DOUBLE:
+    if param.descr.type_num != NPY_DOUBLE:
         raise ValueError("param is not of type double")
     cdef double d1_ = d1, d2_ = d2, x_ = x
     drotmg_(&d1_, &d2_, &x_, y, <double *>param.data)
@@ -263,9 +263,9 @@ cdef void srot(np.ndarray x, np.ndarray y, float c, float s, int dx=1, int dy=1)
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
     srot_(x.shape[0], <float *>x.data, dx, <float *>y.data, dy, c, s)
     return
@@ -278,9 +278,9 @@ cdef void drot(np.ndarray x, np.ndarray y, double c, double s):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     drot_(x.shape[0], <double *>x.data, 1, <double *>y.data, 1, c, s)
     return
@@ -297,11 +297,11 @@ cdef void srotm(np.ndarray x, np.ndarray y, np.ndarray param):
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
-    if param.descr.type_num != PyArray_FLOAT:
+    if param.descr.type_num != NPY_FLOAT:
         raise ValueError("param is not of type float")
-    if x.descr.type_num != PyArray_FLOAT:
+    if x.descr.type_num != NPY_FLOAT:
         raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT:
+    if y.descr.type_num != NPY_FLOAT:
         raise ValueError("y is not of type float")
     srotm_(x.shape[0], <float *>x.data, 1,
                        <float *>y.data, 1, <float *>param.data)
@@ -316,11 +316,11 @@ cdef void drotm(np.ndarray x, np.ndarray y, np.ndarray param):
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
     if param.shape[0] < 5:
         raise ValueError("param must have length at least 5")
-    if param.descr.type_num != PyArray_DOUBLE:
+    if param.descr.type_num != NPY_DOUBLE:
         raise ValueError("param is not of type double")
-    if x.descr.type_num != PyArray_DOUBLE:
+    if x.descr.type_num != NPY_DOUBLE:
         raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE:
+    if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     drotm_(x.shape[0], <double *>x.data, 1,
                        <double *>y.data, 1, <double *>param.data)
@@ -351,9 +351,9 @@ cdef void sgemv6(CBLAS_TRANSPOSE TransA, float alpha, np.ndarray A,
     if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
 
     lib_sgemv(CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <float*>A.data,
                A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1)
@@ -366,9 +366,9 @@ cdef void sgemv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray
     if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
 
     lib_sgemv(CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
             <float*>A.data, A.shape[1], <float*>x.data, 1, beta, <float*>y.data, 1)
@@ -399,9 +399,9 @@ cdef void dgemv6(CBLAS_TRANSPOSE TransA, double alpha, np.ndarray A,
     if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE: raise ValueError("x is not of type double")
+    if y.descr.type_num != NPY_DOUBLE: raise ValueError("y is not of type double")
 
     lib_dgemv(CblasRowMajor, TransA, A.shape[0], A.shape[1], alpha, <double*>A.data,
                A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1)
@@ -414,9 +414,9 @@ cdef void dgemv5(double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarr
     if y.ndim != 1: raise ValueError("y is not a vector")
     if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
     if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE: raise ValueError("x is not of type double")
+    if y.descr.type_num != NPY_DOUBLE: raise ValueError("y is not of type double")
 
     lib_dgemv(CblasRowMajor, CblasNoTrans, A.shape[0], A.shape[1], alpha,
             <double*>A.data, A.shape[1], <double*>x.data, 1, beta, <double*>y.data, 1)
@@ -455,9 +455,9 @@ cdef void sger4(float alpha, np.ndarray x, np.ndarray y, np.ndarray A):
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
     if y.shape[0] != A.shape[1]: raise ValueError("y rows != A columns")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != PyArray_FLOAT: raise ValueError("y is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
 
     lib_sger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
               <float*>x.data, 1, <float*>y.data, 1, <float*>A.data, A.shape[1])
@@ -488,9 +488,9 @@ cdef void dger4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A):
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
     if y.shape[0] != A.shape[1]: raise ValueError("y rows != A columns")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != PyArray_DOUBLE: raise ValueError("y is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE: raise ValueError("x is not of type double")
+    if y.descr.type_num != NPY_DOUBLE: raise ValueError("y is not of type double")
 
     lib_dger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
               <double*>x.data, 1, <double*>y.data, 1, <double*>A.data, A.shape[1])
@@ -537,9 +537,9 @@ cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
-    if B.descr.type_num != PyArray_FLOAT: raise ValueError("B is not of type float")
-    if C.descr.type_num != PyArray_FLOAT: raise ValueError("C is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT: raise ValueError("B is not of type float")
+    if C.descr.type_num != NPY_FLOAT: raise ValueError("C is not of type float")
 
     lib_sgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
                alpha, <float*>A.data, A.shape[1], <float*>B.data, B.shape[1],
@@ -555,9 +555,9 @@ cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B,
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
-    if B.descr.type_num != PyArray_FLOAT: raise ValueError("B is not of type float")
-    if C.descr.type_num != PyArray_FLOAT: raise ValueError("C is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT: raise ValueError("B is not of type float")
+    if C.descr.type_num != NPY_FLOAT: raise ValueError("C is not of type float")
 
     lib_sgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
                B.shape[0], alpha, <float*>A.data, A.shape[1], <float*>B.data,
@@ -596,9 +596,9 @@ cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
-    if B.descr.type_num != PyArray_DOUBLE: raise ValueError("B is not of type double")
-    if C.descr.type_num != PyArray_DOUBLE: raise ValueError("C is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE: raise ValueError("B is not of type double")
+    if C.descr.type_num != NPY_DOUBLE: raise ValueError("C is not of type double")
 
     lib_dgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
                alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
@@ -614,9 +614,9 @@ cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B,
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
-    if B.descr.type_num != PyArray_DOUBLE: raise ValueError("B is not of type double")
-    if C.descr.type_num != PyArray_DOUBLE: raise ValueError("C is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE: raise ValueError("B is not of type double")
+    if C.descr.type_num != NPY_DOUBLE: raise ValueError("C is not of type double")
 
     lib_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
                B.shape[0], alpha, <double*>A.data, A.shape[1], <double*>B.data,
@@ -705,7 +705,7 @@ cdef np.ndarray dvnewzero(int M):
 cdef void smsetzero(np.ndarray A):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
-    if A.descr.type_num != PyArray_FLOAT: raise ValueError("A is not of type float")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
 
     cdef float *ptr = <float*>A.data
     cdef unsigned int i
@@ -717,7 +717,7 @@ cdef void smsetzero(np.ndarray A):
 cdef void dmsetzero(np.ndarray A):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
-    if A.descr.type_num != PyArray_DOUBLE: raise ValueError("A is not of type double")
+    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
 
     cdef double *ptr = <double*>A.data
     cdef unsigned int i
@@ -730,7 +730,7 @@ cdef void dmsetzero(np.ndarray A):
 cdef void svsetzero(np.ndarray x):
 
     if x.ndim != 1: raise ValueError("A is not a vector")
-    if x.descr.type_num != PyArray_FLOAT: raise ValueError("x is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
 
     cdef float *ptr = <float*>x.data
     cdef unsigned int i
@@ -742,7 +742,7 @@ cdef void svsetzero(np.ndarray x):
 cdef void dvsetzero(np.ndarray x):
 
     if x.ndim != 1: raise ValueError("A is not a vector")
-    if x.descr.type_num != PyArray_DOUBLE: raise ValueError("x is not of type double")
+    if x.descr.type_num != NPY_DOUBLE: raise ValueError("x is not of type double")
 
     cdef double *ptr = <double*>x.data
     cdef unsigned int i
@@ -760,8 +760,8 @@ cdef void smaxpy(float alpha, np.ndarray X, np.ndarray Y):
     if Y.ndim != 2: raise ValueError("A is not a matrix")
     if X.shape[0] != Y.shape[0]: raise ValueError("X rows != Y rows")
     if X.shape[1] != Y.shape[1]: raise ValueError("X columns != Y columns")
-    if X.descr.type_num != PyArray_FLOAT: raise ValueError("X is not of type float")
-    if Y.descr.type_num != PyArray_FLOAT: raise ValueError("Y is not of type float")
+    if X.descr.type_num != NPY_FLOAT: raise ValueError("X is not of type float")
+    if Y.descr.type_num != NPY_FLOAT: raise ValueError("Y is not of type float")
 
     cdef unsigned int N = X.shape[0]*X.shape[1]
 
@@ -777,8 +777,8 @@ cdef void dmaxpy(double alpha, np.ndarray X, np.ndarray Y):
     if Y.ndim != 2: raise ValueError("A is not a matrix")
     if X.shape[0] != Y.shape[0]: raise ValueError("X rows != Y rows")
     if X.shape[1] != Y.shape[1]: raise ValueError("X columns != Y columns")
-    if X.descr.type_num != PyArray_DOUBLE: raise ValueError("X is not of type double")
-    if Y.descr.type_num != PyArray_DOUBLE: raise ValueError("Y is not of type double")
+    if X.descr.type_num != NPY_DOUBLE: raise ValueError("X is not of type double")
+    if Y.descr.type_num != NPY_DOUBLE: raise ValueError("Y is not of type double")
 
     cdef unsigned int N = X.shape[0]*X.shape[1]
 

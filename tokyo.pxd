@@ -19,8 +19,8 @@ cdef extern from "numpy/arrayobject.h":
 
     int PyArray_ISCARRAY(np.ndarray instance) # I can't get this one to work?!?
 
-    int PyArray_FLOAT
-    int PyArray_DOUBLE
+    int NPY_FLOAT   # PyArray_FLOAT  deprecated.
+    int NPY_DOUBLE  # PyArray_DOUBLE deprecated.
 
 
 cdef extern from "cblas.h":
