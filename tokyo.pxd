@@ -196,6 +196,12 @@ cdef int isamax(np.ndarray x)
 cdef int idamax_(int N, double *x, int dx)
 cdef int idamax(np.ndarray x)
 
+# Generate a Givens plane rotation: [a,b,c,s] <- rotg(a,b).
+cdef np.ndarray srotg_(float a, float b)
+cdef np.ndarray srotg(float a, float b)
+
+cdef np.ndarray drotg_(double a, double b)
+cdef np.ndarray drotg(double a, double b)
 
 ###########################################
 #

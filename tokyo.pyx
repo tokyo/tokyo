@@ -208,22 +208,26 @@ cdef int idamax(np.ndarray x):
     return lib_idamax(x.shape[0], <double*>x.data, 1)
 
 
-# Generate a Givens plane rotation: (a,b,c,s) <- rot(a,b).
-cdef tuple srotg_(float a, float b):
+# Generate a Givens plane rotation: [a,b,c,s] <- rotg(a,b).
+cdef np.ndarray srotg_(float a, float b):
+    cdef np.ndarray x = svnewempty(4)
     cdef float aa = a, bb = b, c = 0.0, s = 0.0
     lib_srotg(&aa, &bb, &c, &s)
-    return (aa, bb, c, s)
+    x[0] = aa ; x[1] = bb ; x[2] = c ; x[3] = s
+    return x
 
-cdef tuple srotg(float a, float b):
+cdef np.ndarray srotg(float a, float b):
     return srotg_(a, b)
 
 
-cdef tuple drotg_(double a, double b):
+cdef np.ndarray drotg_(double a, double b):
+    cdef np.ndarray x = dvnewempty(4)
     cdef double aa = a, bb = b, c = 0.0, s = 0.0
     lib_drotg(&aa, &bb, &c, &s)
-    return (aa, bb, c, s)
+    x[0] = aa ; x[1] = bb ; x[2] = c ; x[3] = s
+    return x
 
-cdef tuple drotg(double a, double b):
+cdef np.ndarray drotg(double a, double b):
     return drotg_(a, b)
 
 
