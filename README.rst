@@ -10,6 +10,34 @@ and interface LAPACK subroutines. Tokyo was started by Shane Legg
 `blog post
 <http://www.vetta.org/2009/09/tokyo-a-cython-blas-wrapper-for-fast-matrix-math>`_.
 
+Enjoy!
+
+
+The Plan
+========
+
+The current plan is to cover the BLAS Level 1, 2 and 3 entirely in real single
+and double precision. This will be done gradually.
+
+The next step will be to add support for LAPACK subroutines as we need them.
+Here again, real single and double precision are the priority.
+
+
+Contributing
+============
+
+If you are interested in contributing to other aspects of Tokyo, here is a list
+of ideas of medium to low priority aspects in which we would welcome initial
+contributions:
+
+* Automatic detection of local (optimized) BLAS installation
+* Proper unit tests with `nose
+  <http://somethingaboutorange.com/mrl/projects/nose>`_
+* Interface to complex single and double precision BLAS subroutines
+
+Other ideas welcome!
+
+
 Original README
 ===============
 
@@ -26,9 +54,9 @@ things:
 First of all make sure you have Python and Cython!  I use Python 2.6
 and Cython 0.12
 
-Now make sure you have cblas installed.  On a unix system try:
+Now make sure you have cblas installed.  On a unix system try::
 
-locate cblas.h
+    locate cblas.h
 
 If that finds something for you then you have it and you also now
 know where it is!  I installed cblas on my Ubuntu system using the
@@ -45,19 +73,19 @@ the setup.py file used in the Cython compilation and make sure the
 directories are pointing somewhere where they will see this file.
 If you're on Ubuntu the directories should already be correct.
 
-Now built it in the usual Cython way:
+Now build it in the usual Cython way::
 
-python setup.py build_ext --inplace
+    python setup.py build_ext --inplace
 
 If you get no errors, now run the verification test to check
-it's computing the right things
+it's computing the right things::
 
-python verify.py
+    python verify.py
 
-Next try the single and double precision performance tests:
+Next try the single and double precision performance tests::
 
-python single_speed.py
-python double_speed.py
+    python single_speed.py
+    python double_speed.py
 
 These will tell you whether it's worth switching your code
 to use Tokyo or not for your machine and matrix sizes.
