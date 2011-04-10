@@ -1,37 +1,108 @@
 #!/usr/bin/env python
+"""
+Tokyo: A Cython wrapper to BLAS and LAPACK
+"""
 
-from distutils.core import setup
-from distutils.extension import Extension
-from Cython.Distutils import build_ext
+DOCLINES = __doc__.split("\n")
 
-import numpy as np
+#from Cython.Distutils import build_ext
+import os
+import sys
 
-ext_params = {}
-ext_params['include_dirs'] = [
-    '/usr/include',
-    '/System/Library/Frameworks/vecLib.framework/Versions/A/Headers',
-    np.get_include()]
-ext_params['extra_compile_args'] = ["-O2"]
-ext_params['extra_link_args'] = ["-Wl,-O1", "-Wl,--as-needed"]  # TODO: as-needed
-    # ignored due to parameter order bug in distutils (when calling linker)
+try:
+    #import setuptools   # To enable 'python setup.py develop'
+    pass
+except:
+    pass
 
-tokyo_ext_params = ext_params.copy()
-tokyo_ext_params['libraries'] = ['blas']  # TODO: detect library name.
-    # Candidates: blas, cblas, lapack, lapack_atlas, atlas
-    # On OSX, blas points to the Accelerate framework's ATLAS library.
-tokyo_ext_params['library_dirs'] = ['/usr/lib']  # needed by OSX, perhaps
+CLASSIFIERS = """\
+Development Status :: 4 - Beta
+Intended Audience :: Science/Research
+Intended Audience :: Developers
+License :: LGPL
+Programming Language :: Python
+Programming Language :: Cython
+Topic :: Software Development
+Topic :: Scientific/Engineering
+Operating System :: Microsoft :: Windows
+Operating System :: POSIX
+Operating System :: Unix
+Operating System :: MacOS
+"""
 
-ext_modules = [
-    Extension("tokyo",        ["tokyo.pyx"],        **tokyo_ext_params),
-    Extension("verify",       ["verify.pyx"],       **ext_params),
-    Extension("single_speed", ["single_speed.pyx"], **ext_params),
-    Extension("double_speed", ["double_speed.pyx"], **ext_params),
-    Extension("demo_outer",   ["demo_outer.pyx"],   **ext_params)
-]
+# BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
+# update it when the contents of directories change.
+if os.path.exists('MANIFEST'): os.remove('MANIFEST')
 
-setup(
-    #name='BLAS and LAPACK wrapper',
-    name='BLAS wrapper',
-    cmdclass={'build_ext': build_ext},
-    ext_modules=ext_modules,
-)
+def configuration(parent_package='',top_path=None):
+    import numpy
+    from numpy.distutils.misc_util import Configuration
+    config = Configuration(None, parent_package, top_path)
+    config.set_options(ignore_setup_xxx_py=True,
+                       assume_default_configuration=True,
+                       delegate_options_to_subpackages=True,
+                       quiet=True)
+
+    config.add_include_dirs([numpy.get_include()])
+    config.add_subpackage('tokyo')
+
+    # Set config.version
+    config.get_version(os.path.join('tokyo','version.py'))
+
+    return config
+
+def setup_package():
+
+    import glob
+    from numpy.distutils.core import setup
+    from numpy.distutils.misc_util import Configuration
+
+    old_path = os.getcwd()
+    local_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+    os.chdir(local_path)
+    sys.path.insert(0,local_path)
+    sys.path.insert(0,os.path.join(local_path,'tokyo')) # to retrieve version
+
+    tokyo_pyx_files = glob.glob(os.path.join('tokyo','*.pyx'))
+    def cythonize():
+        for pyx in tokyo_pyx_files:
+            c = pyx.split('.')[0] + '.c'
+            cy = True
+            if os.path.exists(c):
+                pyx_mtime = os.path.getmtime(pyx)
+                c_mtime = os.path.getmtime(c)
+                cy = pyx_mtime > c_mtime
+            if cy:
+                sys.stderr.write('Cythonizing %s...\n' % pyx)
+                os.system('cython ' + pyx)
+            else:
+                sys.stderr.write('No need to cythonize %s\n' % pyx)
+
+    try:
+
+        cythonize()
+
+        setup(
+            name = 'tokyo',
+            author = "Shane Legg, Matej Laitl, Dominique Orban",
+            author_email = "shane@vetta.org,matej@laitl.cz,dominique.orban@gmail.com",
+            maintainer = "Tokyo Developers",
+            maintainer_email = "matej@laitl.cz,dominique.orban@gmail.com",
+            description = DOCLINES[0],
+            long_description = "\n".join(DOCLINES[2:]),
+            url = "https://github.com/tokyo/tokyo",
+            download_url = "https://github.com/tokyo/tokyo",
+            license = 'LGPLv3',
+            classifiers=filter(None, CLASSIFIERS.split('\n')),
+            platforms = ["Windows", "Linux", "Mac OS-X", "Unix"],
+            configuration=configuration,
+            #cmdclass={'build_ext': build_ext},
+            )
+    finally:
+        del sys.path[0]
+        os.chdir(old_path)
+
+    return
+
+if __name__ == '__main__':
+    setup_package()
