@@ -60,11 +60,3 @@ def configuration(parent_package='',top_path=None):
 if __name__ == '__main__':
     from numpy.distutils.core import setup
     setup(**configuration(top_path='').todict())
-
-#ext_modules = [
-#    Extension("tokyo",        ["tokyo.pyx"],        **tokyo_ext_params),
-#    Extension("verify",       ["verify.pyx"],       **ext_params),
-#    Extension("single_speed", ["single_speed.pyx"], **ext_params),
-#    Extension("double_speed", ["double_speed.pyx"], **ext_params),
-#    Extension("demo_outer",   ["demo_outer.pyx"],   **ext_params)
-#]
