@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import _demo_outer
+from tokyo import _demo_outer
 import numpy as np
 
 x = np.array( [ 1, 2, 3, 4 ], dtype=np.float64 )
