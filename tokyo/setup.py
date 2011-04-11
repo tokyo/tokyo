@@ -32,25 +32,25 @@ def configuration(parent_package='',top_path=None):
 
     config.add_extension(
         name='_verify',
-        sources=['verify.c'],
+        sources=['_verify.c'],
         include_dirs=['/usr/include','/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
         )
 
     config.add_extension(
         name='_single_speed',
-        sources=['single_speed.c'],
+        sources=['_single_speed.c'],
         include_dirs=['/usr/include','/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
         )
 
     config.add_extension(
         name='_double_speed',
-        sources=['double_speed.c'],
+        sources=['_double_speed.c'],
         include_dirs=['/usr/include','/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
         )
 
     config.add_extension(
         name='_demo_outer',
-        sources=['demo_outer.c'],
+        sources=['_demo_outer.c'],
         include_dirs=['/usr/include','/System/Library/Frameworks/vecLib.framework/Versions/A/Headers'],
         )
 
