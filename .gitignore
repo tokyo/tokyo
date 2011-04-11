@@ -1,6 +1,7 @@
 *~
 *.pyc
 *.swp
+site.cfg
 
 # generated files:
 *.c
