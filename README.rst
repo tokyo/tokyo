@@ -2,12 +2,19 @@
 Tokyo
 =====
 
+For the impatient::
+
+    python setup.py install
+
 This is a fork of Tokyo that fixes a few issues related to Cython syntax. It
-was tested on OSX 10.6 with Python 2.7 and Cython 0.14. The original contents
-of the README file can be found below. The intent is to complete the interface
-and interface LAPACK subroutines. Tokyo was started by Shane Legg
-<shane@vetta.org>. See his
-`blog post
+was tested on
+
+* OSX 10.5.8 with Python 2.6 and Cython 0.14,
+* OSX 10.6.6 with Python 2.7 and Cython 0.14.
+  
+The original contents of the README file can be found below. The intent is to
+complete the interface and interface LAPACK subroutines. Tokyo was started by
+Shane Legg <shane@vetta.org>. See his `blog post
 <http://www.vetta.org/2009/09/tokyo-a-cython-blas-wrapper-for-fast-matrix-math>`_.
 
 Enjoy!
@@ -33,7 +40,7 @@ contributions:
 * Automatic detection of local (optimized) BLAS installation
 * Proper unit tests with `nose
   <http://somethingaboutorange.com/mrl/projects/nose>`_
-* Interface to complex single and double precision BLAS subroutines
+* Interface to complex single and double precision BLAS subroutines.
 
 Other ideas welcome!
 
