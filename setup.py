@@ -5,12 +5,11 @@ Tokyo: A Cython wrapper to BLAS and LAPACK
 
 DOCLINES = __doc__.split("\n")
 
-#from Cython.Distutils import build_ext
 import os
 import sys
 
 try:
-    #import setuptools   # To enable 'python setup.py develop'
+    import setuptools   # To enable 'python setup.py develop'
     pass
 except:
     pass
@@ -96,7 +95,6 @@ def setup_package():
             classifiers=filter(None, CLASSIFIERS.split('\n')),
             platforms = ["Windows", "Linux", "Mac OS-X", "Unix"],
             configuration=configuration,
-            #cmdclass={'build_ext': build_ext},
             )
     finally:
         del sys.path[0]
