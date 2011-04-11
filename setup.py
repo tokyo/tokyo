@@ -19,7 +19,7 @@ CLASSIFIERS = """\
 Development Status :: 4 - Beta
 Intended Audience :: Science/Research
 Intended Audience :: Developers
-License :: LGPL
+License :: BSD
 Programming Language :: Python
 Programming Language :: Cython
 Topic :: Software Development
@@ -92,7 +92,7 @@ def setup_package():
             long_description = "\n".join(DOCLINES[2:]),
             url = "https://github.com/tokyo/tokyo",
             download_url = "https://github.com/tokyo/tokyo",
-            license = 'LGPLv3',
+            license = 'BSD',
             classifiers=filter(None, CLASSIFIERS.split('\n')),
             platforms = ["Windows", "Linux", "Mac OS-X", "Unix"],
             configuration=configuration,
