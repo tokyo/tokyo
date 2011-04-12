@@ -9,7 +9,7 @@ import os
 import sys
 
 try:
-    import setuptools   # To enable 'python setup.py develop'
+    #import setuptools   # To enable 'python setup.py develop'
     pass
 except:
     pass
