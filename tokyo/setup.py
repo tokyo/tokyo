@@ -73,6 +73,12 @@ def configuration(parent_package='',top_path=None):
         extra_info=tokyo_extra_args,
         )
 
+    # Tokyo header file.
+    config.add_data_files(os.path.join(config.top_path,'tokyo','tokyo.pxd'))
+
+    # Miscellaneous.
+    config.add_subpackage('misc')
+
     config.make_config_py()
     return config
 
