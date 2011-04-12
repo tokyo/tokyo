@@ -1,6 +1,6 @@
 cimport tokyo
-import tokyo
-import numpy as np
+import  tokyo
+import  numpy as np
 cimport numpy as np
 
 import time

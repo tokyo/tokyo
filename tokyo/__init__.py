@@ -1,4 +1,5 @@
-#from tokyo import *
+from tokyo import *
+from misc import get_include
 #from _demo_outer import *
 #from _double_speed import *
 #from _single_speed import *
