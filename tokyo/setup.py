@@ -21,8 +21,8 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('tokyo', parent_package, top_path)
 
     # Get info from site.cfg
-    tokyo_library_dirs = get_from_config(tokyo_config, 'DEFAULT', 'library_dirs')
-    tokyo_include_dirs = get_from_config(tokyo_config, 'DEFAULT', 'include_dirs')
+    tokyo_library_dirs = get_from_config(tokyo_config,'DEFAULT','library_dirs')
+    tokyo_include_dirs = get_from_config(tokyo_config,'DEFAULT','include_dirs')
 
     blas_info = get_info('blas_opt',0)
     if not blas_info:
