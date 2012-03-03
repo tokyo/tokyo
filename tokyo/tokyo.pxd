@@ -113,6 +113,16 @@ cdef extern from "cblas.h":
                                                double *x, int dx,
                                  double beta,  double *y, int dy)
 
+    void lib_ssymv "cblas_ssymv"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+                                 float alpha, float *A, int lda,
+                                 float *X, int incX, float beta,
+                                 float *Y, int incY)
+
+    void lib_dsymv "cblas_dsymv"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+                                 double alpha, double *A, int lda,
+                                 double *X, int incX, double beta,
+                                 double *Y, int incY)
+
     # Rank-1 update: A <- alpha * x*y' + A
     void lib_sger  "cblas_sger"(CBLAS_ORDER Order, int M, int N, float  alpha,
                                 float  *x, int dx, float  *y, int dy,
@@ -258,6 +268,41 @@ cdef void dgemv3(np.ndarray A, np.ndarray x, np.ndarray y)
 
 # return = alpha * A x
 cdef np.ndarray dgemv(np.ndarray A, np.ndarray x)
+
+####
+
+# single precision symmetric matrix-vector multiply
+cdef void ssymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
+                 float *A, int lda, float *x, int dx, float beta,
+                 float *y, int dy)
+
+# y = alpha * A * x + beta * y
+cdef void ssymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, float alpha, np.ndarray A,
+                 np.ndarray x, float beta, np.ndarray y)
+
+# y = alpha * A * x + beta * y
+cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y)
+
+# y = alpha * A * x
+cdef void ssymv3(np.ndarray A, np.ndarray x, np.ndarray y)
+
+# return = alpha * A * x
+cdef np.ndarray ssymv(np.ndarray A, np.ndarray x)
+
+# double precision symmetric matrix-vector multiply
+cdef void dsymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
+                 double *A, int lda, double *x, int dx, double beta,
+                 double *y, int dy)
+
+# y = alpha * A * x + beta * y
+cdef void dsymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, double alpha, np.ndarray A,
+                 np.ndarray x, double beta, np.ndarray y)
+
+cdef void dsymv5(double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarray y)
+
+cdef void dsymv3(np.ndarray A, np.ndarray x, np.ndarray y)
+
+cdef np.ndarray dsymv(np.ndarray A, np.ndarray x)
 
 ####
 

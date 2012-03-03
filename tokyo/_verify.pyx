@@ -50,10 +50,12 @@ print "VERIFY CORRECTNESS BLAS Level 2"
 print
 
 sgemv_verify(); print
-sger_verify(); print
+sger_verify();  print
+ssymv_verify(); print
 
 dgemv_verify(); print
-dger_verify(); print
+dger_verify();  print
+dsymv_verify(); print
 
 
 print
@@ -423,6 +425,76 @@ cdef dgemv_verify():
                        1.2, <double*>A_.data, 5, <double*>x_.data, 1,
                        2.1, <double*>y_.data, 1)
     print "dgemv_: ", approx_eq(temp, y)
+
+
+# single precision symmetric matrix times vector: y = alpha * A   x + beta * y
+
+cdef ssymv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    x = np.array(np.random.random((5)),   dtype=np.float32)
+    y = np.array(np.random.random((5)),   dtype=np.float32)
+    A = (A + A.T)/2
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_
+    cdef np.ndarray[float, ndim=1, mode='c'] x_, y_
+    A_ = A; x_ = x; y_ = y
+
+    temp = np.dot(A,x)
+    temp2 = tokyo.ssymv(A, x)
+    print "ssymv:  ", approx_eq(temp, temp2)
+
+    tokyo.ssymv3(A, x, y)
+    print "ssymv3: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.ssymv5(1.2, A, x, 2.1, y)
+    print "ssymv5: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.ssymv6(tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y)
+    print "ssymv6: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.ssymv_(tokyo.CblasRowMajor, tokyo.CblasLower, 5,
+                 1.2, <float*>A_.data, 5, <float*>x_.data, 1,
+                 2.1, <float*>y_.data, 1)
+    print "ssymv_: ", approx_eq(temp, y)
+
+
+# double precision symmetric matrix times vector: y = alpha * A   x + beta * y
+
+cdef dsymv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    x = np.array(np.random.random((5)),   dtype=np.float64)
+    y = np.array(np.random.random((5)),   dtype=np.float64)
+    A = (A + A.T)/2
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    cdef np.ndarray[double, ndim=1, mode='c'] x_, y_
+    A_ = A; x_ = x; y_ = y
+
+    temp = np.dot(A,x)
+    temp2 = tokyo.dsymv(A, x)
+    print "dsymv:  ", approx_eq(temp, temp2)
+
+    tokyo.dsymv3(A, x, y)
+    print "dsymv3: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.dsymv5(1.2, A, x, 2.1, y)
+    print "dsymv5: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.dsymv6(tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y)
+    print "dsymv6: ", approx_eq(temp, y)
+
+    temp = 1.2*np.dot(A,x) + 2.1*y
+    tokyo.dsymv_(tokyo.CblasRowMajor, tokyo.CblasLower, 5,
+                 1.2, <double*>A_.data, 5, <double*>x_.data, 1,
+                 2.1, <double*>y_.data, 1)
+    print "dsymv_: ", approx_eq(temp, y)
 
 
 # single precision vector outer-product: A = alpha * outer_product(x, y.T)
