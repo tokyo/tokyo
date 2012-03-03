@@ -37,6 +37,8 @@ dscal_verify()
 dcopy_verify()
 daxpy_verify()
 ddot_verify()
+dsdot_verify()
+sdsdot_verify()
 dnrm2_verify()
 dasum_verify()
 idamax_verify()
@@ -157,6 +159,22 @@ cdef ddot_verify():
     x = np.array(np.random.random((5)),   dtype=np.float64)
     y = np.array(np.random.random((5)),   dtype=np.float64)
     print "ddot:   ", approx_eq(np.dot(x,y), tokyo.ddot(x,y))
+
+cdef dsdot_verify():
+    x = np.array(np.random.random((5)), dtype=np.float32)
+    xd = np.empty(5, dtype=np.float64) ; xd[:] = x[:]
+    y = np.array(np.random.random((5)), dtype=np.float32)
+    yd = np.empty(5, dtype=np.float64) ; yd[:] = y[:]
+    print "dsdot:  ", approx_eq(np.dot(xd,yd), tokyo.dsdot(x,y))
+
+cdef sdsdot_verify():
+    x = np.array(np.random.random((5)), dtype=np.float32)
+    xd = np.empty(5, dtype=np.float64) ; xd[:] = x[:]
+    y = np.array(np.random.random((5)), dtype=np.float32)
+    yd = np.empty(5, dtype=np.float64) ; yd[:] = y[:]
+    alpha = np.float32(np.random.random())
+    print "sdsdot: ", approx_eq(alpha+np.float32(np.dot(xd,yd)),
+                                  tokyo.sdsdot(alpha,x,y))
 
 # Euclidean norm:  ||x||_2
 

@@ -148,6 +148,36 @@ cdef double ddot(np.ndarray x, np.ndarray y):
     return lib_ddot(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
 
 
+# Double precision dot product of single precision vectors: x'y
+cdef double dsdot_(int N, float *x, int dx, float *y, int dy):
+    return lib_dsdot(N, x, dx, y, dy)
+
+cdef double dsdot(np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT:
+        raise ValueError("y is not of type float")
+    return lib_dsdot(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
+
+# Single precision dot product (computed in double precision) of
+# single precision vectors: alpha + x'y
+cdef float sdsdot_(int N, float alpha, float *x, int dx, float *y, int dy):
+    return lib_sdsdot(N, alpha, x, dx, y, dy)
+
+cdef float sdsdot(float alpha, np.ndarray x, np.ndarray y):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT:
+        raise ValueError("y is not of type float")
+    return lib_sdsdot(x.shape[0], alpha, <float*>x.data, 1, <float*>y.data, 1)
+
+
 # Euclidean norm:  ||x||_2
 cdef float snrm2_(int N, float *x, int dx):
     return lib_snrm2(N, x, dx)

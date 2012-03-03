@@ -39,6 +39,8 @@ for size in test_sizes:
     scopy_speed(size)
     saxpy_speed(size)
     sdot_speed(size)
+    dsdot_speed(size)
+    sdsdot_speed(size)
     snrm2_speed(size)
     sasum_speed(size)
     isamax_speed(size)
@@ -166,6 +168,33 @@ cdef sdot_speed(int size):
     start = time.clock()
     for i in range(loops):
         tokyo.sdot( x, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s " % (rate/1000)
+
+cdef dsdot_speed(int size):
+    cdef int i, loops
+    loops = speed_base*1500/size
+    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+
+    print "dsdot:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsdot( x, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s " % (rate/1000)
+
+cdef sdsdot_speed(int size):
+    cdef int i, loops
+    loops = speed_base*1500/size
+    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    alpha = np.float32(np.random.random())
+
+    print "sdsdot:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.sdsdot( alpha, x, y )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 

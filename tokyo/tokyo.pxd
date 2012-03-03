@@ -56,6 +56,9 @@ cdef extern from "cblas.h":
     # Dot product: x'y
     float  lib_sdot   "cblas_sdot"(int N, float  *x, int dx, float  *y, int dy)
     double lib_ddot   "cblas_ddot"(int N, double *x, int dx, double *y, int dy)
+    double lib_dsdot  "cblas_dsdot"(int N, float *x, int dx, float  *y, int dy)
+    float  lib_sdsdot "cblas_sdsdot"(int N, float alpha, float *x, int dx,
+                                                         float *y, int dy)
 
     # Euclidian (2-)norm: ||x||_2
     float  lib_snrm2  "cblas_snrm2"(int N, float  *x, int dx)
@@ -174,6 +177,11 @@ cdef float sdot(np.ndarray x, np.ndarray y)
 
 cdef double ddot_(int N, double *x, int dx, double *y, int dy)
 cdef double ddot(np.ndarray x, np.ndarray y)
+
+cdef double dsdot_(int N, float *x, int dx, float *y, int dy)
+cdef double dsdot(np.ndarray x, np.ndarray y)
+cdef float sdsdot_(int N, float alpha, float *x, int dx, float *y, int dy)
+cdef float sdsdot(float alpha, np.ndarray x, np.ndarray y)
 
 # Euclidean norm:  ||x||_2
 cdef float snrm2_(int N, float *x, int dx)
