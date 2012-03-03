@@ -33,9 +33,21 @@ Operating System :: MacOS
 # update it when the contents of directories change.
 if os.path.exists('MANIFEST'): os.remove('MANIFEST')
 
+import ConfigParser
+
+def get_from_config(config_name, section, field):
+    try:
+        value = config_name.get(section,field)
+    except ConfigParser.NoOptionError:
+        return []
+    return value
+
 def configuration(parent_package='',top_path=None):
     import numpy
+    import os
     from numpy.distutils.misc_util import Configuration
+    from numpy.distutils.system_info import get_info
+
     config = Configuration(None, parent_package, top_path)
     config.set_options(ignore_setup_xxx_py=True,
                        assume_default_configuration=True,
@@ -43,10 +55,78 @@ def configuration(parent_package='',top_path=None):
                        quiet=True)
 
     config.add_include_dirs([numpy.get_include()])
-    config.add_subpackage('tokyo')
+    #config.add_subpackage('tokyo')
 
     # Set config.version
     config.get_version(os.path.join('tokyo','version.py'))
+
+    # Read relevant Tokyo-specific configuration options.
+    tokyo_config = ConfigParser.SafeConfigParser()
+    tokyo_config.read('site.cfg')
+
+    #config = Configuration('tokyo', parent_package, top_path)
+
+    # Get info from site.cfg
+    tokyo_library_dirs = get_from_config(tokyo_config,'DEFAULT','library_dirs')
+    tokyo_include_dirs = get_from_config(tokyo_config,'DEFAULT','include_dirs')
+
+    blas_info = get_info('blas_opt',0)
+    if not blas_info:
+        blas_info = get_info('blas',0)
+        if not blas_info:
+            print 'No blas info found'
+
+    lapack_info = get_info('lapack_opt',0)
+    if not lapack_info:
+        lapack_info = get_info('lapack',0)
+        if not lapack_info:
+            print 'No lapack info found'
+
+    tokyo_extra_args = dict(blas_info, **lapack_info)
+
+    config.add_extension(
+        name='tokyo.tokyo',
+        sources=[os.path.join('tokyo','tokyo.c')],
+        include_dirs=tokyo_include_dirs,
+        extra_info=tokyo_extra_args,
+        )
+
+    config.add_extension(
+        name='tokyo._verify',
+        sources=[os.path.join('tokyo','_verify.c')],
+        include_dirs=tokyo_include_dirs,
+        extra_info=tokyo_extra_args,
+        )
+
+    config.add_extension(
+        name='tokyo._single_speed',
+        sources=[os.path.join('tokyo','_single_speed.c')],
+        include_dirs=tokyo_include_dirs,
+        extra_info=tokyo_extra_args,
+        )
+
+    config.add_extension(
+        name='tokyo._double_speed',
+        sources=[os.path.join('tokyo','_double_speed.c')],
+        include_dirs=tokyo_include_dirs,
+        extra_info=tokyo_extra_args,
+        )
+
+    config.add_extension(
+        name='tokyo._demo_outer',
+        sources=[os.path.join('tokyo','_demo_outer.c')],
+        include_dirs=tokyo_include_dirs,
+        extra_info=tokyo_extra_args,
+        )
+
+    # Tokyo header file.
+    config.add_data_files(('tokyo',os.path.join('tokyo','tokyo.pxd')))
+    config.add_data_files(('tokyo',os.path.join('tokyo','__init__.py')))
+
+    # Miscellaneous.
+    config.add_subpackage(os.path.join('tokyo','misc'))
+
+    config.make_config_py()
 
     return config
 
