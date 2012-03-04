@@ -395,6 +395,13 @@ cdef dtrmv_speed(int size):
 
     loops *= 5
 
+    print "dtrmv3:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmv3(tokyo.CblasNoTrans, A, x)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
     print "dtrmv6:      ",
     start = time.clock()
     for i in range(loops):

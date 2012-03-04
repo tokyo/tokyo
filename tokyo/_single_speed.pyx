@@ -418,6 +418,13 @@ cdef strmv_speed(int size):
 
     loops *= 5
 
+    print "strmv3:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strmv3(tokyo.CblasNoTrans, A, x)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
     print "strmv6:      ",
     start = time.clock()
     for i in range(loops):
