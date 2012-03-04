@@ -770,9 +770,24 @@ cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
     if C.ndim != 2: raise ValueError("C is not a matrix")
-    if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
-    if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
-    if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
+    if TransA == CblasNoTrans:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C cols")
+    else:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C cols")
+    if TransB == CblasNoTrans:
+        if B.shape[1] != C.shape[1]: raise ValueError("B cols != C rows")
+    else:
+        if B.shape[0] != C.shape[1]: raise ValueError("B cols != C rows")
+    if TransA == CblasNoTrans:
+        if TransB == CblasNoTrans:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if TransB == CblasNoTrans:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
     if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
     if B.descr.type_num != NPY_FLOAT: raise ValueError("B is not of type float")
     if C.descr.type_num != NPY_FLOAT: raise ValueError("C is not of type float")
@@ -833,12 +848,30 @@ cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB, double alpha,
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
     if C.ndim != 2: raise ValueError("C is not a matrix")
-    if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
-    if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
-    if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
-    if B.descr.type_num != NPY_DOUBLE: raise ValueError("B is not of type double")
-    if C.descr.type_num != NPY_DOUBLE: raise ValueError("C is not of type double")
+    if TransA == CblasNoTrans:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C cols")
+    else:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C cols")
+    if TransB == CblasNoTrans:
+        if B.shape[1] != C.shape[1]: raise ValueError("B cols != C rows")
+    else:
+        if B.shape[0] != C.shape[1]: raise ValueError("B cols != C rows")
+    if TransA == CblasNoTrans:
+        if TransB == CblasNoTrans:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if TransB == CblasNoTrans:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("B is not of type double")
+    if C.descr.type_num != NPY_DOUBLE:
+        raise ValueError("C is not of type double")
 
     lib_dgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
               alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
