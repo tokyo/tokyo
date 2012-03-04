@@ -57,7 +57,8 @@ for size in test_sizes:
         "  Matrix size = " + str(size) + "x" + str(size)
     print
     sgemv_speed(size); print
-    sger_speed(size); print
+    ssymv_speed(size); print
+    sger_speed(size);  print
 
 
 print
@@ -311,6 +312,72 @@ cdef sgemv_speed( int size ):
         tokyo.sgemv_( tokyo.CblasRowMajor, tokyo.CblasNoTrans, A_.shape[0], A_.shape[1],
                       1.2, <float*>A_.data, A_.shape[1], <float*>x_.data, 1,
                       2.1, <float*>y_.data, 1 )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# Single precision symmetric-matrix vector product: y = alpha * A * x + beta * y
+
+cdef ssymv_speed( int size ):
+
+    cdef int i, loops
+
+    loops = speed_base*10/(<int>(size**1.2))
+
+    A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
+    x = np.array( np.random.random( (size) ),      dtype=np.float32 )
+    y = np.array( np.random.random( (size) ),      dtype=np.float32 )
+    A = (A + A.T)/2
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_
+    cdef np.ndarray[float, ndim=1, mode='c'] x_, y_
+    A_ = A; x_ = x; y_ = y
+
+    print "numpy.dot +: ",
+    start = time.clock()
+    for i in range(loops):
+        y += np.dot(A,x)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    loops *= 3
+
+    print "ssymv:       ",
+    start = time.clock()
+    for i in range(loops):
+        y = tokyo.ssymv( A, x )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    loops *= 5
+
+    print "ssymv3:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssymv3( A, x, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssymv5:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssymv5( 1.2, A, x, 2.1, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssymv6:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssymv6( tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssymv_:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssymv_( tokyo.CblasRowMajor, tokyo.CblasLower,
+                      A_.shape[1], 1.2, <float*>A_.data, A_.shape[1],
+                      <float*>x_.data, 1, 2.1, <float*>y_.data, 1 )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 

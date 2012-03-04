@@ -55,7 +55,8 @@ for size in test_sizes:
         "  Matrix size = " + str(size) + "x" + str(size)
     print
     dgemv_speed(size); print
-    dger_speed(size); print
+    dsymv_speed(size); print
+    dger_speed(size);  print
 
 print
 print "SPEED TEST BLAS 3"
@@ -289,6 +290,72 @@ cdef dgemv_speed( int size ):
         tokyo.dgemv_( tokyo.CblasRowMajor, tokyo.CblasNoTrans, A_.shape[0], A_.shape[1],
                       1.2, <double*>A_.data, A_.shape[1], <double*>x_.data, 1,
                       2.1, <double*>y_.data, 1 )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# Double precision symmetric-matrix vector product: y = alpha * A * x + beta * y
+
+cdef dsymv_speed( int size ):
+
+    cdef int i, loops
+
+    loops = speed_base*10/(<int>(size**1.2))
+
+    A = np.array( np.random.random( (size,size) ), dtype=np.float64 )
+    x = np.array( np.random.random( (size) ),      dtype=np.float64 )
+    y = np.array( np.random.random( (size) ),      dtype=np.float64 )
+    A = (A + A.T)/2
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    cdef np.ndarray[double, ndim=1, mode='c'] x_, y_
+    A_ = A; x_ = x; y_ = y
+
+    print "numpy.dot +: ",
+    start = time.clock()
+    for i in range(loops):
+        y += np.dot(A,x)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    loops *= 3
+
+    print "dsymv:       ",
+    start = time.clock()
+    for i in range(loops):
+        y = tokyo.dsymv( A, x )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    loops *= 5
+
+    print "dsymv3:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsymv3( A, x, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsymv5:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsymv5( 1.2, A, x, 2.1, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsymv6:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsymv6( tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsymv_:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsymv_( tokyo.CblasRowMajor, tokyo.CblasLower,
+                      A_.shape[1], 1.2, <double*>A_.data, A_.shape[1],
+                      <double*>x_.data, 1, 2.1, <double*>y_.data, 1 )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
