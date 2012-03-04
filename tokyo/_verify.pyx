@@ -473,8 +473,8 @@ cdef strmv_verify():
     A = np.array(np.random.random((5,5)), dtype=np.float32)
     x = np.array(np.random.random((5)),   dtype=np.float32)
     for i in range(5):
-        for j in range(5):
-            if j > i: A[i,j] = 0
+        for j in range(i+1,5):
+            A[i,j] = 0
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
     cdef np.ndarray[float, ndim=1, mode='c'] x_
@@ -506,8 +506,8 @@ cdef dtrmv_verify():
     A = np.array(np.random.random((5,5)), dtype=np.float64)
     x = np.array(np.random.random((5)),   dtype=np.float64)
     for i in range(5):
-        for j in range(5):
-            if j > i: A[i,j] = 0
+        for j in range(i+1,5):
+            A[i,j] = 0
 
     cdef np.ndarray[double, ndim=2, mode='c'] A_
     cdef np.ndarray[double, ndim=1, mode='c'] x_
@@ -574,8 +574,8 @@ cdef strsv_verify():
     A = np.array(np.random.random((5,5)), dtype=np.float32)
     e = np.ones(5, dtype=np.float32)
     for i in range(5):
-        for j in range(5):
-            if j > i: A[i,j] = 0
+        for j in range(i+1,5):
+            A[i,j] = 0
     x = np.dot(A, e)
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
@@ -608,8 +608,8 @@ cdef dtrsv_verify():
     A = np.array(np.random.random((5,5)), dtype=np.float64)
     e = np.ones(5, dtype=np.float64)
     for i in range(5):
-        for j in range(5):
-            if j > i: A[i,j] = 0
+        for j in range(i+1,5):
+            A[i,j] = 0
     x = np.dot(A, e)
 
     cdef np.ndarray[double, ndim=2, mode='c'] A_
