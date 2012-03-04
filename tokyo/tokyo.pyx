@@ -689,7 +689,7 @@ cdef void sger4(float alpha, np.ndarray x, np.ndarray y, np.ndarray A):
     if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
 
     lib_sger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
-              <float*>x.data, 1, <float*>y.data, 1, <float*>A.data, A.shape[1])
+             <float*>x.data, 1, <float*>y.data, 1, <float*>A.data, A.shape[1])
 
 
 cdef void sger3(np.ndarray x, np.ndarray y, np.ndarray A):
@@ -704,8 +704,8 @@ cdef np.ndarray sger(np.ndarray x, np.ndarray y):
 
 # double precision
 
-cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha, double *x, int dx,
-                double *y, int dy, double *A, int lda):
+cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha,
+                double *x, int dx, double *y, int dy, double *A, int lda):
 
     lib_dger(Order, M, N, alpha, x, dx, y, dy, A, lda)
 
@@ -717,12 +717,16 @@ cdef void dger4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A):
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
     if y.shape[0] != A.shape[1]: raise ValueError("y rows != A columns")
-    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
-    if x.descr.type_num != NPY_DOUBLE: raise ValueError("x is not of type double")
-    if y.descr.type_num != NPY_DOUBLE: raise ValueError("y is not of type double")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != NPY_DOUBLE:
+        raise ValueError("y is not of type double")
 
     lib_dger(CblasRowMajor, x.shape[0], y.shape[0], alpha,
-              <double*>x.data, 1, <double*>y.data, 1, <double*>A.data, A.shape[1])
+             <double*>x.data, 1, <double*>y.data, 1,
+             <double*>A.data, A.shape[1])
 
 
 cdef void dger3(np.ndarray x, np.ndarray y, np.ndarray A):
@@ -750,15 +754,18 @@ cdef np.ndarray dger(np.ndarray x, np.ndarray y):
 #
 # single precision
 
-cdef void sgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                 int M, int N, int K, float alpha, float *A, int lda, float *B,
-                 int ldb, float beta, float *C, int ldc):
+cdef void sgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
+                 CBLAS_TRANSPOSE TransB, int M, int N, int K, float alpha,
+                 float *A, int lda, float *B, int ldb, float beta,
+                 float *C, int ldc):
 
-    lib_sgemm(Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
+    lib_sgemm(Order, TransA, TransB, M, N, K, alpha,
+              A, lda, B, ldb, beta, C, ldc)
 
 
 cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                  float alpha, np.ndarray A, np.ndarray B, float beta, np.ndarray C):
+                 float alpha, np.ndarray A, np.ndarray B, float beta,
+                 np.ndarray C):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
@@ -776,7 +783,7 @@ cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
 
 
 cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B,
-                      float beta, np.ndarray C):
+                 float beta,  np.ndarray C):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
@@ -789,11 +796,12 @@ cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B,
     if C.descr.type_num != NPY_FLOAT: raise ValueError("C is not of type float")
 
     lib_sgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
-               B.shape[0], alpha, <float*>A.data, A.shape[1], <float*>B.data,
-               B.shape[1], beta, <float*>C.data, C.shape[1])
+              B.shape[0], alpha, <float*>A.data, A.shape[1], <float*>B.data,
+              B.shape[1], beta, <float*>C.data, C.shape[1])
 
 
-cdef void sgemm3(np.ndarray A, np.ndarray B, np.ndarray C): sgemm5(1.0, A, B, 0.0, C)
+cdef void sgemm3(np.ndarray A, np.ndarray B, np.ndarray C):
+    sgemm5(1.0, A, B, 0.0, C)
 
 
 cdef np.ndarray sgemm(np.ndarray A, np.ndarray B):
@@ -809,15 +817,18 @@ cdef np.ndarray sgemm(np.ndarray A, np.ndarray B):
 #
 # double precision
 
-cdef void dgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                 int M, int N, int K, double alpha, double *A, int lda, double *B,
-                 int ldb, double beta, double *C, int ldc):
+cdef void dgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
+                 CBLAS_TRANSPOSE TransB,
+                 int M, int N, int K, double alpha, double *A, int lda,
+                                                    double *B, int ldb,
+                                      double beta, double *C, int ldc):
 
-    lib_dgemm(Order, TransA, TransB, M, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
+    lib_dgemm(Order, TransA, TransB, M, N, K, alpha,
+              A, lda, B, ldb, beta, C, ldc)
 
 
-cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                  double alpha, np.ndarray A, np.ndarray B, double beta, np.ndarray C):
+cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB, double alpha,
+                 np.ndarray A, np.ndarray B, double beta, np.ndarray C):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
@@ -830,8 +841,8 @@ cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
     if C.descr.type_num != NPY_DOUBLE: raise ValueError("C is not of type double")
 
     lib_dgemm(CblasRowMajor, TransA, TransB, C.shape[0], C.shape[1], B.shape[0],
-               alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
-               beta, <double*>C.data, C.shape[1])
+              alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
+              beta, <double*>C.data, C.shape[1])
 
 
 cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B,
@@ -843,13 +854,16 @@ cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B,
     if A.shape[0] != C.shape[0]: raise ValueError("A rows != C columns")
     if B.shape[1] != C.shape[1]: raise ValueError("B columns != C rows")
     if A.shape[1] != B.shape[0]: raise ValueError("A columns != B rows")
-    if A.descr.type_num != NPY_DOUBLE: raise ValueError("A is not of type double")
-    if B.descr.type_num != NPY_DOUBLE: raise ValueError("B is not of type double")
-    if C.descr.type_num != NPY_DOUBLE: raise ValueError("C is not of type double")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("B is not of type double")
+    if C.descr.type_num != NPY_DOUBLE:
+        raise ValueError("C is not of type double")
 
     lib_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans, C.shape[0], C.shape[1],
-               B.shape[0], alpha, <double*>A.data, A.shape[1], <double*>B.data,
-               B.shape[1], beta, <double*>C.data, C.shape[1])
+              B.shape[0], alpha, <double*>A.data, A.shape[1], <double*>B.data,
+              B.shape[1], beta, <double*>C.data, C.shape[1])
 
 
 cdef void dgemm3(np.ndarray A, np.ndarray B, np.ndarray C):
