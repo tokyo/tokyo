@@ -117,21 +117,21 @@ cdef extern from "cblas.h":
 
     void lib_ssymv "cblas_ssymv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                  float alpha, float *A, int lda,
-                                 float *X, int incX, float beta,
-                                 float *Y, int incY)
+                                 float *x, int dx, float beta,
+                                 float *y, int dy)
 
     void lib_strmv "cblas_strmv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                                 int N, float *A, int lda, float *X, int incX)
+                                 int N, float *A, int lda, float *x, int dx)
 
     void lib_dtrmv "cblas_dtrmv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
-                                 int N, double *A, int lda, double *X, int incX)
+                                 int N, double *A, int lda, double *x, int dx)
 
     void lib_dsymv "cblas_dsymv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                  double alpha, double *A, int lda,
-                                 double *X, int incX, double beta,
-                                 double *Y, int incY)
+                                 double *x, int dx, double beta,
+                                 double *y, int dy)
 
     # Rank-1 update: A <- alpha * x*y' + A
     void lib_sger  "cblas_sger"(CBLAS_ORDER Order, int M, int N, float  alpha,
@@ -322,7 +322,7 @@ cdef np.ndarray dsymv(np.ndarray A, np.ndarray x)
 
 # single precision triangular matrix-vector multiply
 cdef void strmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, int N, float *A, int lda, float *X, int dx)
+                 CBLAS_DIAG Diag, int N, float *A, int lda, float *x, int dx)
 
 cdef void strmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                  CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
@@ -331,7 +331,7 @@ cdef void strmv(np.ndarray A, np.ndarray x)
 
 # double precision triangular matrix-vector multiply
 cdef void dtrmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, int N, double *A, int lda, double *X, int dx)
+                 CBLAS_DIAG Diag, int N, double *A, int lda, double *x, int dx)
 
 
 cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
