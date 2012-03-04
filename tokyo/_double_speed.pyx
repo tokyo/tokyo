@@ -56,6 +56,7 @@ for size in test_sizes:
     print
     dgemv_speed(size); print
     dsymv_speed(size); print
+    dtrmv_speed(size); print
     dger_speed(size);  print
 
 print
@@ -356,6 +357,60 @@ cdef dsymv_speed( int size ):
         tokyo.dsymv_( tokyo.CblasRowMajor, tokyo.CblasLower,
                       A_.shape[1], 1.2, <double*>A_.data, A_.shape[1],
                       <double*>x_.data, 1, 2.1, <double*>y_.data, 1 )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# Double precision triangular matrix vector product: x <- A * x
+
+cdef dtrmv_speed( int size ):
+
+    cdef int i, loops
+
+    loops = speed_base*10/(<int>(size**1.2))
+
+    A = np.array( np.random.random( (size,size) ), dtype=np.float64 )
+    x = np.array( np.random.random( (size) ),      dtype=np.float64 )
+    for i in range(size):
+        for j in range(size):
+            if j > i: A[i,j] = 0
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    cdef np.ndarray[double, ndim=1, mode='c'] x_
+    A_ = A; x_ = x
+
+    print "numpy.dot:   ",
+    start = time.clock()
+    for i in range(loops):
+        x = np.dot(A,x)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    loops *= 3
+
+    print "dtrmv:       ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmv( A, x )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    loops *= 5
+
+    print "dtrmv6:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmv6( tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                      tokyo.CblasNonUnit, A, x )
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dtrmv_:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmv_( tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                      tokyo.CblasNonUnit, A_.shape[1], <double*>A_.data,
+                      A_.shape[1], <double*>x_.data, 1 )
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
