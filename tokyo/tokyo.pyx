@@ -779,6 +779,76 @@ cdef np.ndarray dger(np.ndarray x, np.ndarray y):
     dger4(1.0, x, y, A)
     return A
 
+#
+# Symmetric vector outer product: A <- alpha * x * x.T + A
+#
+
+# single precision
+
+cdef void ssyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
+                float *x, int dx, float *A, int lda):
+
+    lib_ssyr(Order, Uplo, N, alpha, x, dx, A, lda)
+
+
+cdef void ssyr3(float alpha, np.ndarray x, np.ndarray A):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+
+    lib_ssyr(CblasRowMajor, CblasLower, x.shape[0], alpha, <float*>x.data, 1,
+             <float*>A.data, A.shape[1])
+
+
+cdef void ssyr2(np.ndarray x, np.ndarray A):
+
+    ssyr3(1.0, x, A)
+
+
+cdef np.ndarray ssyr(np.ndarray x):
+
+    cdef np.ndarray A = smnewzero(x.shape[0], x.shape[0])
+    ssyr3(1.0, x, A)
+    return A
+
+
+# double precision
+
+cdef void dsyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
+                double *x, int dx, double *A, int lda):
+
+    lib_dsyr(Order, Uplo, N, alpha, x, dx, A, lda)
+
+
+cdef void dsyr3(double alpha, np.ndarray x, np.ndarray A):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+
+    lib_dsyr(CblasRowMajor, CblasLower, x.shape[0], alpha, <double*>x.data, 1,
+             <double*>A.data, A.shape[1])
+
+
+cdef void dsyr2(np.ndarray x, np.ndarray A):
+
+    dsyr3(1.0, x, A)
+
+
+cdef np.ndarray dsyr(np.ndarray x):
+
+    cdef np.ndarray A = dmnewzero(x.shape[0], x.shape[0])
+    dsyr3(1.0, x, A)
+    return A
 
 
 ##########################################################################

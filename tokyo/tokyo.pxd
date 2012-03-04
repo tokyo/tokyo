@@ -146,8 +146,15 @@ cdef extern from "cblas.h":
                                 float  *x, int dx, float  *y, int dy,
                                 float  *A, int lda)
 
+    void lib_ssyr  "cblas_ssyr"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
+                                float alpha, float *x, int dx, float *A, int lda)
+
     void lib_dger  "cblas_dger"(CBLAS_ORDER Order, int M, int N, double alpha,
                                 double *x, int dx, double *y, int dy,
+                                double *A, int lda)
+
+    void lib_dsyr  "cblas_dsyr"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
+                                double alpha, double *x, int dx,
                                 double *A, int lda)
 
     ###########################################################################
@@ -405,6 +412,33 @@ cdef void dger3(np.ndarray x, np.ndarray y, np.ndarray A)
 
 # return = x y.T  (outer product)
 cdef np.ndarray dger(np.ndarray x, np.ndarray y)
+
+####
+
+# single precision symmetric rank-1 update: A <- alpha * x * x.T + A
+cdef void ssyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
+                float *x, int dx, float *A, int lda)
+
+cdef void ssyr3(float alpha, np.ndarray x, np.ndarray A)
+
+# A <- x * x.T + A
+cdef void ssyr2(np.ndarray x, np.ndarray A)
+
+# A = x * x.T
+cdef np.ndarray ssyr(np.ndarray x)
+
+
+# double precision symmetric rank-1 update: A <- alpha * x * x.T + A
+cdef void dsyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
+                double *x, int dx, double *A, int lda)
+
+cdef void dsyr3(double alpha, np.ndarray x, np.ndarray A)
+
+# A <- x * x.T + A
+cdef void dsyr2(np.ndarray x, np.ndarray A)
+
+# A = x * x.T
+cdef np.ndarray dsyr(np.ndarray x)
 
 
 ####################################################

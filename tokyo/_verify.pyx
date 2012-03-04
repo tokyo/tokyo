@@ -50,16 +50,18 @@ print "VERIFY CORRECTNESS BLAS Level 2"
 print
 
 sgemv_verify(); print
-sger_verify();  print
 ssymv_verify(); print
 strmv_verify(); print
 strsv_verify(); print
+sger_verify();  print
+ssyr_verify();  print
 
 dgemv_verify(); print
-dger_verify();  print
 dsymv_verify(); print
 dtrmv_verify(); print
 dtrsv_verify(); print
+dger_verify();  print
+dsyr_verify();  print
 
 
 print
@@ -674,6 +676,55 @@ cdef dger_verify():
     result = A + 1.2*np.outer(x, y)
     tokyo.dger4(1.2, x, y, A)
     print "dger4:  ", approx_eq(result, A)
+
+
+# single precision symmetric rank 1 update.
+
+cdef ssyr_verify():
+
+    x = np.array(np.random.random((5)),   dtype=np.float32)
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    di = np.diag_indices(5)
+    ti = np.triu_indices(5, 1)
+
+    result = np.outer(x, x)
+    xx = tokyo.ssyr(x) ; xx[di] /= 2
+    print "ssyr:   ", approx_eq(result, xx + xx.T)
+
+    A = (A + A.T)/2
+    result = A + np.outer(x, x)
+    tokyo.ssyr2(x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr2:  ", approx_eq(result, A + A.T)
+
+    A = (A + A.T)/2
+    result = A + 1.2 * np.outer(x, x)
+    tokyo.ssyr3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr3:  ", approx_eq(result, A + A.T)
+
+
+# double precision symmetric rank 1 update.
+
+cdef dsyr_verify():
+
+    x = np.array(np.random.random((5)),   dtype=np.float64)
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    di = np.diag_indices(5)
+    ti = np.triu_indices(5, 1)
+
+    result = np.outer(x, x)
+    xx = tokyo.dsyr(x) ; xx[di] /= 2
+    print "dsyr:   ", approx_eq(result, xx + xx.T)
+
+    A = (A + A.T)/2
+    result = A + np.outer(x, x)
+    tokyo.dsyr2(x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr2:  ", approx_eq(result, A + A.T)
+
+    A = (A + A.T)/2
+    result = A + 1.2 * np.outer(x, x)
+    tokyo.dsyr3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr3:  ", approx_eq(result, A + A.T)
+
 
 
 
