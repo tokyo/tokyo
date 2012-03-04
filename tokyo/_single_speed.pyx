@@ -9,7 +9,7 @@ import sys
 tokyo.verbose = True
 
 
-speed_base = 200000 # increase to get slower but more precise speed test results
+speed_base = 200000 # increase for slower but more precise speed test results
 test_sizes = [4, 15, 30]
 
 print
@@ -89,8 +89,7 @@ for size in test_sizes:
     print
 
 
-##################################################################################
-
+###############################################################################
 
 
 #####################################
@@ -104,13 +103,13 @@ for size in test_sizes:
 cdef sswap_speed(int size):
     cdef int i, loops
     loops = speed_base*1000/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
 
     print "sswap:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sswap( x, y )
+        tokyo.sswap(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s" % (rate/1000)
 
@@ -119,12 +118,12 @@ cdef sswap_speed(int size):
 cdef sscal_speed(int size):
     cdef int i, loops
     loops = speed_base*2500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
 
     print "sscal:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sscal( 1.2, x )
+        tokyo.sscal(1.2, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -133,28 +132,28 @@ cdef sscal_speed(int size):
 cdef scopy_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
 
     print "scopy:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.scopy( x, y )
+        tokyo.scopy(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
 # vector addition: y += alpha * x
 
-cdef saxpy_speed( int size ):
+cdef saxpy_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
 
     print "saxpy:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.saxpy( 1.2, x, y )
+        tokyo.saxpy(1.2, x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -163,40 +162,40 @@ cdef saxpy_speed( int size ):
 cdef sdot_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
 
     print "sdot:       ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sdot( x, y )
+        tokyo.sdot(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
 cdef dsdot_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
 
     print "dsdot:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.dsdot( x, y )
+        tokyo.dsdot(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
 cdef sdsdot_speed(int size):
     cdef int i, loops
     loops = speed_base*1500/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
     alpha = np.float32(np.random.random())
 
     print "sdsdot:     ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sdsdot( alpha, x, y )
+        tokyo.sdsdot(alpha, x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -205,12 +204,12 @@ cdef sdsdot_speed(int size):
 cdef snrm2_speed(int size):
     cdef int i, loops
     loops = speed_base*700/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
 
     print "snrm2:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.snrm2( x )
+        tokyo.snrm2(x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -219,12 +218,12 @@ cdef snrm2_speed(int size):
 cdef sasum_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
 
     print "sasum:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sasum( x )
+        tokyo.sasum(x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -233,15 +232,14 @@ cdef sasum_speed(int size):
 cdef isamax_speed(int size):
     cdef int i, loops
     loops = speed_base*2000/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
 
     print "isamax:     ",
     start = time.clock()
     for i in range(loops):
-        tokyo.isamax( x )
+        tokyo.isamax(x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
-
 
 
 ###########################################
@@ -254,15 +252,15 @@ cdef isamax_speed(int size):
 # single precision matrix times vector: y = alpha * A   x + beta * y
 #                                   or  y = alpha * A.T x + beta * y
 
-cdef sgemv_speed( int size ):
+cdef sgemv_speed(int size):
 
     cdef int i, loops
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    x = np.array( np.random.random( (size) ),      dtype=np.float32 )
-    y = np.array( np.random.random( (size) ),      dtype=np.float32 )
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    x = np.array(np.random.random((size)),      dtype=np.float32)
+    y = np.array(np.random.random((size)),      dtype=np.float32)
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
     cdef np.ndarray[float, ndim=1, mode='c'] x_, y_
@@ -280,7 +278,7 @@ cdef sgemv_speed( int size ):
     print "sgemv:       ",
     start = time.clock()
     for i in range(loops):
-        y = tokyo.sgemv( A, x )
+        y = tokyo.sgemv(A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
@@ -289,45 +287,46 @@ cdef sgemv_speed( int size ):
     print "sgemv3:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemv3( A, x, y )
+        tokyo.sgemv3(A, x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemv5:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemv5( 1.2, A, x, 2.1, y )
+        tokyo.sgemv5(1.2, A, x, 2.1, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemv6:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemv6( tokyo.CblasNoTrans, 1.2, A, x, 2.1, y )
+        tokyo.sgemv6(tokyo.CblasNoTrans, 1.2, A, x, 2.1, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemv_:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemv_( tokyo.CblasRowMajor, tokyo.CblasNoTrans, A_.shape[0], A_.shape[1],
-                      1.2, <float*>A_.data, A_.shape[1], <float*>x_.data, 1,
-                      2.1, <float*>y_.data, 1 )
+        tokyo.sgemv_(tokyo.CblasRowMajor, tokyo.CblasNoTrans,
+                     A_.shape[0], A_.shape[1],
+                     1.2, <float*>A_.data, A_.shape[1], <float*>x_.data, 1,
+                     2.1, <float*>y_.data, 1)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
 
 # Single precision symmetric-matrix vector product: y = alpha * A * x + beta * y
 
-cdef ssymv_speed( int size ):
+cdef ssymv_speed(int size):
 
     cdef int i, loops
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    x = np.array( np.random.random( (size) ),      dtype=np.float32 )
-    y = np.array( np.random.random( (size) ),      dtype=np.float32 )
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    x = np.array(np.random.random((size)),      dtype=np.float32)
+    y = np.array(np.random.random((size)),      dtype=np.float32)
     A = (A + A.T)/2
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
@@ -346,7 +345,7 @@ cdef ssymv_speed( int size ):
     print "ssymv:       ",
     start = time.clock()
     for i in range(loops):
-        y = tokyo.ssymv( A, x )
+        y = tokyo.ssymv(A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
@@ -355,44 +354,44 @@ cdef ssymv_speed( int size ):
     print "ssymv3:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.ssymv3( A, x, y )
+        tokyo.ssymv3(A, x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "ssymv5:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.ssymv5( 1.2, A, x, 2.1, y )
+        tokyo.ssymv5(1.2, A, x, 2.1, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "ssymv6:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.ssymv6( tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y )
+        tokyo.ssymv6(tokyo.CblasRowMajor, tokyo.CblasLower, 1.2, A, x, 2.1, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "ssymv_:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.ssymv_( tokyo.CblasRowMajor, tokyo.CblasLower,
-                      A_.shape[1], 1.2, <float*>A_.data, A_.shape[1],
-                      <float*>x_.data, 1, 2.1, <float*>y_.data, 1 )
+        tokyo.ssymv_(tokyo.CblasRowMajor, tokyo.CblasLower,
+                     A_.shape[1], 1.2, <float*>A_.data, A_.shape[1],
+                     <float*>x_.data, 1, 2.1, <float*>y_.data, 1)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
 
 # Single precision triangular matrix vector product: x <- A * x
 
-cdef strmv_speed( int size ):
+cdef strmv_speed(int size):
 
     cdef int i, loops
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    x = np.array( np.random.random( (size) ),      dtype=np.float32 )
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    x = np.array(np.random.random((size)),      dtype=np.float32)
     for i in range(size):
         for j in range(size):
             if j > i: A[i,j] = 0
@@ -413,7 +412,7 @@ cdef strmv_speed( int size ):
     print "strmv:       ",
     start = time.clock()
     for i in range(loops):
-        tokyo.strmv( A, x )
+        tokyo.strmv(A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
@@ -422,32 +421,32 @@ cdef strmv_speed( int size ):
     print "strmv6:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.strmv6( tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
-                      tokyo.CblasNonUnit, A, x )
+        tokyo.strmv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                     tokyo.CblasNonUnit, A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "strmv_:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.strmv_( tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
-                      tokyo.CblasNonUnit, A_.shape[1], <float*>A_.data,
-                      A_.shape[1], <float*>x_.data, 1 )
+        tokyo.strmv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                     tokyo.CblasNonUnit, A_.shape[1], <float*>A_.data,
+                     A_.shape[1], <float*>x_.data, 1)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
 
-# single precision vector outer-product: A = alpha * outer_product( x, y.T )
+# single precision vector outer-product: A = alpha * outer_product(x, y.T)
 
-cdef sger_speed( int size ):
+cdef sger_speed(int size):
 
     cdef int i, loops
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
-    y = np.array( np.random.random( (size) ), dtype=np.float32 )
-    Z = np.array( np.random.random( (size,size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    y = np.array(np.random.random((size)), dtype=np.float32)
+    Z = np.array(np.random.random((size,size)), dtype=np.float32)
 
     cdef np.ndarray[float, ndim=1, mode='c'] x_, y_
     cdef np.ndarray[float, ndim=2, mode='c'] Z_
@@ -456,7 +455,7 @@ cdef sger_speed( int size ):
     print "numpy.outer: ",
     start = time.clock()
     for i in range(loops):
-        np.outer( x, y )
+        np.outer(x, y)
     np_rate = loops/(time.clock()-start)
     print "%9.0f kc/s" % (np_rate/1000)
 
@@ -465,7 +464,7 @@ cdef sger_speed( int size ):
     print "sger:        ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sger( x, y )
+        tokyo.sger(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
@@ -474,25 +473,25 @@ cdef sger_speed( int size ):
     print "sger3:       ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sger3( x, y, Z )
+        tokyo.sger3(x, y, Z)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sger4:       ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sger4( 1.0, x, y, Z )
+        tokyo.sger4(1.0, x, y, Z)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sger_:       ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sger_( tokyo.CblasRowMajor, x_.shape[0], y_.shape[0],
-          1.0, <float*>x_.data, 1, <float*>y_.data, 1, <float*>Z_.data, Z_.shape[1])
+        tokyo.sger_(tokyo.CblasRowMajor, x_.shape[0], y_.shape[0],
+                    1.0, <float*>x_.data, 1, <float*>y_.data, 1,
+                    <float*>Z_.data, Z_.shape[1])
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
-
 
 
 ###########################################
@@ -509,59 +508,60 @@ cdef sger_speed( int size ):
 #
 # single precision
 
-cdef sgemm_speed( int size ):
+cdef sgemm_speed(int size):
 
     cdef int i, loops
 
     loops = speed_base*150/(size*size)
 
-    X = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    Y = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    Z = np.array( np.random.random( (size,size) ), dtype=np.float32 )
+    X = np.array(np.random.random((size,size)), dtype=np.float32)
+    Y = np.array(np.random.random((size,size)), dtype=np.float32)
+    Z = np.array(np.random.random((size,size)), dtype=np.float32)
 
     cdef np.ndarray[float, ndim=2, mode='c'] X_, Y_, Z_
     X_ = X; Y_ = Y; Z_ = Z
 
     print "numpy.dot: ",
     start = time.clock()
-    for i in range(loops): np.dot( X, Y )
+    for i in range(loops): np.dot(X, Y)
     np_rate = loops/(time.clock()-start)
     print "%9.0f kc/s" % (np_rate/1000)
 
     print "sgemm:     ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemm( X, Y )
+        tokyo.sgemm(X, Y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemm3:    ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemm3( X, Y, Z )
+        tokyo.sgemm3(X, Y, Z)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemm5:    ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemm5( 1.0, X, Y, 0.0, Z )
+        tokyo.sgemm5(1.0, X, Y, 0.0, Z)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemm7:    ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemm7( tokyo.CblasNoTrans, tokyo.CblasNoTrans, 1.0, X, Y, 0.0, Z )
+        tokyo.sgemm7(tokyo.CblasNoTrans, tokyo.CblasNoTrans, 1.0, X, Y, 0.0, Z)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
     print "sgemm_:    ",
     start = time.clock()
     for i in range(loops):
-        tokyo.sgemm_( tokyo.CblasRowMajor, tokyo.CblasNoTrans, tokyo.CblasNoTrans,
-                size, size, size, 1.0, <float*>X_.data, size, <float*>Y_.data, size,
-                     0.0, <float*>Z_.data, size )
+        tokyo.sgemm_(tokyo.CblasRowMajor, tokyo.CblasNoTrans,
+                     tokyo.CblasNoTrans, size, size, size, 1.0,
+                     <float*>X_.data, size, <float*>Y_.data, size,
+                     0.0, <float*>Z_.data, size)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
@@ -577,12 +577,12 @@ cdef sgemm_speed( int size ):
 cdef smsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/(size*size)
-    A = np.array( np.random.random( (size,size) ), dtype=np.float32 )
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
 
     print "smsetzero:  ",
     start = time.clock()
     for i in range(loops):
-        tokyo.smsetzero( A )
+        tokyo.smsetzero(A)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
@@ -592,28 +592,28 @@ cdef smsetzero_speed(int size):
 cdef svsetzero_speed(int size):
     cdef int i, loops
     loops = speed_base*5000/size
-    x = np.array( np.random.random( (size) ), dtype=np.float32 )
+    x = np.array(np.random.random((size)), dtype=np.float32)
 
     print "svsetzero:  ",
     start = time.clock()
     for i in range(loops):
-        tokyo.svsetzero( x )
+        tokyo.svsetzero(x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
 
 # single precision matrix += scalar * matrix
 
-cdef smaxpy_speed( int size ):
+cdef smaxpy_speed(int size):
     cdef int i, loops
     loops = speed_base*10000/(size*size)
-    X = np.array( np.random.random( (size,size) ), dtype=np.float32 )
-    Y = np.array( np.random.random( (size,size) ), dtype=np.float32 )
+    X = np.array(np.random.random((size,size)), dtype=np.float32)
+    Y = np.array(np.random.random((size,size)), dtype=np.float32)
 
     print "smaxpy:     ",
     start = time.clock()
     for i in range(loops):
-        tokyo.smaxpy( 1.2, X, Y )
+        tokyo.smaxpy(1.2, X, Y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 

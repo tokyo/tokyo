@@ -9,7 +9,7 @@ import sys
 tokyo.verbose = True
 
 
-speed_base = 200000 # increase to get slower but more precise speed test results
+speed_base = 200000 # increase for slower but more precise speed test results
 test_sizes = [4, 15, 30]
 
 print
@@ -204,11 +204,11 @@ cdef dasum_verify():
 
 cdef isamax_verify():
     x = np.array([0.06, -0.1, -0.05, -0.001, 0.07],   dtype=np.float32)
-    print "isamax: ", ( 1 == tokyo.isamax(x))
+    print "isamax: ", (1 == tokyo.isamax(x))
 
 cdef idamax_verify():
     x = np.array([0.06, -0.1, -0.05, -0.001, 0.07],   dtype=np.float64)
-    print "idamax: ", ( 1 == tokyo.idamax(x))
+    print "idamax: ", (1 == tokyo.idamax(x))
 
 cpdef check_negligible(scomp, strue, ssize, sfac):
     """

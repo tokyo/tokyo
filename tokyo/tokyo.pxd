@@ -13,9 +13,11 @@ cdef extern from "numpy/arrayobject.h":
 
     cdef void import_array()
 
-    cdef object PyArray_ZEROS(int nd, np.npy_intp *dims, int typenum, int fortran)
+    cdef object PyArray_ZEROS(int nd, np.npy_intp *dims, int typenum,
+                              int fortran)
     cdef object PyArray_SimpleNew(int nd, np.npy_intp *dims, int typenum)
-    cdef object PyArray_EMPTY(int nd, np.npy_intp *dims, int typenum, int fortran)
+    cdef object PyArray_EMPTY(int nd, np.npy_intp *dims, int typenum,
+                              int fortran)
 
     int PyArray_ISCARRAY(np.ndarray instance) # I can't get this one to work?!?
 
@@ -146,13 +148,15 @@ cdef extern from "cblas.h":
 
     void lib_sgemm "cblas_sgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
-                                 float  alpha, float  *A, int lda, float  *B, int ldb,
-                                 float  beta, float  *C, int ldc)
+                                 float  alpha, float  *A, int lda,
+                                               float  *B, int ldb,
+                                 float  beta,  float  *C, int ldc)
 
     void lib_dgemm "cblas_dgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
-                                 double alpha, double *A, int lda, double *B, int ldb,
-                                 double beta, double *C, int ldc)
+                                 double alpha, double *A, int lda,
+                                               double *B, int ldb,
+                                 double beta,  double *C, int ldc)
 
 
 #####################################
@@ -289,7 +293,8 @@ cdef void ssymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, float alpha, np.ndarray A,
                  np.ndarray x, float beta, np.ndarray y)
 
 # y = alpha * A * x + beta * y
-cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y)
+cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta,
+                 np.ndarray y)
 
 # y = alpha * A * x
 cdef void ssymv3(np.ndarray A, np.ndarray x, np.ndarray y)
@@ -306,7 +311,8 @@ cdef void dsymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
 cdef void dsymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, double alpha, np.ndarray A,
                  np.ndarray x, double beta, np.ndarray y)
 
-cdef void dsymv5(double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarray y)
+cdef void dsymv5(double alpha, np.ndarray A, np.ndarray x, double beta,
+                 np.ndarray y)
 
 cdef void dsymv3(np.ndarray A, np.ndarray x, np.ndarray y)
 
@@ -350,8 +356,8 @@ cdef np.ndarray sger(np.ndarray x, np.ndarray y)
 
 
 # double precision rank-1 opertion (aka outer product)
-cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha, double *x, int dx,
-                double *y, int dy, double *A, int lda)
+cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha,
+                double *x, int dx, double *y, int dy, double *A, int lda)
 
 # A += alpha * x y.T   (outer product)
 cdef void dger4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A)
@@ -371,7 +377,8 @@ cdef np.ndarray dger(np.ndarray x, np.ndarray y)
 
 
 # single precision general matrix-matrix multiply
-cdef void sgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
+cdef void sgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
+                 CBLAS_TRANSPOSE TransB,
                  int M, int N, int K, float alpha, float *A, int lda, float *B,
                  int ldb, float beta, float *C, int ldc)
 
@@ -383,7 +390,8 @@ cdef void sgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB, float alpha,
                      np.ndarray A, np.ndarray B, float beta, np.ndarray C)
 
 # C = alpha * A B + beta * C
-cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B, float beta, np.ndarray C)
+cdef void sgemm5(float alpha, np.ndarray A, np.ndarray B, float beta,
+                 np.ndarray C)
 
 # C += A B
 cdef void sgemm3(np.ndarray A, np.ndarray B, np.ndarray C)
@@ -394,9 +402,10 @@ cdef np.ndarray sgemm(np.ndarray A, np.ndarray B)
 
 
 # double precision general matrix-matrix multiply
-cdef void dgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB,
-                 int M, int N, int K, double alpha, double *A, int lda, double *B,
-                 int ldb, double beta, double *C, int ldc)
+cdef void dgemm_(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
+                 CBLAS_TRANSPOSE TransB,
+                 int M, int N, int K, double alpha, double *A, int lda,
+                 double *B, int ldb, double beta, double *C, int ldc)
 
 # C = alpha * A   B   + beta * C
 # C = alpha * A.T B   + beta * C
@@ -406,7 +415,8 @@ cdef void dgemm7(CBLAS_TRANSPOSE TransA, CBLAS_TRANSPOSE TransB, double alpha,
                      np.ndarray A, np.ndarray B, double beta, np.ndarray C)
 
 # C = alpha * A B + beta * C
-cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B, double beta, np.ndarray C)
+cdef void dgemm5(double alpha, np.ndarray A, np.ndarray B, double beta,
+                 np.ndarray C)
 
 # C += A B
 cdef void dgemm3(np.ndarray A, np.ndarray B, np.ndarray C)
@@ -450,5 +460,4 @@ cdef void dvsetzero(np.ndarray x)
 # Y += alpha * X
 cdef void smaxpy(float  alpha, np.ndarray X, np.ndarray Y)
 cdef void dmaxpy(double alpha, np.ndarray X, np.ndarray Y)
-
 
