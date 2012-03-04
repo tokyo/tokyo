@@ -479,6 +479,7 @@ cdef np.ndarray dgemv(np.ndarray A, np.ndarray x):
 cdef void ssymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
                  float *A, int lda, float *x, int dx, float beta,
                  float *y, int dy):
+
     lib_ssymv(Order, Uplo, N, alpha, A, lda, x, dx, beta, y, dy)
 
 
@@ -501,26 +502,16 @@ cdef void ssymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, float alpha, np.ndarray A,
 
 cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix")
-    if x.ndim != 1: raise ValueError("x is not a vector")
-    if y.ndim != 1: raise ValueError("y is not a vector")
-    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
-    if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
-    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
-
-    lib_ssymv(CblasRowMajor, CblasLower, A.shape[0], alpha,
-              <float*>A.data, A.shape[1],
-              <float*>x.data, 1, beta, <float*>y.data, 1)
+    ssymv6(CblasRowMajor, CblasLower, alpha, A, x, beta, y)
 
 
 cdef void ssymv3(np.ndarray A, np.ndarray x, np.ndarray y):
+
     ssymv5(1.0, A, x, 0.0, y)
 
 
 cdef np.ndarray ssymv(np.ndarray A, np.ndarray x):
+
     cdef np.ndarray y = svnewempty(A.shape[0])
     ssymv5(1.0, A, x, 0.0, y)
     return y
@@ -531,6 +522,7 @@ cdef np.ndarray ssymv(np.ndarray A, np.ndarray x):
 cdef void dsymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
                  double *A, int lda, double *x, int dx, double beta,
                  double *y, int dy):
+
     lib_dsymv(Order, Uplo, N, alpha, A, lda, x, dx, beta, y, dy)
 
 
@@ -556,29 +548,16 @@ cdef void dsymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, double alpha, np.ndarray A,
 
 cdef void dsymv5(double alpha, np.ndarray A, np.ndarray x, double beta, np.ndarray y):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix")
-    if x.ndim != 1: raise ValueError("x is not a vector")
-    if y.ndim != 1: raise ValueError("y is not a vector")
-    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
-    if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
-    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != NPY_DOUBLE:
-        raise ValueError("A is not of type double")
-    if x.descr.type_num != NPY_DOUBLE:
-        raise ValueError("x is not of type double")
-    if y.descr.type_num != NPY_DOUBLE:
-        raise ValueError("y is not of type double")
-
-    lib_dsymv(CblasRowMajor, CblasLower, A.shape[0], alpha,
-            <double*>A.data, A.shape[1],
-            <double*>x.data, 1, beta, <double*>y.data, 1)
+    dsymv6(CblasRowMajor, CblasLower, alpha, A, x, beta, y)
 
 
 cdef void dsymv3(np.ndarray A, np.ndarray x, np.ndarray y):
+
     dsymv5(1.0, A, x, 0.0, y)
 
 
 cdef np.ndarray dsymv(np.ndarray A, np.ndarray x):
+
     cdef np.ndarray y = dvnewempty(A.shape[0])
     dsymv5(1.0, A, x, 0.0, y)
     return y
