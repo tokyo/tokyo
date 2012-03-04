@@ -52,10 +52,12 @@ print
 sgemv_verify(); print
 sger_verify();  print
 ssymv_verify(); print
+strmv_verify(); print
 
 dgemv_verify(); print
 dger_verify();  print
 dsymv_verify(); print
+dtrmv_verify(); print
 
 
 print
@@ -460,6 +462,64 @@ cdef ssymv_verify():
                  1.2, <float*>A_.data, 5, <float*>x_.data, 1,
                  2.1, <float*>y_.data, 1)
     print "ssymv_: ", approx_eq(temp, y)
+
+
+# single precision triangular matrix times vector: x <- A*x
+
+cdef strmv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    x = np.array(np.random.random((5)),   dtype=np.float32)
+    for i in range(5):
+        for j in range(5):
+            if j > i: A[i,j] = 0
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_
+    cdef np.ndarray[float, ndim=1, mode='c'] x_
+    A_ = A ; x_ = x
+
+    temp = np.dot(A, x)
+    tokyo.strmv(A, x)
+    print "strmv:  ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
+    tokyo.strmv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, A, x)
+    print "strmv6: ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
+    tokyo.strmv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                tokyo.CblasNonUnit, 5, <float*>A_.data, 5, <float*>x_.data, 1)
+    print "strmv_ :", approx_eq(temp, x)
+
+
+# double precision triangular matrix times vector: x <- A*x
+
+cdef dtrmv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    x = np.array(np.random.random((5)),   dtype=np.float64)
+    for i in range(5):
+        for j in range(5):
+            if j > i: A[i,j] = 0
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    cdef np.ndarray[double, ndim=1, mode='c'] x_
+    A_ = A ; x_ = x
+
+    temp = np.dot(A, x)
+    tokyo.dtrmv(A, x)
+    print "dtrmv:  ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
+    tokyo.dtrmv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, A, x)
+    print "dtrmv6: ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
+    tokyo.dtrmv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                tokyo.CblasNonUnit, 5, <double*>A_.data, 5, <double*>x_.data, 1)
+    print "dtrmv_ :", approx_eq(temp, x)
 
 
 # double precision symmetric matrix times vector: y = alpha * A   x + beta * y

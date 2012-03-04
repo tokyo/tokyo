@@ -113,12 +113,20 @@ cdef extern from "cblas.h":
                                                double *x, int dx,
                                  double beta,  double *y, int dy)
 
-    void lib_ssymv "cblas_ssymv"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+    void lib_ssymv "cblas_ssymv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                  float alpha, float *A, int lda,
                                  float *X, int incX, float beta,
                                  float *Y, int incY)
 
-    void lib_dsymv "cblas_dsymv"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+    void lib_strmv "cblas_strmv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                                 int N, float *A, int lda, float *X, int incX)
+
+    void lib_dtrmv "cblas_dtrmv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                                 int N, double *A, int lda, double *X, int incX)
+
+    void lib_dsymv "cblas_dsymv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                  double alpha, double *A, int lda,
                                  double *X, int incX, double beta,
                                  double *Y, int incY)
@@ -306,9 +314,30 @@ cdef np.ndarray dsymv(np.ndarray A, np.ndarray x)
 
 ####
 
+# single precision triangular matrix-vector multiply
+cdef void strmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, float *A, int lda, float *X, int dx)
+
+cdef void strmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
+
+cdef void strmv(np.ndarray A, np.ndarray x)
+
+# double precision triangular matrix-vector multiply
+cdef void dtrmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, double *A, int lda, double *X, int dx)
+
+
+cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
+
+cdef void dtrmv(np.ndarray A, np.ndarray x)
+
+####
+
 # single precision rank-1 opertion (aka outer product)
-cdef void sger_(CBLAS_ORDER Order, int M, int N, float  alpha, float  *x, int dx,
-                    float  *y, int dy, float  *A, int lda)
+cdef void sger_(CBLAS_ORDER Order, int M, int N, float alpha, float *x, int dx,
+                float *y, int dy, float *A, int lda)
 
 # A += alpha * x y.T   (outer product)
 cdef void sger4(float  alpha, np.ndarray x, np.ndarray y, np.ndarray A)
@@ -322,7 +351,7 @@ cdef np.ndarray sger(np.ndarray x, np.ndarray y)
 
 # double precision rank-1 opertion (aka outer product)
 cdef void dger_(CBLAS_ORDER Order, int M, int N, double alpha, double *x, int dx,
-                    double *y, int dy, double *A, int lda)
+                double *y, int dy, double *A, int lda)
 
 # A += alpha * x y.T   (outer product)
 cdef void dger4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A)

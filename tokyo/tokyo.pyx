@@ -583,6 +583,83 @@ cdef np.ndarray dsymv(np.ndarray A, np.ndarray x):
     dsymv5(1.0, A, x, 0.0, y)
     return y
 
+#
+# matrix-vector multiply with a triangular matrix.
+#
+# x <- A*x.
+#
+
+# Single precision
+
+cdef void strmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, float *A, int lda, float *X, int dx):
+    lib_strmv(Order, Uplo, TransA, Diag, N, A, lda, X, dx)
+
+
+cdef void strmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+
+    lib_strmv(Order, Uplo, TransA, Diag, A.shape[0], <float*>A.data, A.shape[1],
+              <float*>x.data, 1)
+
+
+cdef void strmv(np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+
+    lib_strmv(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit,
+              A.shape[0], <float*>A.data, A.shape[1], <float*>x.data, 1)
+
+
+# Double precision
+
+cdef void dtrmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, double *A, int lda, double *X, int dx):
+    lib_dtrmv(Order, Uplo, TransA, Diag, N, A, lda, X, dx)
+
+
+cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+
+    lib_dtrmv(Order, Uplo, TransA, Diag,
+              A.shape[0], <double*>A.data, A.shape[1], <double*>x.data, 1)
+
+
+cdef void dtrmv(np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+
+    lib_dtrmv(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit,
+              A.shape[0], <double*>A.data, A.shape[1], <double*>x.data, 1)
+
 
 #
 # vector outer-product: A = alpha * outer_product(x, y.T)
