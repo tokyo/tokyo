@@ -53,11 +53,13 @@ sgemv_verify(); print
 sger_verify();  print
 ssymv_verify(); print
 strmv_verify(); print
+strsv_verify(); print
 
 dgemv_verify(); print
 dger_verify();  print
 dsymv_verify(); print
 dtrmv_verify(); print
+dtrsv_verify(); print
 
 
 print
@@ -555,6 +557,75 @@ cdef dsymv_verify():
                  1.2, <double*>A_.data, 5, <double*>x_.data, 1,
                  2.1, <double*>y_.data, 1)
     print "dsymv_: ", approx_eq(temp, y)
+
+
+# single precision triangular solve: x <- inv(A) * x  or  x <- inv(A).T * x
+
+cdef strsv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    e = np.ones(5, dtype=np.float32)
+    for i in range(5):
+        for j in range(5):
+            if j > i: A[i,j] = 0
+    x = np.dot(A, e)
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_
+    cdef np.ndarray[float, ndim=1, mode='c'] x_
+    A_ = A
+
+    tokyo.strsv(A, x)
+    print "strsv:  ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    tokyo.strsv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, A, x)
+    print "strsv6: ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    tokyo.strsv3(tokyo.CblasNoTrans, A, x)
+    print "strsv3: ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    x_ = x
+    tokyo.strsv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, 5, <float*>A_.data, 5, <float*>x_.data, 1)
+    print "strsv_ :", approx_eq(e, x)
+
+
+# double precision triangular solve: x <- inv(A) * x  or  x <- inv(A).T * x
+
+cdef dtrsv_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    e = np.ones(5, dtype=np.float64)
+    for i in range(5):
+        for j in range(5):
+            if j > i: A[i,j] = 0
+    x = np.dot(A, e)
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    cdef np.ndarray[double, ndim=1, mode='c'] x_
+    A_ = A
+
+    tokyo.dtrsv(A, x)
+    print "dtrsv:  ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    tokyo.dtrsv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, A, x)
+    print "dtrsv6: ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    tokyo.dtrsv3(tokyo.CblasNoTrans, A, x)
+    print "dtrsv3: ", approx_eq(e, x)
+
+    x = np.dot(A, e)
+    x_ = x
+    tokyo.dtrsv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
+                 tokyo.CblasNonUnit, 5, <double*>A_.data, 5, <double*>x_.data, 1)
+    print "dtrsv_ :", approx_eq(e, x)
+
 
 
 # single precision vector outer-product: A = alpha * outer_product(x, y.T)

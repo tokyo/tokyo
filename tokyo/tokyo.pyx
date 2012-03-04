@@ -662,6 +662,76 @@ cdef void dtrmv(np.ndarray A, np.ndarray x):
 
 
 #
+# triangular system solve: x <- inv(A) * x  or  x <- inv(A)^T * x
+#
+
+# single precision
+
+cdef void strsv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, float *A, int lda, float *x, int dx):
+    lib_strsv(Order, Uplo, TransA, Diag, N, A, lda, x, dx)
+
+
+cdef void strsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+
+    lib_strsv(Order, Uplo, TransA, Diag,
+              A.shape[0], <float*>A.data, A.shape[1], <float*>x.data, 1)
+
+
+cdef void strsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
+
+    strsv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
+
+
+cdef void strsv(np.ndarray A, np.ndarray x):
+
+    strsv3(CblasNoTrans, A, x)
+
+
+# double precision
+
+cdef void dtrsv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, double *A, int lda, double *x, int dx):
+    lib_dtrsv(Order, Uplo, TransA, Diag, N, A, lda, x, dx)
+
+
+cdef void dtrsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+
+    lib_dtrsv(Order, Uplo, TransA, Diag,
+              A.shape[0], <double*>A.data, A.shape[1], <double*>x.data, 1)
+
+
+cdef void dtrsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
+
+    dtrsv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
+
+
+cdef void dtrsv(np.ndarray A, np.ndarray x):
+
+    dtrsv3(CblasNoTrans, A, x)
+
+
+#
 # vector outer-product: A = alpha * outer_product(x, y.T)
 #
 

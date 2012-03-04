@@ -124,6 +124,10 @@ cdef extern from "cblas.h":
                                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                                  int N, float *A, int lda, float *x, int dx)
 
+    void lib_strsv "cblas_strsv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                                 int N, float *A, int lda, float *x, int dx)
+
     void lib_dtrmv "cblas_dtrmv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
                                  CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
                                  int N, double *A, int lda, double *x, int dx)
@@ -132,6 +136,10 @@ cdef extern from "cblas.h":
                                  double alpha, double *A, int lda,
                                  double *x, int dx, double beta,
                                  double *y, int dy)
+
+    void lib_dtrsv "cblas_dtrsv"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                                 int N, double *A, int lda, double *x, int dx)
 
     # Rank-1 update: A <- alpha * x*y' + A
     void lib_sger  "cblas_sger"(CBLAS_ORDER Order, int M, int N, float  alpha,
@@ -338,6 +346,32 @@ cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                  CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
 
 cdef void dtrmv(np.ndarray A, np.ndarray x)
+
+####
+
+# Single precision triangular system solve.
+cdef void strsv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, float *A, int lda, float *x, int dx)
+
+cdef void strsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
+
+cdef void strsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
+
+cdef void strsv(np.ndarray A, np.ndarray x)
+
+
+# Double precision triangular system solve.
+cdef void dtrsv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int N, double *A, int lda, double *x, int dx)
+
+cdef void dtrsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
+
+cdef void dtrsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
+
+cdef void dtrsv(np.ndarray A, np.ndarray x)
+
 
 ####
 
