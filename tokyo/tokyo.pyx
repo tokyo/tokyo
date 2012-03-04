@@ -482,23 +482,6 @@ cdef void ssymv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
     lib_ssymv(Order, Uplo, N, alpha, A, lda, x, dx, beta, y, dy)
 
 
-cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y):
-
-    if A.ndim != 2: raise ValueError("A is not a matrix")
-    if x.ndim != 1: raise ValueError("x is not a vector")
-    if y.ndim != 1: raise ValueError("y is not a vector")
-    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
-    if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
-    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
-    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
-
-    lib_ssymv(CblasRowMajor, CblasLower, A.shape[0], alpha,
-              <float*>A.data, A.shape[1],
-              <float*>x.data, 1, beta, <float*>y.data, 1)
-
-
 cdef void ssymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, float alpha, np.ndarray A,
                  np.ndarray x, float beta, np.ndarray y):
 
@@ -513,6 +496,23 @@ cdef void ssymv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, float alpha, np.ndarray A,
     if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
 
     lib_ssymv(Order, Uplo, A.shape[0], alpha, <float*>A.data, A.shape[1],
+              <float*>x.data, 1, beta, <float*>y.data, 1)
+
+
+cdef void ssymv5(float alpha, np.ndarray A, np.ndarray x, float beta, np.ndarray y):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if y.ndim != 1: raise ValueError("y is not a vector")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if A.shape[0] != y.shape[0]: raise ValueError("A rows != y rows")
+    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
+    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT: raise ValueError("y is not of type float")
+
+    lib_ssymv(CblasRowMajor, CblasLower, A.shape[0], alpha,
+              <float*>A.data, A.shape[1],
               <float*>x.data, 1, beta, <float*>y.data, 1)
 
 
