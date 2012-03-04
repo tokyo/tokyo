@@ -610,17 +610,14 @@ cdef void strmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
               <float*>x.data, 1)
 
 
+cdef void strmv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
+
+    strmv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
+
+
 cdef void strmv(np.ndarray A, np.ndarray x):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix")
-    if x.ndim != 1: raise ValueError("x is not a vector")
-    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
-    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != NPY_FLOAT: raise ValueError("A is not of type float")
-    if x.descr.type_num != NPY_FLOAT: raise ValueError("x is not of type float")
-
-    lib_strmv(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit,
-              A.shape[0], <float*>A.data, A.shape[1], <float*>x.data, 1)
+    strmv6(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit, A, x)
 
 
 # Double precision
@@ -646,19 +643,14 @@ cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
               A.shape[0], <double*>A.data, A.shape[1], <double*>x.data, 1)
 
 
+cdef void dtrmv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
+
+    dtrmv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
+
+
 cdef void dtrmv(np.ndarray A, np.ndarray x):
 
-    if A.ndim != 2: raise ValueError("A is not a matrix")
-    if x.ndim != 1: raise ValueError("x is not a vector")
-    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
-    if A.shape[1] != x.shape[0]: raise ValueError("A columns != x rows")
-    if A.descr.type_num != NPY_DOUBLE:
-        raise ValueError("A is not of type double")
-    if x.descr.type_num != NPY_DOUBLE:
-        raise ValueError("x is not of type double")
-
-    lib_dtrmv(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit,
-              A.shape[0], <double*>A.data, A.shape[1], <double*>x.data, 1)
+    dtrmv6(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit, A, x)
 
 
 #

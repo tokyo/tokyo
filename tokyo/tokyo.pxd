@@ -335,6 +335,8 @@ cdef void strmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
 cdef void strmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                  CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
 
+cdef void strmv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
+
 cdef void strmv(np.ndarray A, np.ndarray x)
 
 # double precision triangular matrix-vector multiply
@@ -344,6 +346,8 @@ cdef void dtrmv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
 
 cdef void dtrmv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                  CBLAS_DIAG Diag, np.ndarray A, np.ndarray x)
+
+cdef void dtrmv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
 
 cdef void dtrmv(np.ndarray A, np.ndarray x)
 

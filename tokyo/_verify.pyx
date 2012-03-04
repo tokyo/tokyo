@@ -490,6 +490,10 @@ cdef strmv_verify():
     print "strmv6: ", approx_eq(temp, x)
 
     temp = np.dot(A, x)
+    tokyo.strmv3(tokyo.CblasNoTrans, A, x)
+    print "strmv3: ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
     tokyo.strmv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
                 tokyo.CblasNonUnit, 5, <float*>A_.data, 5, <float*>x_.data, 1)
     print "strmv_ :", approx_eq(temp, x)
@@ -517,6 +521,10 @@ cdef dtrmv_verify():
     tokyo.dtrmv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
                  tokyo.CblasNonUnit, A, x)
     print "dtrmv6: ", approx_eq(temp, x)
+
+    temp = np.dot(A, x)
+    tokyo.dtrmv3(tokyo.CblasNoTrans, A, x)
+    print "dtrmv3: ", approx_eq(temp, x)
 
     temp = np.dot(A, x)
     tokyo.dtrmv_(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
