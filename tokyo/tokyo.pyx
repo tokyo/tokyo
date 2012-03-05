@@ -780,7 +780,7 @@ cdef np.ndarray dger(np.ndarray x, np.ndarray y):
     return A
 
 #
-# Symmetric vector outer product: A <- alpha * x * x.T + A
+# Symmetric rank 1 update: A <- alpha * x * x.T + A
 #
 
 # single precision
