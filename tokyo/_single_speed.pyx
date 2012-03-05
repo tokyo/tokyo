@@ -61,6 +61,7 @@ for size in test_sizes:
     strmv_speed(size); print
     strsv_speed(size); print
     sger_speed(size);  print
+    ssyr_speed(size);  print
 
 
 print
@@ -552,6 +553,63 @@ cdef sger_speed(int size):
         tokyo.sger_(tokyo.CblasRowMajor, x_.shape[0], y_.shape[0],
                     1.0, <float*>x_.data, 1, <float*>y_.data, 1,
                     <float*>Z_.data, Z_.shape[1])
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# single precision symmetric rank 1 update: A <- alpha * x * x.T + A
+
+cdef ssyr_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*10/(<int>(size**1.2))
+
+    x = np.array(np.random.random((size)), dtype=np.float32)
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+
+    cdef np.ndarray[float, ndim=1, mode='c'] x_
+    cdef np.ndarray[float, ndim=2, mode='c'] A_
+    x_ = x; A_ = A
+
+    print "numpy.outer: ",
+    start = time.clock()
+    for i in range(loops):
+        np.outer(x, x)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    loops *= 15
+
+    print "ssyr:        ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr(x)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    loops *= 2
+
+    print "ssyr_2:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr_2(x, A)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr_3:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr_3(1.0, x, A)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr_:       ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr_(tokyo.CblasRowMajor, tokyo.CblasLower,
+                    x.shape[0], 1.0, <float*>x_.data, 1,
+                    <float*>A_.data, A_.shape[1])
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
