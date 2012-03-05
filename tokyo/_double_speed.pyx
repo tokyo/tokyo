@@ -60,6 +60,7 @@ for size in test_sizes:
     dtrsv_speed(size); print
     dger_speed(size);  print
     dsyr_speed(size);  print
+    dsyr2_speed(size); print
 
 print
 print "SPEED TEST BLAS 3"
@@ -586,6 +587,66 @@ cdef dsyr_speed(int size):
     for i in range(loops):
         tokyo.dsyr_(tokyo.CblasRowMajor, tokyo.CblasLower,
                     x.shape[0], 1.0, <double*>x_.data, 1,
+                    <double*>A_.data, A_.shape[1])
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# double precision symmetric rank 2 update:
+# A <- alpha * x * y.T + alpha * y * x.T + A
+
+cdef dsyr2_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*10/(<int>(size**1.2))
+
+    x = np.array(np.random.random((size)), dtype=np.float64)
+    y = np.array(np.random.random((size)), dtype=np.float64)
+    A = np.array(np.random.random((size,size)), dtype=np.float64)
+
+    cdef np.ndarray[double, ndim=1, mode='c'] x_, y_
+    cdef np.ndarray[double, ndim=2, mode='c'] A_
+    x_ = x; y_ = y; A_ = A
+
+    print "numpy.outer: ",
+    start = time.clock()
+    for i in range(loops):
+        np.outer(x, y) + np.outer(y, x)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    loops *= 15
+
+    print "dsyr2:       ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyr2(x, y)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    loops *= 2
+
+    print "dsyr2_3:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyr2_3(x, y, A)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyr2_4:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyr2_4(1.0, x, y, A)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyr2_:      ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyr2_(tokyo.CblasRowMajor, tokyo.CblasLower,
+                    x.shape[0], 1.0, <double*>x_.data, 1,
+                    <double*>y_.data, 1,
                     <double*>A_.data, A_.shape[1])
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
