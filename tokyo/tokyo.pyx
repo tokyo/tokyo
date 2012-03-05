@@ -791,7 +791,7 @@ cdef void ssyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
     lib_ssyr(Order, Uplo, N, alpha, x, dx, A, lda)
 
 
-cdef void ssyr3(float alpha, np.ndarray x, np.ndarray A):
+cdef void ssyr_3(float alpha, np.ndarray x, np.ndarray A):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if x.ndim != 1: raise ValueError("x is not a vector")
@@ -805,15 +805,15 @@ cdef void ssyr3(float alpha, np.ndarray x, np.ndarray A):
              <float*>A.data, A.shape[1])
 
 
-cdef void ssyr2(np.ndarray x, np.ndarray A):
+cdef void ssyr_2(np.ndarray x, np.ndarray A):
 
-    ssyr3(1.0, x, A)
+    ssyr_3(1.0, x, A)
 
 
 cdef np.ndarray ssyr(np.ndarray x):
 
     cdef np.ndarray A = smnewzero(x.shape[0], x.shape[0])
-    ssyr3(1.0, x, A)
+    ssyr_3(1.0, x, A)
     return A
 
 
@@ -825,7 +825,7 @@ cdef void dsyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
     lib_dsyr(Order, Uplo, N, alpha, x, dx, A, lda)
 
 
-cdef void dsyr3(double alpha, np.ndarray x, np.ndarray A):
+cdef void dsyr_3(double alpha, np.ndarray x, np.ndarray A):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if x.ndim != 1: raise ValueError("x is not a vector")
@@ -839,15 +839,15 @@ cdef void dsyr3(double alpha, np.ndarray x, np.ndarray A):
              <double*>A.data, A.shape[1])
 
 
-cdef void dsyr2(np.ndarray x, np.ndarray A):
+cdef void dsyr_2(np.ndarray x, np.ndarray A):
 
-    dsyr3(1.0, x, A)
+    dsyr_3(1.0, x, A)
 
 
 cdef np.ndarray dsyr(np.ndarray x):
 
     cdef np.ndarray A = dmnewzero(x.shape[0], x.shape[0])
-    dsyr3(1.0, x, A)
+    dsyr_3(1.0, x, A)
     return A
 
 

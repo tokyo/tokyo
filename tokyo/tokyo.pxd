@@ -419,10 +419,10 @@ cdef np.ndarray dger(np.ndarray x, np.ndarray y)
 cdef void ssyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
                 float *x, int dx, float *A, int lda)
 
-cdef void ssyr3(float alpha, np.ndarray x, np.ndarray A)
+cdef void ssyr_3(float alpha, np.ndarray x, np.ndarray A)
 
 # A <- x * x.T + A
-cdef void ssyr2(np.ndarray x, np.ndarray A)
+cdef void ssyr_2(np.ndarray x, np.ndarray A)
 
 # A = x * x.T
 cdef np.ndarray ssyr(np.ndarray x)
@@ -432,10 +432,10 @@ cdef np.ndarray ssyr(np.ndarray x)
 cdef void dsyr_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
                 double *x, int dx, double *A, int lda)
 
-cdef void dsyr3(double alpha, np.ndarray x, np.ndarray A)
+cdef void dsyr_3(double alpha, np.ndarray x, np.ndarray A)
 
 # A <- x * x.T + A
-cdef void dsyr2(np.ndarray x, np.ndarray A)
+cdef void dsyr_2(np.ndarray x, np.ndarray A)
 
 # A = x * x.T
 cdef np.ndarray dsyr(np.ndarray x)

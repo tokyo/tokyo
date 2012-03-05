@@ -693,13 +693,13 @@ cdef ssyr_verify():
 
     A = (A + A.T)/2
     result = A + np.outer(x, x)
-    tokyo.ssyr2(x, A) ; A[di] /= 2 ; A[ti] = 0
-    print "ssyr2:  ", approx_eq(result, A + A.T)
+    tokyo.ssyr_2(x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr_2: ", approx_eq(result, A + A.T)
 
     A = (A + A.T)/2
     result = A + 1.2 * np.outer(x, x)
-    tokyo.ssyr3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
-    print "ssyr3:  ", approx_eq(result, A + A.T)
+    tokyo.ssyr_3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr_3: ", approx_eq(result, A + A.T)
 
 
 # double precision symmetric rank 1 update.
@@ -717,13 +717,13 @@ cdef dsyr_verify():
 
     A = (A + A.T)/2
     result = A + np.outer(x, x)
-    tokyo.dsyr2(x, A) ; A[di] /= 2 ; A[ti] = 0
-    print "dsyr2:  ", approx_eq(result, A + A.T)
+    tokyo.dsyr_2(x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr_2: ", approx_eq(result, A + A.T)
 
     A = (A + A.T)/2
     result = A + 1.2 * np.outer(x, x)
-    tokyo.dsyr3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
-    print "dsyr3:  ", approx_eq(result, A + A.T)
+    tokyo.dsyr_3(1.2, x, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr_3: ", approx_eq(result, A + A.T)
 
 
 
