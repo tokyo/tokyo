@@ -175,8 +175,20 @@ cdef extern from "cblas.h":
                                                float  *B, int ldb,
                                  float  beta,  float  *C, int ldc)
 
+    void lib_ssymm "cblas_ssymm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, int M, int N,
+                                 float alpha, float *A, int lda,
+                                              float *B, int ldb,
+                                 float beta,  float *C, int ldc)
+
     void lib_dgemm "cblas_dgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
+                                 double alpha, double *A, int lda,
+                                               double *B, int ldb,
+                                 double beta,  double *C, int ldc)
+
+    void lib_dsymm "cblas_dsymm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, int M, int N,
                                  double alpha, double *A, int lda,
                                                double *B, int ldb,
                                  double beta,  double *C, int ldc)
@@ -534,6 +546,42 @@ cdef void dgemm3(np.ndarray A, np.ndarray B, np.ndarray C)
 # return = A B
 cdef np.ndarray dgemm(np.ndarray A, np.ndarray B)
 
+
+# single precision symmetric matrix multiply
+cdef void ssymm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 int M, int N,
+                 float alpha, float *A, int lda,
+                              float *B, int ldb,
+                 float beta,  float *C, int ldc)
+
+cdef void ssymm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 float alpha, np.ndarray A, np.ndarray B,
+                 float beta,  np.ndarray C)
+
+cdef void ssymm5(float alpha, np.ndarray A, np.ndarray B, float beta,
+                 np.ndarray C)
+
+cdef void ssymm3(np.ndarray A, np.ndarray B, np.ndarray C)
+
+cdef np.ndarray ssymm(np.ndarray A, np.ndarray B)
+
+# double precision symmetric matrix multiply
+cdef void dsymm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 int M, int N,
+                 double alpha, double *A, int lda,
+                               double *B, int ldb,
+                 double beta,  double *C, int ldc)
+
+cdef void dsymm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 double alpha, np.ndarray A, np.ndarray B,
+                 double beta,  np.ndarray C)
+
+cdef void dsymm5(double alpha, np.ndarray A, np.ndarray B, double beta,
+                 np.ndarray C)
+
+cdef void dsymm3(np.ndarray A, np.ndarray B, np.ndarray C)
+
+cdef np.ndarray dsymm(np.ndarray A, np.ndarray B)
 
 
 ######################################################################

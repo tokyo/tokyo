@@ -71,8 +71,10 @@ print "VERIFY CORRECTNESS BLAS 3"
 print
 
 sgemm_verify(); print
+ssymm_verify(); print
 
 dgemm_verify(); print
+dsymm_verify(); print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -842,6 +844,66 @@ cdef dgemm_verify():
     tokyo.dgemm7(tokyo.CblasNoTrans, tokyo.CblasNoTrans, 2.3, X, Y, 1.2, Z)
     print "dgemm7: ", approx_eq(result, Z)
 
+
+# symmetric matrix multiply: C = alpha * A * B + beta * C
+#                        or: C = alpha * B * A + beta * C
+# where A = A.T.
+#
+# single precision
+
+cdef ssymm_verify():
+
+    A = np.array(np.random.random((3,3)), dtype=np.float32)
+    A = (A + A.T)/2
+    B = np.array(np.random.random((3,4)), dtype=np.float32)
+
+    C_np = np.dot(A, B)
+    print "ssymm:  ", approx_eq(C_np, tokyo.ssymm(A, B))
+
+    C = np.array(np.random.random((3,4)), dtype=np.float32)
+    tokyo.ssymm3(A, B, C)
+    print "ssymm3: ", approx_eq(C_np, C)
+
+    alpha = np.float32(np.random.random())
+    beta  = np.float32(np.random.random())
+
+    C = np.array(np.random.random((3,4)), dtype=np.float32)
+    C_np = alpha * np.dot(A, B) + beta * C
+    tokyo.ssymm5(alpha, A, B, beta, C)
+    print "ssymm5: ", approx_eq(C_np, C)
+
+    C_np = alpha * np.dot(A, B) + beta * C
+    tokyo.ssymm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                 alpha, A, B, beta, C)
+    print "ssymm8: ", approx_eq(C_np, C)
+
+
+# double precision
+
+cdef dsymm_verify():
+
+    A = np.array(np.random.random((3,3)), dtype=np.float64)
+    A = (A + A.T)/2
+    B = np.array(np.random.random((3,4)), dtype=np.float64)
+
+    C_np = np.dot(A, B)
+    print "dsymm:  ", approx_eq(C_np, tokyo.dsymm(A, B))
+
+    C = np.array(np.random.random((3,4)), dtype=np.float64)
+    tokyo.dsymm3(A, B, C)
+    print "dsymm3: ", approx_eq(C_np, C)
+
+    alpha = np.random.random() ; beta = np.random.random()
+
+    C = np.array(np.random.random((3,4)), dtype=np.float64)
+    C_np = alpha * np.dot(A, B) + beta * C
+    tokyo.dsymm5(alpha, A, B, beta, C)
+    print "dsymm5: ", approx_eq(C_np, C)
+
+    C_np = alpha * np.dot(A, B) + beta * C
+    tokyo.dsymm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                 alpha, A, B, beta, C)
+    print "dsymm8: ", approx_eq(C_np, C)
 
 
 ####################################################################

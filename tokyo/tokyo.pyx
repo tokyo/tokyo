@@ -1102,6 +1102,122 @@ cdef np.ndarray dgemm(np.ndarray A, np.ndarray B):
     return C
 
 
+# matrix times matrix: C = alpha * A   B   + beta * C
+#                  or: C = alpha * B   A   + beta * C
+# where A = A.T.
+
+# single precision
+
+cdef void ssymm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 int M, int N,
+                 float alpha, float *A, int lda,
+                              float *B, int ldb,
+                 float beta,  float *C, int ldc):
+    lib_ssymm(Order, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc)
+
+
+cdef void ssymm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 float alpha, np.ndarray A, np.ndarray B,
+                 float beta,  np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if Side == CblasLeft:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        if B.shape[1] != C.shape[1]: raise ValueError("B cols != C cols")
+        if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+    else:
+        if B.shape[0] != C.shape[0]: raise ValueError("B rows != C rows")
+        if A.shape[1] != C.shape[1]: raise ValueError("A cols != C cols")
+        if B.shape[1] != A.shape[0]: raise ValueError("B cols != A rows")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT:
+        raise ValueError("B is not of type float")
+    if C.descr.type_num != NPY_FLOAT:
+        raise ValueError("C is not of type float")
+
+    lib_ssymm(Order, Side, Uplo, C.shape[0], C.shape[1],
+              alpha, <float*>A.data, A.shape[1],
+                     <float*>B.data, B.shape[1],
+              beta,  <float*>C.data, C.shape[1])
+
+
+cdef void ssymm5(float alpha, np.ndarray A, np.ndarray B, float beta,
+                 np.ndarray C):
+
+    ssymm8(CblasRowMajor, CblasLeft, CblasLower, alpha, A, B, beta, C)
+
+
+cdef void ssymm3(np.ndarray A, np.ndarray B, np.ndarray C):
+
+    ssymm5(1.0, A, B, 0.0, C)
+
+
+cdef np.ndarray ssymm(np.ndarray A, np.ndarray B):
+
+    cdef np.ndarray C = smnewempty(A.shape[0], B.shape[1])
+    ssymm5(1.0, A, B, 0.0, C)
+    return C
+
+
+# double precision
+
+cdef void dsymm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 int M, int N,
+                 double alpha, double *A, int lda,
+                               double *B, int ldb,
+                 double beta,  double *C, int ldc):
+    lib_dsymm(Order, Side, Uplo, M, N, alpha, A, lda, B, ldb, beta, C, ldc)
+
+
+cdef void dsymm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 double alpha, np.ndarray A, np.ndarray B,
+                 double beta,  np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if Side == CblasLeft:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        if B.shape[1] != C.shape[1]: raise ValueError("B cols != C cols")
+        if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+    else:
+        if B.shape[0] != C.shape[0]: raise ValueError("B rows != C rows")
+        if A.shape[1] != C.shape[1]: raise ValueError("A cols != C cols")
+        if B.shape[1] != A.shape[0]: raise ValueError("B cols != A rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("B is not of type double")
+    if C.descr.type_num != NPY_DOUBLE:
+        raise ValueError("C is not of type double")
+
+    lib_dsymm(Order, Side, Uplo, C.shape[0], C.shape[1],
+              alpha, <double*>A.data, A.shape[1],
+                     <double*>B.data, B.shape[1],
+              beta,  <double*>C.data, C.shape[1])
+
+
+cdef void dsymm5(double alpha, np.ndarray A, np.ndarray B, double beta,
+                 np.ndarray C):
+
+    dsymm8(CblasRowMajor, CblasLeft, CblasLower, alpha, A, B, beta, C)
+
+
+cdef void dsymm3(np.ndarray A, np.ndarray B, np.ndarray C):
+
+    dsymm5(1.0, A, B, 0.0, C)
+
+
+cdef np.ndarray dsymm(np.ndarray A, np.ndarray B):
+
+    cdef np.ndarray C = dmnewempty(A.shape[0], B.shape[1])
+    dsymm5(1.0, A, B, 0.0, C)
+    return C
+
+
 #########################################################################
 #
 # Utility functions I've added myself
