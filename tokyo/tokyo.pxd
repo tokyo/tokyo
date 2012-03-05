@@ -149,6 +149,10 @@ cdef extern from "cblas.h":
     void lib_ssyr  "cblas_ssyr"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                 float alpha, float *x, int dx, float *A, int lda)
 
+    void lib_ssyr2 "cblas_ssyr2"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+                                 float alpha, float *x, int dx, float *y,
+                                 int dy, float *A, int lda)
+
     void lib_dger  "cblas_dger"(CBLAS_ORDER Order, int M, int N, double alpha,
                                 double *x, int dx, double *y, int dy,
                                 double *A, int lda)
@@ -156,6 +160,10 @@ cdef extern from "cblas.h":
     void lib_dsyr  "cblas_dsyr"(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N,
                                 double alpha, double *x, int dx,
                                 double *A, int lda)
+
+    void lib_dsyr2 "cblas_dsyr2"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
+                                 double alpha, double *x, int dx, double *y,
+                                 int dy, double *A, int lda)
 
     ###########################################################################
     # BLAS level 3 routines
@@ -439,6 +447,36 @@ cdef void dsyr_2(np.ndarray x, np.ndarray A)
 
 # A = x * x.T
 cdef np.ndarray dsyr(np.ndarray x)
+
+
+####
+
+# single precision symmetric rank-2 update:
+# A <- alpha * x * y.T + alpha * y * x.T + A
+cdef void ssyr2_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
+                 float *x, int dx, float *y, int dy, float *A, int lda)
+
+cdef void ssyr2_4(float alpha, np.ndarray x, np.ndarray y, np.ndarray A)
+
+# A <- x * y.T + y * x.T + A
+cdef void ssyr2_3(np.ndarray x, np.ndarray y, np.ndarray A)
+
+# A = x * y.T + y * x.T
+cdef np.ndarray ssyr2(np.ndarray x, np.ndarray y)
+
+
+# double precision symmetric rank-2 update:
+# A <- alpha * x * y.T + alpha * y * x.T + A
+cdef void dsyr2_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
+                 double *x, int dx, double *y, int dy, double *A, int lda)
+
+cdef void dsyr2_4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A)
+
+# A <- x * y.T + y * x.T + A
+cdef void dsyr2_3(np.ndarray x, np.ndarray y, np.ndarray A)
+
+# A = x * y.T + y * x.T
+cdef np.ndarray dsyr2(np.ndarray x, np.ndarray y)
 
 
 ####################################################

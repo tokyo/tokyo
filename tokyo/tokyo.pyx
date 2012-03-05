@@ -851,6 +851,88 @@ cdef np.ndarray dsyr(np.ndarray x):
     return A
 
 
+#
+# Symmetric rank 2 update: A <- alpha * x * y.T + alpha * y * x.T + A
+#
+
+# single precision
+
+cdef void ssyr2_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, float alpha,
+                 float *x, int dx, float *y, int dy, float *A, int lda):
+
+    lib_ssyr2(Order, Uplo, N, alpha, x, dx, y, dy, A, lda)
+
+
+cdef void ssyr2_4(float alpha, np.ndarray x, np.ndarray y, np.ndarray A):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
+    if y.shape[0] != A.shape[0]: raise ValueError("y rows != A rows")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+    if y.descr.type_num != NPY_FLOAT:
+        raise ValueError("y is not of type float")
+
+    lib_ssyr2(CblasRowMajor, CblasLower, x.shape[0], alpha,
+              <float*>x.data, 1, <float*>y.data, 1,
+              <float*>A.data, A.shape[1]);
+
+
+cdef void ssyr2_3(np.ndarray x, np.ndarray y, np.ndarray A):
+
+    ssyr2_4(1.0, x, y, A)
+
+
+cdef np.ndarray ssyr2(np.ndarray x, np.ndarray y):
+
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    cdef np.ndarray A = smnewzero(x.shape[0], x.shape[0])
+    ssyr2_3(x, y, A)
+    return A
+
+
+# double precision
+
+cdef void dsyr2_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, int N, double alpha,
+                 double *x, int dx, double *y, int dy, double *A, int lda):
+
+    lib_dsyr2(Order, Uplo, N, alpha, x, dx, y, dy, A, lda)
+
+
+cdef void dsyr2_4(double alpha, np.ndarray x, np.ndarray y, np.ndarray A):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.shape[0] != A.shape[0]: raise ValueError("x rows != A rows")
+    if y.shape[0] != A.shape[0]: raise ValueError("y rows != A rows")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+    if y.descr.type_num != NPY_DOUBLE:
+        raise ValueError("y is not of type double")
+
+    lib_dsyr2(CblasRowMajor, CblasLower, x.shape[0], alpha,
+              <double*>x.data, 1, <double*>y.data, 1,
+              <double*>A.data, A.shape[1]);
+
+
+cdef void dsyr2_3(np.ndarray x, np.ndarray y, np.ndarray A):
+
+    dsyr2_4(1.0, x, y, A)
+
+
+cdef np.ndarray dsyr2(np.ndarray x, np.ndarray y):
+
+    if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
+    cdef np.ndarray A = dmnewzero(x.shape[0], x.shape[0])
+    dsyr2_3(x, y, A)
+    return A
+
+
 ##########################################################################
 #
 # BLAS LEVEL 3

@@ -55,6 +55,7 @@ strmv_verify(); print
 strsv_verify(); print
 sger_verify();  print
 ssyr_verify();  print
+ssyr2_verify(); print
 
 dgemv_verify(); print
 dsymv_verify(); print
@@ -62,6 +63,7 @@ dtrmv_verify(); print
 dtrsv_verify(); print
 dger_verify();  print
 dsyr_verify();  print
+dsyr2_verify(); print
 
 
 print
@@ -726,6 +728,54 @@ cdef dsyr_verify():
     print "dsyr_3: ", approx_eq(result, A + A.T)
 
 
+# single precision symmetric rank 1 update.
+
+cdef ssyr2_verify():
+
+    x = np.array(np.random.random((5)),   dtype=np.float32)
+    y = np.array(np.random.random((5)),   dtype=np.float32)
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    di = np.diag_indices(5)
+    ti = np.triu_indices(5, 1)
+
+    result = np.outer(x, y) + np.outer(y, x)
+    xy = tokyo.ssyr2(x, y) ; xy[di] /= 2
+    print "ssyr2:  ", approx_eq(result, xy + xy.T)
+
+    A = (A + A.T)/2
+    result = A + np.outer(x, y) + np.outer(y, x)
+    tokyo.ssyr2_3(x, y, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr2_3:", approx_eq(result, A + A.T)
+
+    A = (A + A.T)/2
+    result = A + 1.2 * np.outer(x, y) + 1.2 * np.outer(y, x)
+    tokyo.ssyr2_4(1.2, x, y, A) ; A[di] /= 2 ; A[ti] = 0
+    print "ssyr2_4:", approx_eq(result, A + A.T)
+
+
+# double precision symmetric rank 1 update.
+
+cdef dsyr2_verify():
+
+    x = np.array(np.random.random((5)),   dtype=np.float64)
+    y = np.array(np.random.random((5)),   dtype=np.float64)
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    di = np.diag_indices(5)
+    ti = np.triu_indices(5, 1)
+
+    result = np.outer(x, y) + np.outer(y, x)
+    xy = tokyo.dsyr2(x, y) ; xy[di] /= 2
+    print "dsyr2:  ", approx_eq(result, xy + xy.T)
+
+    A = (A + A.T)/2
+    result = A + np.outer(x, y) + np.outer(y, x)
+    tokyo.dsyr2_3(x, y, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr2_3:", approx_eq(result, A + A.T)
+
+    A = (A + A.T)/2
+    result = A + 1.2 * np.outer(x, y) + 1.2 * np.outer(y, x)
+    tokyo.dsyr2_4(1.2, x, y, A) ; A[di] /= 2 ; A[ti] = 0
+    print "dsyr2_4:", approx_eq(result, A + A.T)
 
 
 ###########################################
