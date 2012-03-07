@@ -70,24 +70,46 @@ def configuration(parent_package='',top_path=None):
     tokyo_library_dirs = get_from_config(tokyo_config,'DEFAULT','library_dirs')
     tokyo_include_dirs = get_from_config(tokyo_config,'DEFAULT','include_dirs')
 
-    blas_info = get_info('blas_opt',0)
-    if not blas_info:
-        blas_info = get_info('blas',0)
+    try:
+        tokyo_blas_libs = get_from_config(tokyo_config,'blas_opt','libraries')
+        extra_link_args = []
+        for lib in tokyo_blas_libs.split(','):
+            libname = lib.strip()
+            extra_link_args.append('-Wl,-l' + libname)
+        blas_info = {'extra_link_args' : extra_link_args}
+    except:
+        blas_info = get_info('blas_opt',0)
         if not blas_info:
-            print 'No blas info found'
+            blas_info = get_info('blas',0)
+            if not blas_info:
+                print 'No blas info found'
+    print 'Using'
+    print blas_info
 
-    lapack_info = get_info('lapack_opt',0)
-    if not lapack_info:
-        lapack_info = get_info('lapack',0)
+    try:
+        tokyo_lapack_libs = get_from_config(tokyo_config,'lapack_opt','libraries')
+        extra_link_args = []
+        for lib in tokyo_lapack_libs.split(','):
+            libname = lib.strip()
+            extra_link_args.append('-Wl,-l' + libname)
+        lapack_info = {'extra_link_args' : extra_link_args}
+    except:
+        lapack_info = get_info('lapack_opt',0)
         if not lapack_info:
-            print 'No lapack info found'
+            lapack_info = get_info('lapack',0)
+            if not lapack_info:
+                print 'No lapack info found'
+    print 'Using'
+    print lapack_info
 
     tokyo_extra_args = dict(blas_info, **lapack_info)
+    print tokyo_extra_args
 
     config.add_extension(
         name='tokyo.tokyo',
         sources=[os.path.join('tokyo','tokyo.c')],
         include_dirs=tokyo_include_dirs,
+        library_dirs=tokyo_library_dirs,
         extra_info=tokyo_extra_args,
         )
 
@@ -95,6 +117,7 @@ def configuration(parent_package='',top_path=None):
         name='tokyo._verify',
         sources=[os.path.join('tokyo','_verify.c')],
         include_dirs=tokyo_include_dirs,
+        library_dirs=tokyo_library_dirs,
         extra_info=tokyo_extra_args,
         )
 
@@ -102,6 +125,7 @@ def configuration(parent_package='',top_path=None):
         name='tokyo._single_speed',
         sources=[os.path.join('tokyo','_single_speed.c')],
         include_dirs=tokyo_include_dirs,
+        library_dirs=tokyo_library_dirs,
         extra_info=tokyo_extra_args,
         )
 
@@ -109,6 +133,7 @@ def configuration(parent_package='',top_path=None):
         name='tokyo._double_speed',
         sources=[os.path.join('tokyo','_double_speed.c')],
         include_dirs=tokyo_include_dirs,
+        library_dirs=tokyo_library_dirs,
         extra_info=tokyo_extra_args,
         )
 
@@ -116,6 +141,7 @@ def configuration(parent_package='',top_path=None):
         name='tokyo._demo_outer',
         sources=[os.path.join('tokyo','_demo_outer.c')],
         include_dirs=tokyo_include_dirs,
+        library_dirs=tokyo_library_dirs,
         extra_info=tokyo_extra_args,
         )
 
