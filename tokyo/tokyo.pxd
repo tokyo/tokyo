@@ -153,6 +153,11 @@ cdef extern from "cblas.h":
                                  float alpha, float *x, int dx, float *y,
                                  int dy, float *A, int lda)
 
+    void lib_ssyrk "cblas_ssyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE Trans, int N, int K,
+                                 float alpha, float *A, int lda, float beta,
+                                 float *C, int ldc)
+
     void lib_dger  "cblas_dger"(CBLAS_ORDER Order, int M, int N, double alpha,
                                 double *x, int dx, double *y, int dy,
                                 double *A, int lda)
@@ -164,6 +169,11 @@ cdef extern from "cblas.h":
     void lib_dsyr2 "cblas_dsyr2"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
                                  double alpha, double *x, int dx, double *y,
                                  int dy, double *A, int lda)
+
+    void lib_dsyrk "cblas_dsyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE Trans, int N, int K,
+                                 double alpha, double *A, int lda, double beta,
+                                 double *C, int ldc)
 
     ###########################################################################
     # BLAS level 3 routines
@@ -582,6 +592,38 @@ cdef void dsymm5(double alpha, np.ndarray A, np.ndarray B, double beta,
 cdef void dsymm3(np.ndarray A, np.ndarray B, np.ndarray C)
 
 cdef np.ndarray dsymm(np.ndarray A, np.ndarray B)
+
+
+# single precision symmetric rank k update
+cdef void ssyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 int N, int K, float alpha, float *A, int lda, float beta,
+                 float *C, int ldc)
+
+cdef void ssyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 float alpha, np.ndarray A, float beta, np.ndarray C)
+
+cdef void ssyrk4(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
+                 np.ndarray C)
+
+cdef void ssyrk2(np.ndarray A, np.ndarray C)
+
+cdef np.ndarray ssyrk(np.ndarray A)
+
+
+# double precision symmetric rank k update
+cdef void dsyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 int N, int K, double alpha, double *A, int lda, double beta,
+                 double *C, int ldc)
+
+cdef void dsyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 double alpha, np.ndarray A, double beta, np.ndarray C)
+
+cdef void dsyrk4(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
+                 np.ndarray C)
+
+cdef void dsyrk2(np.ndarray A, np.ndarray C)
+
+cdef np.ndarray dsyrk(np.ndarray A)
 
 
 ######################################################################

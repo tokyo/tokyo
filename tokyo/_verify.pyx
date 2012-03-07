@@ -72,9 +72,11 @@ print
 
 sgemm_verify(); print
 ssymm_verify(); print
+ssyrk_verify(); print
 
 dgemm_verify(); print
 dsymm_verify(); print
+dsyrk_verify(); print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -904,6 +906,77 @@ cdef dsymm_verify():
     tokyo.dsymm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
                  alpha, A, B, beta, C)
     print "dsymm8: ", approx_eq(C_np, C)
+
+
+# Symmetric rank k update: C <- alpha * A * A.T + beta * C
+#                      or: C <- alpha * A.T * A + beta * C
+
+# single precision
+
+cdef ssyrk_verify():
+
+    A = np.array(np.random.random((4,5)), dtype=np.float32)
+    ti = np.triu_indices(4, 1)
+
+    # Compare only lower triangles.
+    C_np = np.dot(A, A.T) ; C_np[ti] = 0
+    C = tokyo.ssyrk(A)    ; C[ti] = 0
+    print "ssyrk:  ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((4,4)), dtype=np.float32)
+    tokyo.ssyrk2(A, C) ; C[ti] = 0
+    print "ssyrk2: ", approx_eq(C_np, C)
+
+    alpha = np.float32(np.random.random())
+    beta  = np.float32(np.random.random())
+
+    C = np.array(np.random.random((4,4)), dtype=np.float32)
+    C_np = alpha * np.dot(A, A.T) + beta * C
+    tokyo.ssyrk4(tokyo.CblasNoTrans, alpha, A, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "ssyrk4: ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((4,4)), dtype=np.float32)
+    C_np = alpha * np.dot(A, A.T) + beta * C
+    tokyo.ssyrk6(tokyo.CblasRowMajor, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, alpha, A, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "ssyrk6: ", approx_eq(C_np, C)
+
+
+# double precision
+
+cdef dsyrk_verify():
+
+    A = np.array(np.random.random((4,5)), dtype=np.float64)
+    ti = np.triu_indices(4, 1)
+
+    # Compare only lower triangles.
+    C_np = np.dot(A, A.T) ; C_np[ti] = 0
+    C = tokyo.dsyrk(A)    ; C[ti] = 0
+    print "dsyrk:  ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((4,4)), dtype=np.float64)
+    tokyo.dsyrk2(A, C) ; C[ti] = 0
+    print "dsyrk2: ", approx_eq(C_np, C)
+
+    alpha = np.random.random() ; beta  = np.random.random()
+
+    C = np.array(np.random.random((4,4)), dtype=np.float64)
+    C_np = alpha * np.dot(A, A.T) + beta * C
+    tokyo.dsyrk4(tokyo.CblasNoTrans, alpha, A, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "dsyrk4: ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((4,4)), dtype=np.float64)
+    C_np = alpha * np.dot(A, A.T) + beta * C
+    tokyo.dsyrk6(tokyo.CblasRowMajor, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, alpha, A, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "dsyrk6: ", approx_eq(C_np, C)
+
+
+
 
 
 ####################################################################

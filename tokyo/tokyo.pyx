@@ -1218,6 +1218,105 @@ cdef np.ndarray dsymm(np.ndarray A, np.ndarray B):
     return C
 
 
+# Symmetric rank k update: C <- alpha * A * A.T + beta * C
+#                      or: C <- alpha * A.T * A + beta * C
+#
+# single precision
+
+cdef void ssyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 int N, int K, float alpha, float *A, int lda, float beta,
+                 float *C, int ldc):
+
+    lib_ssyrk(Order, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc)
+
+
+cdef void ssyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 float alpha, np.ndarray A, float beta, np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if C.shape[0] != C.shape[1]: raise ValueError("C rows != C cols")
+    if Trans == CblasTrans:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C rows")
+        K = A.shape[0]
+    else:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        K = A.shape[1]
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if C.descr.type_num != NPY_FLOAT:
+        raise ValueError("C is not of type float")
+
+    lib_ssyrk(Order, Uplo, Trans, C.shape[0], K, alpha, <float*>A.data,
+              A.shape[1], beta, <float*>C.data, C.shape[1])
+
+
+cdef void ssyrk4(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
+                 np.ndarray C):
+
+    ssyrk6(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
+
+
+cdef void ssyrk2(np.ndarray A, np.ndarray C):
+
+    ssyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+
+
+cdef np.ndarray ssyrk(np.ndarray A):
+
+    cdef np.ndarray C = smnewempty(A.shape[0], A.shape[0])
+    ssyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    return C
+
+
+# double precision
+
+cdef void dsyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 int N, int K, double alpha, double *A, int lda, double beta,
+                 double *C, int ldc):
+
+    lib_dsyrk(Order, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc)
+
+
+cdef void dsyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                 double alpha, np.ndarray A, double beta, np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if C.shape[0] != C.shape[1]: raise ValueError("C rows != C cols")
+    if Trans == CblasTrans:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C rows")
+        K = A.shape[0]
+    else:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        K = A.shape[1]
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if C.descr.type_num != NPY_DOUBLE:
+        raise ValueError("C is not of type double")
+
+    lib_dsyrk(Order, Uplo, Trans, C.shape[0], K, alpha, <double*>A.data,
+              A.shape[1], beta, <double*>C.data, C.shape[1])
+
+
+cdef void dsyrk4(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
+                 np.ndarray C):
+
+    dsyrk6(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
+
+
+cdef void dsyrk2(np.ndarray A, np.ndarray C):
+
+    dsyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+
+
+cdef np.ndarray dsyrk(np.ndarray A):
+
+    cdef np.ndarray C = dmnewempty(A.shape[0], A.shape[0])
+    dsyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    return C
+
+
 #########################################################################
 #
 # Utility functions I've added myself
