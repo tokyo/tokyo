@@ -73,6 +73,7 @@ for size in test_sizes:
     print
     dgemm_speed(size); print
     dsymm_speed(size); print
+    dsyrk_speed(size); print
 
 
 print
@@ -786,6 +787,69 @@ cdef dsymm_speed(int size):
         tokyo.dsymm_(tokyo.CblasRowMajor, tokyo.CblasLeft,
                      tokyo.CblasLower, size, size, 1.0,
                      <double*>A_.data, size, <double*>B_.data, size,
+                     0.0, <double*>C_.data, size)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# Symmetric rank k update: C <- alpha * A * A.T + beta * C
+#                      or: C <- alpha * A.T * A + beta * C
+#
+# double precision
+
+cdef dsyrk_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*150/(size*size)
+
+    A = np.array(np.random.random((size,size)), dtype=np.float64)
+    C = np.array(np.random.random((size,size)), dtype=np.float64)
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_, C_
+    A_ = A; C_ = C
+
+    print "numpy.dot: ",
+    start = time.clock()
+    for i in range(loops): np.dot(A, A.T)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    print "dsyrk:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyrk(A)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyrk2:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyrk2(A, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyrk5:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyrk5(tokyo.CblasNoTrans, 1.0, A, 0.0, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyrk7:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyrk7(tokyo.CblasRowMajor, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, 1.0, A, 0.0, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dsyrk_:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dsyrk_(tokyo.CblasRowMajor, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, size, size, 1.0,
+                     <double*>A_.data, size,
                      0.0, <double*>C_.data, size)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
