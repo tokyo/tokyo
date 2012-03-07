@@ -18,6 +18,9 @@ complete the interface and interface LAPACK subroutines. Tokyo was started by
 Shane Legg <shane@vetta.org>. See his `blog post
 <http://www.vetta.org/2009/09/tokyo-a-cython-blas-wrapper-for-fast-matrix-math>`_.
 
+Currently, there is no documentation. It is a good idea to have the
+`BLAS Quick Reference <http://netlib.org/blas/blasqr.ps>`_ handy.
+
 Enjoy!
 
 
