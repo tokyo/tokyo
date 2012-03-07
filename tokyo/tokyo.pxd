@@ -599,10 +599,10 @@ cdef void ssyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  int N, int K, float alpha, float *A, int lda, float beta,
                  float *C, int ldc)
 
-cdef void ssyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+cdef void ssyrk7(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  float alpha, np.ndarray A, float beta, np.ndarray C)
 
-cdef void ssyrk4(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
+cdef void ssyrk5(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
                  np.ndarray C)
 
 cdef void ssyrk2(np.ndarray A, np.ndarray C)
@@ -615,10 +615,10 @@ cdef void dsyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  int N, int K, double alpha, double *A, int lda, double beta,
                  double *C, int ldc)
 
-cdef void dsyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+cdef void dsyrk7(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  double alpha, np.ndarray A, double beta, np.ndarray C)
 
-cdef void dsyrk4(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
+cdef void dsyrk5(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
                  np.ndarray C)
 
 cdef void dsyrk2(np.ndarray A, np.ndarray C)

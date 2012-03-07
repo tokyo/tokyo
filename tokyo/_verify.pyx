@@ -932,16 +932,16 @@ cdef ssyrk_verify():
 
     C = np.array(np.random.random((4,4)), dtype=np.float32)
     C_np = alpha * np.dot(A, A.T) + beta * C
-    tokyo.ssyrk4(tokyo.CblasNoTrans, alpha, A, beta, C)
+    tokyo.ssyrk5(tokyo.CblasNoTrans, alpha, A, beta, C)
     C_np[ti] = 0 ; C[ti] = 0
-    print "ssyrk4: ", approx_eq(C_np, C)
+    print "ssyrk5: ", approx_eq(C_np, C)
 
     C = np.array(np.random.random((4,4)), dtype=np.float32)
     C_np = alpha * np.dot(A, A.T) + beta * C
-    tokyo.ssyrk6(tokyo.CblasRowMajor, tokyo.CblasLower,
+    tokyo.ssyrk7(tokyo.CblasRowMajor, tokyo.CblasLower,
                  tokyo.CblasNoTrans, alpha, A, beta, C)
     C_np[ti] = 0 ; C[ti] = 0
-    print "ssyrk6: ", approx_eq(C_np, C)
+    print "ssyrk7: ", approx_eq(C_np, C)
 
 
 # double precision
@@ -964,19 +964,16 @@ cdef dsyrk_verify():
 
     C = np.array(np.random.random((4,4)), dtype=np.float64)
     C_np = alpha * np.dot(A, A.T) + beta * C
-    tokyo.dsyrk4(tokyo.CblasNoTrans, alpha, A, beta, C)
+    tokyo.dsyrk5(tokyo.CblasNoTrans, alpha, A, beta, C)
     C_np[ti] = 0 ; C[ti] = 0
-    print "dsyrk4: ", approx_eq(C_np, C)
+    print "dsyrk5: ", approx_eq(C_np, C)
 
     C = np.array(np.random.random((4,4)), dtype=np.float64)
     C_np = alpha * np.dot(A, A.T) + beta * C
-    tokyo.dsyrk6(tokyo.CblasRowMajor, tokyo.CblasLower,
+    tokyo.dsyrk7(tokyo.CblasRowMajor, tokyo.CblasLower,
                  tokyo.CblasNoTrans, alpha, A, beta, C)
     C_np[ti] = 0 ; C[ti] = 0
-    print "dsyrk6: ", approx_eq(C_np, C)
-
-
-
+    print "dsyrk7: ", approx_eq(C_np, C)
 
 
 ####################################################################

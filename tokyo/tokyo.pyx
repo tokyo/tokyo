@@ -1230,7 +1230,7 @@ cdef void ssyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
     lib_ssyrk(Order, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc)
 
 
-cdef void ssyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+cdef void ssyrk7(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  float alpha, np.ndarray A, float beta, np.ndarray C):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
@@ -1251,21 +1251,21 @@ cdef void ssyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
               A.shape[1], beta, <float*>C.data, C.shape[1])
 
 
-cdef void ssyrk4(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
+cdef void ssyrk5(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A, float beta,
                  np.ndarray C):
 
-    ssyrk6(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
+    ssyrk7(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
 
 
 cdef void ssyrk2(np.ndarray A, np.ndarray C):
 
-    ssyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    ssyrk5(CblasNoTrans, 1.0, A, 0.0, C)
 
 
 cdef np.ndarray ssyrk(np.ndarray A):
 
     cdef np.ndarray C = smnewempty(A.shape[0], A.shape[0])
-    ssyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    ssyrk5(CblasNoTrans, 1.0, A, 0.0, C)
     return C
 
 
@@ -1278,7 +1278,7 @@ cdef void dsyrk_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
     lib_dsyrk(Order, Uplo, Trans, N, K, alpha, A, lda, beta, C, ldc)
 
 
-cdef void dsyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+cdef void dsyrk7(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
                  double alpha, np.ndarray A, double beta, np.ndarray C):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
@@ -1299,21 +1299,21 @@ cdef void dsyrk6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
               A.shape[1], beta, <double*>C.data, C.shape[1])
 
 
-cdef void dsyrk4(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
+cdef void dsyrk5(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A, double beta,
                  np.ndarray C):
 
-    dsyrk6(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
+    dsyrk7(CblasRowMajor, CblasLower, Trans, alpha, A, beta, C)
 
 
 cdef void dsyrk2(np.ndarray A, np.ndarray C):
 
-    dsyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    dsyrk5(CblasNoTrans, 1.0, A, 0.0, C)
 
 
 cdef np.ndarray dsyrk(np.ndarray A):
 
     cdef np.ndarray C = dmnewempty(A.shape[0], A.shape[0])
-    dsyrk4(CblasNoTrans, 1.0, A, 0.0, C)
+    dsyrk5(CblasNoTrans, 1.0, A, 0.0, C)
     return C
 
 
