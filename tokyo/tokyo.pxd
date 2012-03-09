@@ -153,11 +153,6 @@ cdef extern from "cblas.h":
                                  float alpha, float *x, int dx, float *y,
                                  int dy, float *A, int lda)
 
-    void lib_ssyrk "cblas_ssyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
-                                 CBLAS_TRANSPOSE Trans, int N, int K,
-                                 float alpha, float *A, int lda, float beta,
-                                 float *C, int ldc)
-
     void lib_dger  "cblas_dger"(CBLAS_ORDER Order, int M, int N, double alpha,
                                 double *x, int dx, double *y, int dy,
                                 double *A, int lda)
@@ -169,11 +164,6 @@ cdef extern from "cblas.h":
     void lib_dsyr2 "cblas_dsyr2"(CBLAS_ORDER order, CBLAS_UPLO Uplo, int N,
                                  double alpha, double *x, int dx, double *y,
                                  int dy, double *A, int lda)
-
-    void lib_dsyrk "cblas_dsyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
-                                 CBLAS_TRANSPOSE Trans, int N, int K,
-                                 double alpha, double *A, int lda, double beta,
-                                 double *C, int ldc)
 
     ###########################################################################
     # BLAS level 3 routines
@@ -191,6 +181,11 @@ cdef extern from "cblas.h":
                                               float *B, int ldb,
                                  float beta,  float *C, int ldc)
 
+    void lib_ssyrk "cblas_ssyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE Trans, int N, int K,
+                                 float alpha, float *A, int lda, float beta,
+                                 float *C, int ldc)
+
     void lib_dgemm "cblas_dgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
                                  double alpha, double *A, int lda,
@@ -202,6 +197,11 @@ cdef extern from "cblas.h":
                                  double alpha, double *A, int lda,
                                                double *B, int ldb,
                                  double beta,  double *C, int ldc)
+
+    void lib_dsyrk "cblas_dsyrk"(CBLAS_ORDER Order, CBLAS_UPLO Uplo,
+                                 CBLAS_TRANSPOSE Trans, int N, int K,
+                                 double alpha, double *A, int lda, double beta,
+                                 double *C, int ldc)
 
 
 #####################################
