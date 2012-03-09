@@ -70,13 +70,15 @@ print
 print "VERIFY CORRECTNESS BLAS 3"
 print
 
-sgemm_verify(); print
-ssymm_verify(); print
-ssyrk_verify(); print
+sgemm_verify();  print
+ssymm_verify();  print
+ssyrk_verify();  print
+ssyr2k_verify(); print
 
-dgemm_verify(); print
-dsymm_verify(); print
-dsyrk_verify(); print
+dgemm_verify();  print
+dsymm_verify();  print
+dsyrk_verify();  print
+dsyr2k_verify(); print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -974,6 +976,77 @@ cdef dsyrk_verify():
                  tokyo.CblasNoTrans, alpha, A, beta, C)
     C_np[ti] = 0 ; C[ti] = 0
     print "dsyrk7: ", approx_eq(C_np, C)
+
+
+# Symmetric rank ak update: C <- alpha * A * B.T + alpha * B * A.T + beta * C
+#                       or: C <- alpha * A.T * B + alpha * B.T * A + beta * C
+
+# single precision
+
+cdef ssyr2k_verify():
+
+    A = np.array(np.random.random((5,3)), dtype=np.float32)
+    B = np.array(np.random.random((5,3)), dtype=np.float32)
+    ti = np.triu_indices(5, 1)
+
+    # Compare only lower triangles.
+    C_np = np.dot(A, B.T) + np.dot(B, A.T) ; C_np[ti] = 0
+    C = tokyo.ssyr2k(A, B)                 ; C[ti] = 0
+    print "ssyr2k: ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((5,5)), dtype=np.float32)
+    tokyo.ssyr2k3(A, B, C) ; C[ti] = 0
+    print "ssyr2k3:", approx_eq(C_np, C)
+
+    alpha = np.float32(np.random.random())
+    beta  = np.float32(np.random.random())
+
+    C = np.array(np.random.random((5,5)), dtype=np.float32)
+    C_np = alpha * np.dot(A, B.T) + alpha * np.dot(B, A.T) + beta * C
+    tokyo.ssyr2k6(tokyo.CblasNoTrans, alpha, A, B, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "ssyr2k6:", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((5,5)), dtype=np.float32)
+    C_np = alpha * np.dot(A, B.T) + alpha * np.dot(B, A.T) + beta * C
+    tokyo.ssyr2k8(tokyo.CblasRowMajor, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, alpha, A, B, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "ssyr2k8:", approx_eq(C_np, C)
+
+
+# double precision
+
+cdef dsyr2k_verify():
+
+    A = np.array(np.random.random((5,3)), dtype=np.float64)
+    B = np.array(np.random.random((5,3)), dtype=np.float64)
+    ti = np.triu_indices(5, 1)
+
+    # Compare only lower triangles.
+    C_np = np.dot(A, B.T) + np.dot(B, A.T) ; C_np[ti] = 0
+    C = tokyo.dsyr2k(A, B)                 ; C[ti] = 0
+    print "dsyr2k: ", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((5,5)), dtype=np.float64)
+    tokyo.dsyr2k3(A, B, C) ; C[ti] = 0
+    print "dsyr2k3:", approx_eq(C_np, C)
+
+    alpha = np.random.random() ; beta  = np.random.random()
+
+    C = np.array(np.random.random((5,5)), dtype=np.float64)
+    C_np = alpha * np.dot(A, B.T) + alpha * np.dot(B, A.T) + beta * C
+    tokyo.dsyr2k6(tokyo.CblasNoTrans, alpha, A, B, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "dsyr2k6:", approx_eq(C_np, C)
+
+    C = np.array(np.random.random((5,5)), dtype=np.float64)
+    C_np = alpha * np.dot(A, B.T) + alpha * np.dot(B, A.T) + beta * C
+    tokyo.dsyr2k8(tokyo.CblasRowMajor, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, alpha, A, B, beta, C)
+    C_np[ti] = 0 ; C[ti] = 0
+    print "dsyr2k8:", approx_eq(C_np, C)
+
 
 
 ####################################################################

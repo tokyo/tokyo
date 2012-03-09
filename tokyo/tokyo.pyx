@@ -1317,6 +1317,125 @@ cdef np.ndarray dsyrk(np.ndarray A):
     return C
 
 
+# Symmetric rank-2k update: C <- alpha * A * B.T + alpha * B * A.T + beta * C
+#                       or: C <- alpha * A.T * B + alpha * B.T * A + beta * C
+#
+# single precision
+
+cdef void ssyr2k_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans, int N,
+                  int K, float alpha, float *A, int lda, float *B, int ldb,
+                  float beta, float *C, int ldc):
+
+    lib_ssyr2k(Order, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
+
+
+cdef void ssyr2k8(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                  float alpha, np.ndarray A, np.ndarray B,
+                  float beta, np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if C.shape[0] != C.shape[1]: raise ValueError("C rows != C cols")
+    if Trans == CblasTrans:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C rows")
+        if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        if B.shape[1] != C.shape[0]: raise ValueError("C rows != B cols")
+        K = A.shape[0]
+    else:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+        if B.shape[0] != C.shape[0]: raise ValueError("B rows != C rows")
+        K = A.shape[1]
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if C.descr.type_num != NPY_FLOAT:
+        raise ValueError("C is not of type float")
+
+    lib_ssyr2k(Order, Uplo, Trans, C.shape[0], K, alpha,
+               <float*>A.data, A.shape[1], <float*>B.data, B.shape[1],
+               beta, <float*>C.data, C.shape[1])
+
+
+cdef void ssyr2k6(CBLAS_TRANSPOSE Trans, float alpha, np.ndarray A,
+                  np.ndarray B, float beta, np.ndarray C):
+
+    ssyr2k8(CblasRowMajor, CblasLower, Trans, alpha, A, B, beta, C)
+
+
+cdef void ssyr2k3(np.ndarray A, np.ndarray B, np.ndarray C):
+
+    ssyr2k6(CblasNoTrans, 1.0, A, B, 0.0, C)
+
+
+cdef np.ndarray ssyr2k(np.ndarray A, np.ndarray B):
+
+    cdef np.ndarray C = smnewempty(A.shape[0], A.shape[0])
+    ssyr2k6(CblasNoTrans, 1.0, A, B, 0.0, C)
+    return C
+
+
+# double precision
+
+cdef void dsyr2k_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans, int N,
+                  int K, double alpha, double *A, int lda, double *B, int ldb,
+                  double beta, double *C, int ldc):
+
+    lib_dsyr2k(Order, Uplo, Trans, N, K, alpha, A, lda, B, ldb, beta, C, ldc)
+
+
+cdef void dsyr2k8(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
+                  double alpha, np.ndarray A, np.ndarray B,
+                  double beta, np.ndarray C):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if C.ndim != 2: raise ValueError("C is not a matrix")
+    if C.shape[0] != C.shape[1]: raise ValueError("C rows != C cols")
+    if Trans == CblasTrans:
+        if A.shape[1] != C.shape[0]: raise ValueError("A cols != C rows")
+        if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        if B.shape[1] != C.shape[0]: raise ValueError("C rows != B cols")
+        K = A.shape[0]
+    else:
+        if A.shape[0] != C.shape[0]: raise ValueError("A rows != C rows")
+        if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+        if B.shape[0] != C.shape[0]: raise ValueError("B rows != C rows")
+        K = A.shape[1]
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if C.descr.type_num != NPY_DOUBLE:
+        raise ValueError("C is not of type double")
+
+    lib_dsyr2k(Order, Uplo, Trans, C.shape[0], K, alpha,
+               <double*>A.data, A.shape[1], <double*>B.data, B.shape[1],
+               beta, <double*>C.data, C.shape[1])
+
+
+cdef void dsyr2k6(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A,
+                  np.ndarray B, double beta, np.ndarray C):
+
+    dsyr2k8(CblasRowMajor, CblasLower, Trans, alpha, A, B, beta, C)
+
+
+cdef void dsyr2k3(np.ndarray A, np.ndarray B, np.ndarray C):
+
+    dsyr2k6(CblasNoTrans, 1.0, A, B, 0.0, C)
+
+
+cdef np.ndarray dsyr2k(np.ndarray A, np.ndarray B):
+
+    cdef np.ndarray C = dmnewempty(A.shape[0], A.shape[0])
+    dsyr2k6(CblasNoTrans, 1.0, A, B, 0.0, C)
+    return C
+
+
+
+
 #########################################################################
 #
 # Utility functions I've added myself
