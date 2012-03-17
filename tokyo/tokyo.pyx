@@ -1350,7 +1350,7 @@ cdef void ssyr2k8(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
     if A.descr.type_num != NPY_FLOAT:
         raise ValueError("A is not of type float")
     if B.descr.type_num != NPY_FLOAT:
-        raise ValueError("A is not of type float")
+        raise ValueError("B is not of type float")
     if C.descr.type_num != NPY_FLOAT:
         raise ValueError("C is not of type float")
 
@@ -1407,7 +1407,7 @@ cdef void dsyr2k8(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE Trans,
     if A.descr.type_num != NPY_DOUBLE:
         raise ValueError("A is not of type double")
     if B.descr.type_num != NPY_DOUBLE:
-        raise ValueError("A is not of type double")
+        raise ValueError("B is not of type double")
     if C.descr.type_num != NPY_DOUBLE:
         raise ValueError("C is not of type double")
 
