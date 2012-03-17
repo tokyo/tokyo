@@ -1434,6 +1434,120 @@ cdef np.ndarray dsyr2k(np.ndarray A, np.ndarray B):
     return C
 
 
+#     B = alpha * A * B  or  B = alpha * A.T * B
+# or  B = alpha * B * A  or  B = alpha * B * A.T
+#
+# where A is triangular.
+
+# single precision
+
+cdef void strmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int M, int N,
+                 float alpha, float *A, int lda,
+                 float *B, int ldb):
+
+    lib_strmm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
+
+
+cdef void strmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, float alpha,
+                 np.ndarray A, np.ndarray B):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if TransA == CblasTrans:
+        if Side == CblasLeft:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if Side == CblasLeft:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT:
+        raise ValueError("B is not of type float")
+
+    lib_strmm(Order, Side, Uplo, TransA, Diag, B.shape[0], B.shape[1],
+              alpha, <float*>A.data, A.shape[1], <float*>B.data, B.shape[1])
+
+
+cdef void strmm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 float alpha, np.ndarray A, np.ndarray B):
+
+    strmm8(CblasRowMajor, Side, CblasLower, TransA, CblasNonUnit, alpha, A, B)
+
+
+cdef void strmm3(float alpha, np.ndarray A, np.ndarray B):
+
+    strmm8(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasNonUnit,
+           alpha, A, B)
+
+
+cdef void strmm(np.ndarray A, np.ndarray B):
+
+    strmm3(1.0, A, B)
+
+
+# double precision
+
+cdef void dtrmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int M, int N,
+                 double alpha, double *A, int lda,
+                 double *B, int ldb):
+
+    lib_dtrmm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
+
+
+cdef void dtrmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, double alpha,
+                 np.ndarray A, np.ndarray B):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if TransA == CblasTrans:
+        if Side == CblasLeft:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if Side == CblasLeft:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("B is not of type double")
+
+    lib_dtrmm(Order, Side, Uplo, TransA, Diag, B.shape[0], B.shape[1],
+              alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1])
+
+
+cdef void dtrmm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 double alpha, np.ndarray A, np.ndarray B):
+
+    dtrmm8(CblasRowMajor, Side, CblasLower, TransA, CblasNonUnit, alpha, A, B)
+
+
+cdef void dtrmm3(double alpha, np.ndarray A, np.ndarray B):
+
+    dtrmm8(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasNonUnit,
+           alpha, A, B)
+
+
+cdef void dtrmm(np.ndarray A, np.ndarray B):
+
+    dtrmm3(1.0, A, B)
+
 
 
 #########################################################################

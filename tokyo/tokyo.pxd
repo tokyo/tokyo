@@ -192,6 +192,12 @@ cdef extern from "cblas.h":
                                                 float *B, int ldb,
                                    float beta,  float *C, int ldc)
 
+    void lib_strmm "cblas_strmm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                                 CBLAS_DIAG Diag, int M, int N,
+                                 float alpha, float *A, int lda,
+                                 float *B, int ldb)
+
     void lib_dgemm "cblas_dgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
                                  double alpha, double *A, int lda,
@@ -214,6 +220,12 @@ cdef extern from "cblas.h":
                                    double alpha, double *A, int lda,
                                                  double *B, int ldb,
                                    double beta,  double *C, int ldc)
+
+    void lib_dtrmm "cblas_dtrmm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                                 CBLAS_DIAG Diag, int M, int N,
+                                 double alpha, double *A, int lda,
+                                 double *B, int ldb)
 
 
 #####################################
@@ -670,6 +682,65 @@ cdef void dsyr2k6(CBLAS_TRANSPOSE Trans, double alpha, np.ndarray A,
 cdef void dsyr2k3(np.ndarray A, np.ndarray B, np.ndarray C)
 
 cdef np.ndarray dsyr2k(np.ndarray A, np.ndarray B)
+
+
+#     B = alpha * A * B  or  B = alpha * A.T * B
+# or  B = alpha * B * A  or  B = alpha * B * A.T
+#
+# where A is triangular.
+
+# single precision
+
+cdef void lib_strmm(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                    CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                    CBLAS_DIAG Diag, int M, int N,
+                    float alpha, float *A, int lda,
+                    float *B, int ldb)
+
+cdef void strmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int M, int N,
+                 float alpha, float *A, int lda,
+                 float *B, int ldb)
+
+cdef void strmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, float alpha,
+                 np.ndarray A, np.ndarray B)
+
+cdef void strmm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 float alpha, np.ndarray A, np.ndarray B)
+
+cdef void strmm3(float alpha, np.ndarray A, np.ndarray B)
+
+cdef void strmm(np.ndarray A, np.ndarray B)
+
+
+# double precision
+
+cdef void lib_dtrmm(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                   CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                   CBLAS_DIAG Diag, int M, int N,
+                   double alpha, double *A, int lda,
+                   double *B, int ldb)
+
+cdef void dtrmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, int M, int N,
+                 double alpha, double *A, int lda,
+                 double *B, int ldb)
+
+cdef void dtrmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                 CBLAS_DIAG Diag, double alpha,
+                 np.ndarray A, np.ndarray B)
+
+cdef void dtrmm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 double alpha, np.ndarray A, np.ndarray B)
+
+cdef void dtrmm3(double alpha, np.ndarray A, np.ndarray B)
+
+cdef void dtrmm(np.ndarray A, np.ndarray B)
 
 
 ######################################################################
