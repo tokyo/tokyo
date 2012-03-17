@@ -1441,19 +1441,16 @@ cdef np.ndarray dsyr2k(np.ndarray A, np.ndarray B):
 
 # single precision
 
-cdef void strmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, int M, int N,
-                 float alpha, float *A, int lda,
-                 float *B, int ldb):
+cdef void strmm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 float alpha, float *A, int lda, float *B, int ldb):
 
     lib_strmm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
 
 
-cdef void strmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, float alpha,
-                 np.ndarray A, np.ndarray B):
+cdef void strmm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 float alpha, np.ndarray A, np.ndarray B):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
@@ -1496,19 +1493,16 @@ cdef void strmm(np.ndarray A, np.ndarray B):
 
 # double precision
 
-cdef void dtrmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, int M, int N,
-                 double alpha, double *A, int lda,
-                 double *B, int ldb):
+cdef void dtrmm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 double alpha, double *A, int lda, double *B, int ldb):
 
     lib_dtrmm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
 
 
-cdef void dtrmm8(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                 CBLAS_DIAG Diag, double alpha,
-                 np.ndarray A, np.ndarray B):
+cdef void dtrmm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 double alpha, np.ndarray A, np.ndarray B):
 
     if A.ndim != 2: raise ValueError("A is not a matrix")
     if B.ndim != 2: raise ValueError("B is not a matrix")
