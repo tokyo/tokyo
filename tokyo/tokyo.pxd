@@ -691,12 +691,6 @@ cdef np.ndarray dsyr2k(np.ndarray A, np.ndarray B)
 
 # single precision
 
-cdef void lib_strmm(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                    CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                    CBLAS_DIAG Diag, int M, int N,
-                    float alpha, float *A, int lda,
-                    float *B, int ldb)
-
 cdef void strmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
                  CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                  CBLAS_DIAG Diag, int M, int N,
@@ -717,12 +711,6 @@ cdef void strmm(np.ndarray A, np.ndarray B)
 
 
 # double precision
-
-cdef void lib_dtrmm(CBLAS_ORDER Order, CBLAS_SIDE Side,
-                   CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
-                   CBLAS_DIAG Diag, int M, int N,
-                   double alpha, double *A, int lda,
-                   double *B, int ldb)
 
 cdef void dtrmm_(CBLAS_ORDER Order, CBLAS_SIDE Side,
                  CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
