@@ -30,8 +30,9 @@ Installing
 Copy `site.template.cfg` to `site.cfg` and edit `site.cfg`. Fill in the
 sections to provide default search paths, library paths and library names for
 your local (optimized) BLAS and LAPACK libraries. In some cases, Numpy's
-autodetection system will gather the correct libraries for you. Once `site.cfg`
-is complete, simply::
+autodetection system will gather the correct libraries for you. See the wiki on
+Github for building Tokyo against the GotoBLAS. Once `site.cfg` is complete,
+simply::
 
     python setup.py install
 
