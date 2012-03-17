@@ -74,11 +74,13 @@ sgemm_verify();  print
 ssymm_verify();  print
 ssyrk_verify();  print
 ssyr2k_verify(); print
+strmm_verify();  print
 
 dgemm_verify();  print
 dsymm_verify();  print
 dsyrk_verify();  print
 dsyr2k_verify(); print
+dtrmm_verify();  print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -1047,6 +1049,68 @@ cdef dsyr2k_verify():
     C_np[ti] = 0 ; C[ti] = 0
     print "dsyr2k8:", approx_eq(C_np, C)
 
+
+#     B = alpha * A * B  or  B = alpha * A.T * B
+# or  B = alpha * B * A  or  B = alpha * B * A.T
+#
+# where A is triangular.
+
+# single precision
+
+cdef strmm_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    B = np.array(np.random.random((5,4)), dtype=np.float32)
+    ti = np.triu_indices(5, 1)
+    A[ti] = 0
+
+    C_np = np.dot(A, B)
+    tokyo.strmm(A, B)
+    print 'strmm:  ', approx_eq(C_np, B)
+
+    alpha = np.float32(np.random.random())
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.strmm3(alpha, A, B)
+    print 'strmm3: ', approx_eq(C_np, B)
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.strmm5(tokyo.CblasLeft, tokyo.CblasNoTrans, alpha, A, B)
+    print 'strmm5: ', approx_eq(C_np, B)
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.strmm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                tokyo.CblasNoTrans, tokyo.CblasNonUnit, alpha, A, B)
+    print 'strmm8: ', approx_eq(C_np, B)
+
+
+# double precision
+
+cdef dtrmm_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    B = np.array(np.random.random((5,4)), dtype=np.float64)
+    ti = np.triu_indices(5, 1)
+    A[ti] = 0
+
+    C_np = np.dot(A, B)
+    tokyo.dtrmm(A, B)
+    print 'dtrmm:  ', approx_eq(C_np, B)
+
+    alpha = np.random.random()
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.dtrmm3(alpha, A, B)
+    print 'dtrmm3: ', approx_eq(C_np, B)
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.dtrmm5(tokyo.CblasLeft, tokyo.CblasNoTrans, alpha, A, B)
+    print 'dtrmm5: ', approx_eq(C_np, B)
+
+    C_np = alpha * np.dot(A, B)
+    tokyo.dtrmm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                tokyo.CblasNoTrans, tokyo.CblasNonUnit, alpha, A, B)
+    print 'dtrmm8: ', approx_eq(C_np, B)
 
 
 ####################################################################
