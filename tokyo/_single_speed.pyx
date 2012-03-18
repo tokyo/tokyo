@@ -74,9 +74,10 @@ for size in test_sizes:
     print "Single precision: Vector size = " + str(size) + \
         "  Matrix size = " + str(size) + "x" + str(size)
     print
-    sgemm_speed(size); print
-    ssymm_speed(size); print
-    ssyrk_speed(size); print
+    sgemm_speed(size);  print
+    ssymm_speed(size);  print
+    ssyrk_speed(size);  print
+    ssyr2k_speed(size); print
 
 
 print
@@ -873,6 +874,69 @@ cdef ssyrk_speed(int size):
         tokyo.ssyrk_(tokyo.CblasRowMajor, tokyo.CblasLower,
                      tokyo.CblasNoTrans, size, size, 1.0,
                      <float*>A_.data, size,
+                     0.0, <float*>C_.data, size)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+# Symmetric rank-2k update: C <- alpha * A * B.T + alpha * B * A.T + beta * C
+#                       or: C <- alpha * A.T * B + alpha * B.T * A + beta * C
+
+cdef ssyr2k_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*150/(size*size)
+
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    B = np.array(np.random.random((size,size)), dtype=np.float32)
+    C = np.array(np.random.random((size,size)), dtype=np.float32)
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_, B_, C_
+    A_ = A; B_ = B ; C_ = C
+
+    print "numpy.dot: ",
+    start = time.clock()
+    for i in range(loops):
+        np.dot(A, B.T) + np.dot(B, A.T)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    print "ssyr2k:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr2k(A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr2k3:   ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr2k3(A, B, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr2k6:   ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr2k6(tokyo.CblasNoTrans, 1.0, A, B, 0.0, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr2k8:   ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr2k8(tokyo.CblasRowMajor, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, 1.0, A, B, 0.0, C)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "ssyr2k_:   ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.ssyr2k_(tokyo.CblasRowMajor, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, size, size, 1.0,
+                     <float*>A_.data, size, <float*>B_.data, size,
                      0.0, <float*>C_.data, size)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
