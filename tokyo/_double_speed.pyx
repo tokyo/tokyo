@@ -75,6 +75,7 @@ for size in test_sizes:
     dsymm_speed(size);  print
     dsyrk_speed(size);  print
     dsyr2k_speed(size); print
+    dtrmm_speed(size);  print
 
 
 print
@@ -915,6 +916,71 @@ cdef dsyr2k_speed(int size):
                      tokyo.CblasNoTrans, size, size, 1.0,
                      <double*>A_.data, size, <double*>B_.data, size,
                      0.0, <double*>C_.data, size)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+#     B = alpha * A * B  or  B = alpha * A.T * B
+# or  B = alpha * B * A  or  B = alpha * B * A.T
+#
+# where A is triangular.
+
+cdef dtrmm_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*150/(size*size)
+
+    A = np.array(np.random.random((size,size)), dtype=np.float64)
+    B = np.array(np.random.random((size,size)), dtype=np.float64)
+    ti = np.triu_indices(size, 1)
+    A[ti] = 0
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_, B_
+    A_ = A; B_ = B
+
+    print "numpy.dot: ",
+    start = time.clock()
+    for i in range(loops):
+        np.dot(A, B)
+    np_rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (np_rate/1000)
+
+    print "dtrmm:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmm(A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dtrmm3:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmm3(1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dtrmm5:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmm5(tokyo.CblasLeft, tokyo.CblasNoTrans, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dtrmm8:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+    print "dtrmm_:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrmm_(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, size, size, 1.0,
+                     <double*>A_.data, size, <double*>B_.data, size)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
