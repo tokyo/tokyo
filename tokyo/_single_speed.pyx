@@ -79,6 +79,7 @@ for size in test_sizes:
     ssyrk_speed(size);  print
     ssyr2k_speed(size); print
     strmm_speed(size);  print
+    strsm_speed(size);  print
 
 
 print
@@ -1007,6 +1008,63 @@ cdef strmm_speed(int size):
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
 
+
+#     B = alpha * inv(A) * B  or  B = alpha * inv(A).T * B
+# or  B = alpha * B * inv(A)  or  B = alpha * B * inv(A).T
+#
+# where A is triangular.
+
+cdef strsm_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*150/(size*size)
+
+    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    B = np.array(np.random.random((size,size)), dtype=np.float32)
+    ti = np.triu_indices(size, 1)
+    A[ti] = 0
+
+    cdef np.ndarray[float, ndim=2, mode='c'] A_, B_
+    A_ = A; B_ = B
+
+    print "strsm:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strsm(A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "strsm3:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strsm3(1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "strsm5:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strsm5(tokyo.CblasLeft, tokyo.CblasNoTrans, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "strsm8:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strsm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "strsm_:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.strsm_(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, size, size, 1.0,
+                     <float*>A_.data, size, <float*>B_.data, size)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
 
 
 ####################################################################

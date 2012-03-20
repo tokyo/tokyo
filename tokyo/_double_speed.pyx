@@ -76,6 +76,7 @@ for size in test_sizes:
     dsyrk_speed(size);  print
     dsyr2k_speed(size); print
     dtrmm_speed(size);  print
+    dtrsm_speed(size);  print
 
 
 print
@@ -983,6 +984,64 @@ cdef dtrmm_speed(int size):
                      <double*>A_.data, size, <double*>B_.data, size)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s %5.1fx" % (rate/1000,rate/np_rate)
+
+
+#     B = alpha * inv(A) * B  or  B = alpha * inv(A).T * B
+# or  B = alpha * B * inv(A)  or  B = alpha * B * inv(A).T
+#
+# where A is triangular.
+
+cdef dtrsm_speed(int size):
+
+    cdef int i, loops
+
+    loops = speed_base*150/(size*size)
+
+    A = np.array(np.random.random((size,size)), dtype=np.float64)
+    B = np.array(np.random.random((size,size)), dtype=np.float64)
+    ti = np.triu_indices(size, 1)
+    A[ti] = 0
+
+    cdef np.ndarray[double, ndim=2, mode='c'] A_, B_
+    A_ = A; B_ = B
+
+    print "dtrsm:     ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrsm(A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "dtrsm3:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrsm3(1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "dtrsm5:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrsm5(tokyo.CblasLeft, tokyo.CblasNoTrans, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "dtrsm8:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrsm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, 1.0, A, B)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
+
+    print "dtrsm_:    ",
+    start = time.clock()
+    for i in range(loops):
+        tokyo.dtrsm_(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                     tokyo.CblasNoTrans, tokyo.CblasNonUnit, size, size, 1.0,
+                     <double*>A_.data, size, <double*>B_.data, size)
+    rate = loops/(time.clock()-start)
+    print "%9.0f kc/s" % (rate/1000)
 
 
 ####################################################################
