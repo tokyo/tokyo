@@ -75,12 +75,14 @@ ssymm_verify();  print
 ssyrk_verify();  print
 ssyr2k_verify(); print
 strmm_verify();  print
+strsm_verify();  print
 
 dgemm_verify();  print
 dsymm_verify();  print
 dsyrk_verify();  print
 dsyr2k_verify(); print
 dtrmm_verify();  print
+dtrsm_verify();  print
 
 print
 print "VERIFY CORRECTNESS EXTRAS"
@@ -1111,6 +1113,69 @@ cdef dtrmm_verify():
     tokyo.dtrmm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
                 tokyo.CblasNoTrans, tokyo.CblasNonUnit, alpha, A, B)
     print 'dtrmm8: ', approx_eq(C_np, B)
+
+
+#    B = alpha * inv(A) * B  or  B = alpha * inv(A).T * B
+# or B = alpha * B * inv(A)  or  B = alpha * B * inv(A).T
+#
+# where A is triangular.
+
+# single precision
+
+cdef strsm_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    B = np.array(np.random.random((5,4)), dtype=np.float32)
+    ti = np.triu_indices(5, 1)
+    A[ti] = 0
+
+    C = tokyo.sgemm(A, B)
+    tokyo.strsm(A, C)
+    print 'strsm:  ', approx_eq(C, B)
+
+    alpha = np.float32(np.random.random())
+
+    C = alpha * tokyo.sgemm(A, B)
+    tokyo.strsm3(1./alpha, A, C)
+    print 'strsm3: ', approx_eq(C, B)
+
+    C = alpha * tokyo.sgemm(A, B)
+    tokyo.strsm5(tokyo.CblasLeft, tokyo.CblasNoTrans, 1.0/alpha, A, C)
+    print 'strsm5: ', approx_eq(C, B)
+
+    C = alpha * tokyo.sgemm(A, B)
+    tokyo.strsm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, tokyo.CblasNonUnit, 1.0/alpha, A, C)
+    print 'strsm8: ', approx_eq(C, B)
+
+
+# double precision
+
+cdef dtrsm_verify():
+
+    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    B = np.array(np.random.random((5,4)), dtype=np.float64)
+    ti = np.triu_indices(5, 1)
+    A[ti] = 0
+
+    C = tokyo.dgemm(A, B)
+    tokyo.dtrsm(A, C)
+    print 'dtrsm:  ', approx_eq(C, B)
+
+    alpha = np.random.random()
+
+    C = alpha * tokyo.dgemm(A, B)
+    tokyo.dtrsm3(1./alpha, A, C)
+    print 'dtrsm3: ', approx_eq(C, B)
+
+    C = alpha * tokyo.dgemm(A, B)
+    tokyo.dtrsm5(tokyo.CblasLeft, tokyo.CblasNoTrans, 1.0/alpha, A, C)
+    print 'dtrsm5: ', approx_eq(C, B)
+
+    C = alpha * tokyo.dgemm(A, B)
+    tokyo.dtrsm8(tokyo.CblasRowMajor, tokyo.CblasLeft, tokyo.CblasLower,
+                 tokyo.CblasNoTrans, tokyo.CblasNonUnit, 1.0/alpha, A, C)
+    print 'dtrsm8: ', approx_eq(C, B)
 
 
 ####################################################################
