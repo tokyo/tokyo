@@ -1543,6 +1543,114 @@ cdef void dtrmm(np.ndarray A, np.ndarray B):
     dtrmm3(1.0, A, B)
 
 
+#    B = alpha * inv(A) * B  or  B = alpha * inv(A).T * B
+# or B = alpha * B * inv(A)  or  B = alpha * B * inv(A).T
+#
+# where A is triangular.
+
+# single precision
+
+cdef void strsm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 float alpha, float *A, int lda, float *B, int ldb):
+
+    lib_strsm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
+
+
+cdef void strsm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 float alpha, np.ndarray A, np.ndarray B):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if TransA == CblasTrans:
+        if Side == CblasLeft:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if Side == CblasLeft:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
+    if A.descr.type_num != NPY_FLOAT:
+        raise ValueError("A is not of type float")
+    if B.descr.type_num != NPY_FLOAT:
+        raise ValueError("B is not of type float")
+
+    lib_strsm(Order, Side, Uplo, TransA, Diag, B.shape[0], B.shape[1],
+              alpha, <float*>A.data, A.shape[1], <float*>B.data, B.shape[1])
+
+
+cdef void strsm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 float alpha, np.ndarray A, np.ndarray B):
+
+    strsm8(CblasRowMajor, Side, CblasLower, TransA, CblasNonUnit, alpha, A, B)
+
+
+cdef void strsm3(float alpha, np.ndarray A, np.ndarray B):
+
+    strsm8(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasNonUnit,
+           alpha, A, B)
+
+
+cdef void strsm(np.ndarray A, np.ndarray B):
+
+    strsm3(1.0, A, B)
+
+
+# double precision
+
+cdef void dtrsm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 double alpha, double *A, int lda, double *B, int ldb):
+
+    lib_dtrsm(Order, Side, Uplo, TransA, Diag, M, N, alpha, A, lda, B, ldb)
+
+
+cdef void dtrsm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 double alpha, np.ndarray A, np.ndarray B):
+
+    if A.ndim != 2: raise ValueError("A is not a matrix")
+    if B.ndim != 2: raise ValueError("B is not a matrix")
+    if A.shape[0] != A.shape[1]: raise ValueError("A rows != A cols")
+    if TransA == CblasTrans:
+        if Side == CblasLeft:
+            if A.shape[0] != B.shape[0]: raise ValueError("A rows != B rows")
+        else:
+            if A.shape[1] != B.shape[1]: raise ValueError("A cols != B cols")
+    else:
+        if Side == CblasLeft:
+            if A.shape[1] != B.shape[0]: raise ValueError("A cols != B rows")
+        else:
+            if A.shape[0] != B.shape[1]: raise ValueError("A rows != B cols")
+    if A.descr.type_num != NPY_DOUBLE:
+        raise ValueError("A is not of type double")
+    if B.descr.type_num != NPY_DOUBLE:
+        raise ValueError("B is not of type double")
+
+    lib_dtrsm(Order, Side, Uplo, TransA, Diag, B.shape[0], B.shape[1],
+              alpha, <double*>A.data, A.shape[1], <double*>B.data, B.shape[1])
+
+
+cdef void dtrsm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 double alpha, np.ndarray A, np.ndarray B):
+
+    dtrsm8(CblasRowMajor, Side, CblasLower, TransA, CblasNonUnit, alpha, A, B)
+
+
+cdef void dtrsm3(double alpha, np.ndarray A, np.ndarray B):
+
+    dtrsm8(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasNonUnit,
+           alpha, A, B)
+
+
+cdef void dtrsm(np.ndarray A, np.ndarray B):
+
+    dtrsm3(1.0, A, B)
+
 
 #########################################################################
 #

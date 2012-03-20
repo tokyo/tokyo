@@ -198,6 +198,12 @@ cdef extern from "cblas.h":
                                  float alpha, float *A, int lda,
                                  float *B, int ldb)
 
+    void lib_strsm "cblas_strsm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                                 CBLAS_DIAG Diag, int M, int N,
+                                 float alpha, float *A, int lda,
+                                 float *B, int ldb)
+
     void lib_dgemm "cblas_dgemm"(CBLAS_ORDER Order, CBLAS_TRANSPOSE TransA,
                                  CBLAS_TRANSPOSE TransB, int M, int N, int K,
                                  double alpha, double *A, int lda,
@@ -222,6 +228,12 @@ cdef extern from "cblas.h":
                                    double beta,  double *C, int ldc)
 
     void lib_dtrmm "cblas_dtrmm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
+                                 CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
+                                 CBLAS_DIAG Diag, int M, int N,
+                                 double alpha, double *A, int lda,
+                                 double *B, int ldb)
+
+    void lib_dtrsm "cblas_dtrsm"(CBLAS_ORDER Order, CBLAS_SIDE Side,
                                  CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
                                  CBLAS_DIAG Diag, int M, int N,
                                  double alpha, double *A, int lda,
@@ -730,6 +742,45 @@ cdef void dtrmm3(double alpha, np.ndarray A, np.ndarray B)
 
 cdef void dtrmm(np.ndarray A, np.ndarray B)
 
+
+#    B = alpha * inv(A) * B  or  B = alpha * inv(A).T * B
+# or B = alpha * B * inv(A)  or  B = alpha * B * inv(A).T
+#
+# where A is triangular.
+
+# single precision
+
+cdef void strsm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 float alpha, float *A, int lda, float *B, int ldb)
+
+cdef void strsm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 float alpha, np.ndarray A, np.ndarray B)
+
+cdef void strsm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 float alpha, np.ndarray A, np.ndarray B)
+
+cdef void strsm3(float alpha, np.ndarray A, np.ndarray B)
+
+cdef void strsm(np.ndarray A, np.ndarray B)
+
+# double precision
+
+cdef void dtrsm_(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag, int M, int N,
+                 double alpha, double *A, int lda, double *B, int ldb)
+
+cdef void dtrsm8(CBLAS_ORDER Order, CBLAS_SIDE Side, CBLAS_UPLO Uplo,
+                 CBLAS_TRANSPOSE TransA, CBLAS_DIAG Diag,
+                 double alpha, np.ndarray A, np.ndarray B)
+
+cdef void dtrsm5(CBLAS_SIDE Side, CBLAS_TRANSPOSE TransA,
+                 double alpha, np.ndarray A, np.ndarray B)
+
+cdef void dtrsm3(double alpha, np.ndarray A, np.ndarray B)
+
+cdef void dtrsm(np.ndarray A, np.ndarray B)
 
 ######################################################################
 #
