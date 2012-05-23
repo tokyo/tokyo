@@ -262,10 +262,12 @@ cdef void dscal(double alpha, np.ndarray x)
 
 # vector copy: y <- x
 cdef void scopy_(int N, float *x, int dx, float *y, int dy)
-cdef void scopy(np.ndarray x, np.ndarray y)
+cdef void scopy2(np.ndarray x, np.ndarray y)
+cdef np.ndarray scopy(np.ndarray x)
 
 cdef void dcopy_(int N, double *x, int dx, double *y, int dy)
-cdef void dcopy(np.ndarray x, np.ndarray y)
+cdef void dcopy2(np.ndarray x, np.ndarray y)
+cdef np.ndarray dcopy(np.ndarray x)
 
 # vector addition: y += alpha*x
 cdef void saxpy_(int N, float alpha, float *x, int dx, float *y, int dy)

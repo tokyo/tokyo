@@ -145,7 +145,7 @@ cdef dcopy_speed(int size):
     print "dcopy:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.dcopy(x, y)
+        tokyo.dcopy2(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 

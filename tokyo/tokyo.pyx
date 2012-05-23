@@ -65,7 +65,7 @@ cdef void dscal(double alpha, np.ndarray x):
 cdef void scopy_(int N, float *x, int dx, float *y, int dy):
     lib_scopy(N, x, dx, y, dy)
 
-cdef void scopy(np.ndarray x, np.ndarray y):
+cdef void scopy2(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
@@ -75,11 +75,19 @@ cdef void scopy(np.ndarray x, np.ndarray y):
         raise ValueError("y is not of type float")
     lib_scopy(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
 
+cdef np.ndarray scopy(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != NPY_FLOAT:
+        raise ValueError("x is not of type float")
+    y = svnewempty(x.shape[0])
+    lib_scopy(x.shape[0], <float*>x.data, 1, <float*>y.data, 1)
+    return y
+
 
 cdef void dcopy_(int N, double *x, int dx, double *y, int dy):
     lib_dcopy(N, x, dx, y, dy)
 
-cdef void dcopy(np.ndarray x, np.ndarray y):
+cdef void dcopy2(np.ndarray x, np.ndarray y):
     if x.ndim != 1: raise ValueError("x is not a vector")
     if y.ndim != 1: raise ValueError("y is not a vector")
     if x.shape[0] != y.shape[0]: raise ValueError("x rows != y rows")
@@ -88,6 +96,14 @@ cdef void dcopy(np.ndarray x, np.ndarray y):
     if y.descr.type_num != NPY_DOUBLE:
         raise ValueError("y is not of type double")
     lib_dcopy(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
+
+cdef np.ndarray dcopy(np.ndarray x):
+    if x.ndim != 1: raise ValueError("x is not a vector")
+    if x.descr.type_num != NPY_DOUBLE:
+        raise ValueError("x is not of type double")
+    y = dvnewempty(x.shape[0])
+    lib_dcopy(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
+    return y
 
 
 # vector addition: y += alpha*x
@@ -1718,7 +1734,6 @@ cdef np.ndarray dvnewzero(int M):
     length[0] = M
     Py_INCREF(np.NPY_DOUBLE) # This is apparently necessary
     return PyArray_ZEROS(1, length, np.NPY_DOUBLE, 0)
-
 
 # Set a matrix to all zeros: must be floats in contiguous memory.
 cdef void smsetzero(np.ndarray A):

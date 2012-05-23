@@ -142,14 +142,12 @@ cdef dscal_verify():
 
 cdef scopy_verify():
     x = np.array(np.random.random((4)), dtype=np.float32)
-    y = np.array(np.random.random((4)), dtype=np.float32)
-    tokyo.scopy(x,y)
+    y = tokyo.scopy(x)
     print "scopy:  ", approx_eq(x, y)
 
 cdef dcopy_verify():
     x = np.array(np.random.random((4)), dtype=np.float64)
-    y = np.array(np.random.random((4)), dtype=np.float64)
-    tokyo.dcopy(x,y)
+    y = tokyo.dcopy(x)
     print "dcopy:  ", approx_eq(x, y)
 
 # vector addition: y += alpha * x

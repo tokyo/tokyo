@@ -146,7 +146,7 @@ cdef scopy_speed(int size):
     print "scopy:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.scopy(x, y)
+        tokyo.scopy2(x, y)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s " % (rate/1000)
 
