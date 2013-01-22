@@ -437,8 +437,11 @@ cdef void strsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
 
 cdef void strsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
 
-cdef void strsv(np.ndarray A, np.ndarray x)
+cdef void strsv2(np.ndarray A, np.ndarray x)
 
+cdef np.ndarray strsv(np.ndarray A, np.ndarray x)
+
+cdef np.ndarray strsvu(np.ndarray A, np.ndarray x)
 
 # Double precision triangular system solve.
 cdef void dtrsv_(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
@@ -449,7 +452,11 @@ cdef void dtrsv6(CBLAS_ORDER Order, CBLAS_UPLO Uplo, CBLAS_TRANSPOSE TransA,
 
 cdef void dtrsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x)
 
-cdef void dtrsv(np.ndarray A, np.ndarray x)
+cdef void dtrsv2(np.ndarray A, np.ndarray x)
+
+cdef np.ndarray dtrsv(np.ndarray A, np.ndarray x)
+
+cdef np.ndarray dtrsvu(np.ndarray A, np.ndarray x)
 
 
 ####

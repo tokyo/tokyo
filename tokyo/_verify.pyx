@@ -583,19 +583,16 @@ cdef dsymv_verify():
 
 cdef strsv_verify():
 
-    A = np.array(np.random.random((5,5)), dtype=np.float32)
+    A = np.tril(np.array(np.random.random((5,5)), dtype=np.float32))
     e = np.ones(5, dtype=np.float32)
-    for i in range(5):
-        for j in range(i+1,5):
-            A[i,j] = 0
     x = np.dot(A, e)
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
     cdef np.ndarray[float, ndim=1, mode='c'] x_
     A_ = A
 
-    tokyo.strsv(A, x)
-    print "strsv:  ", approx_eq(e, x)
+    tokyo.strsv2(A, x)
+    print "strsv2: ", approx_eq(e, x)
 
     x = np.dot(A, e)
     tokyo.strsv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,
@@ -617,19 +614,16 @@ cdef strsv_verify():
 
 cdef dtrsv_verify():
 
-    A = np.array(np.random.random((5,5)), dtype=np.float64)
+    A = np.tril(np.array(np.random.random((5,5)), dtype=np.float64))
     e = np.ones(5, dtype=np.float64)
-    for i in range(5):
-        for j in range(i+1,5):
-            A[i,j] = 0
     x = np.dot(A, e)
 
     cdef np.ndarray[double, ndim=2, mode='c'] A_
     cdef np.ndarray[double, ndim=1, mode='c'] x_
     A_ = A
 
-    tokyo.dtrsv(A, x)
-    print "dtrsv:  ", approx_eq(e, x)
+    tokyo.dtrsv2(A, x)
+    print "dtrsv2: ", approx_eq(e, x)
 
     x = np.dot(A, e)
     tokyo.dtrsv6(tokyo.CblasRowMajor, tokyo.CblasLower, tokyo.CblasNoTrans,

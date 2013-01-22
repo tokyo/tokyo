@@ -459,11 +459,8 @@ cdef strsv_speed(int size):
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    A = np.tril(np.array(np.random.random((size,size)), dtype=np.float32))
     x = np.array(np.random.random((size)),      dtype=np.float32)
-    for i in range(size):
-        for j in range(size):
-            if j > i: A[i,j] = 0
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_
     cdef np.ndarray[float, ndim=1, mode='c'] x_
@@ -471,10 +468,10 @@ cdef strsv_speed(int size):
 
     loops *= 3
 
-    print "strsv:       ",
+    print "strsv2:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.strsv(A, x)
+        tokyo.strsv2(A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s" % (rate/1000)
 

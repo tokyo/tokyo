@@ -436,11 +436,8 @@ cdef dtrsv_speed(int size):
 
     loops = speed_base*10/(<int>(size**1.2))
 
-    A = np.array(np.random.random((size,size)), dtype=np.float64)
+    A = np.tril(np.array(np.random.random((size,size)), dtype=np.float64))
     x = np.array(np.random.random((size)),      dtype=np.float64)
-    for i in range(size):
-        for j in range(size):
-            if j > i: A[i,j] = 0
 
     cdef np.ndarray[double, ndim=2, mode='c'] A_
     cdef np.ndarray[double, ndim=1, mode='c'] x_
@@ -448,10 +445,10 @@ cdef dtrsv_speed(int size):
 
     loops *= 3
 
-    print "dtrsv:       ",
+    print "dtrsv2:      ",
     start = time.clock()
     for i in range(loops):
-        tokyo.dtrsv(A, x)
+        tokyo.dtrsv2(A, x)
     rate = loops/(time.clock()-start)
     print "%9.0f kc/s" % (rate/1000)
 

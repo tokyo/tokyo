@@ -105,6 +105,9 @@ cdef np.ndarray dcopy(np.ndarray x):
     lib_dcopy(x.shape[0], <double*>x.data, 1, <double*>y.data, 1)
     return y
 
+def pydcopy(x):
+    return dcopy(x)
+
 
 # vector addition: y += alpha*x
 cdef void saxpy_(int N, float alpha, float *x, int dx, float *y, int dy):
@@ -680,10 +683,23 @@ cdef void strsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
     strsv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
 
 
-cdef void strsv(np.ndarray A, np.ndarray x):
+cdef void strsv2(np.ndarray A, np.ndarray x):
 
     strsv3(CblasNoTrans, A, x)
 
+
+cdef np.ndarray strsv(np.ndarray A, np.ndarray x):
+
+    y = scopy(x)
+    strsv6(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit, A, y)
+    return y
+
+
+cdef np.ndarray strsvu(np.ndarray A, np.ndarray x):
+
+    y = scopy(x)
+    strsv6(CblasRowMajor, CblasUpper, CblasNoTrans, CblasNonUnit, A, y)
+    return y
 
 # double precision
 
@@ -713,10 +729,32 @@ cdef void dtrsv3(CBLAS_TRANSPOSE TransA, np.ndarray A, np.ndarray x):
     dtrsv6(CblasRowMajor, CblasLower, TransA, CblasNonUnit, A, x)
 
 
-cdef void dtrsv(np.ndarray A, np.ndarray x):
+cdef void dtrsv2(np.ndarray A, np.ndarray x):
 
     dtrsv3(CblasNoTrans, A, x)
 
+
+cdef np.ndarray dtrsv(np.ndarray A, np.ndarray x):
+
+    y = dcopy(x)
+    dtrsv6(CblasRowMajor, CblasLower, CblasNoTrans, CblasNonUnit, A, y)
+    return y
+
+
+cdef np.ndarray dtrsvu(np.ndarray A, np.ndarray x):
+
+    y = dcopy(x)
+    dtrsv6(CblasRowMajor, CblasUpper, CblasNoTrans, CblasNonUnit, A, y)
+    return y
+
+
+def lowertri_solve(A,x):
+    return dtrsv(A,x)
+
+
+# This is necessary because lowertri_solve(A.T,x) doesn't work.
+def uppertri_solve(A,x):
+    return dtrsvu(A,x)
 
 #
 # vector outer-product: A = alpha * outer_product(x, y.T)
