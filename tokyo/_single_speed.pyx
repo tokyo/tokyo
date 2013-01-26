@@ -952,10 +952,8 @@ cdef strmm_speed(int size):
 
     loops = speed_base*150/(size*size)
 
-    A = np.array(np.random.random((size,size)), dtype=np.float32)
+    A = np.tril(np.array(np.random.random((size,size)), dtype=np.float32))
     B = np.array(np.random.random((size,size)), dtype=np.float32)
-    ti = np.triu_indices(size, 1)
-    A[ti] = 0
 
     cdef np.ndarray[float, ndim=2, mode='c'] A_, B_
     A_ = A; B_ = B
