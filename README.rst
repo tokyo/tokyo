@@ -126,3 +126,9 @@ variables a cdef type isn't necessary for the code to work but
 it allows Cython to produce faster C code.  In this case it
 saves Cython having to perform a bunch of Python checks to see if
 your matrix really is of type ndarray before each function call.
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/tokyo/tokyo/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
